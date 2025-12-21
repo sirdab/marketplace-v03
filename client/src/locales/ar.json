@@ -17,7 +17,12 @@
   "nav": {
     "home": "الرئيسية",
     "properties": "العقارات",
+    "browse": "تصفح",
+    "browseProperties": "تصفح العقارات",
     "dashboard": "لوحة التحكم",
+    "myBookings": "حجوزاتي",
+    "scheduledVisits": "الزيارات المجدولة",
+    "savedProperties": "العقارات المحفوظة",
     "login": "تسجيل الدخول",
     "register": "إنشاء حساب"
   },

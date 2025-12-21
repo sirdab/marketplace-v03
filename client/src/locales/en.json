@@ -17,7 +17,12 @@
   "nav": {
     "home": "Home",
     "properties": "Properties",
+    "browse": "Browse",
+    "browseProperties": "Browse Properties",
     "dashboard": "Dashboard",
+    "myBookings": "My Bookings",
+    "scheduledVisits": "Scheduled Visits",
+    "savedProperties": "Saved Properties",
     "login": "Login",
     "register": "Register"
   },

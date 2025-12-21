@@ -66,7 +66,7 @@ export function Header({ onSearch, searchQuery = "" }: HeaderProps) {
                 variant={location.startsWith("/properties") ? "secondary" : "ghost"}
                 data-testid="link-browse"
               >
-                Browse
+                {t('nav.browse')}
               </Button>
             </Link>
             <Link href="/saved">
@@ -83,23 +83,23 @@ export function Header({ onSearch, searchQuery = "" }: HeaderProps) {
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem asChild>
                   <Link href="/dashboard" className="w-full cursor-pointer">
-                    Dashboard
+                    {t('nav.dashboard')}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="/bookings" className="w-full cursor-pointer">
-                    My Bookings
+                    {t('nav.myBookings')}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="/visits" className="w-full cursor-pointer">
-                    Scheduled Visits
+                    {t('nav.scheduledVisits')}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href="/saved" className="w-full cursor-pointer">
-                    Saved Properties
+                    {t('nav.savedProperties')}
                   </Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -123,13 +123,13 @@ export function Header({ onSearch, searchQuery = "" }: HeaderProps) {
           <div className="md:hidden py-4 border-t">
             <form onSubmit={handleSearchSubmit} className="mb-4">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
-                  placeholder="Search properties..."
+                  placeholder={t('common.search')}
                   value={localSearch}
                   onChange={(e) => setLocalSearch(e.target.value)}
-                  className="pl-10"
+                  className="ps-10"
                   data-testid="input-mobile-search"
                 />
               </div>
@@ -137,23 +137,23 @@ export function Header({ onSearch, searchQuery = "" }: HeaderProps) {
             <nav className="flex flex-col gap-2">
               <Link href="/properties" onClick={() => setMobileMenuOpen(false)}>
                 <Button variant="ghost" className="w-full justify-start">
-                  Browse Properties
+                  {t('nav.browseProperties')}
                 </Button>
               </Link>
               <Link href="/saved" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="ghost" className="w-full justify-start">
-                  <Heart className="h-4 w-4 mr-2" />
-                  Saved
+                <Button variant="ghost" className="w-full justify-start gap-2">
+                  <Heart className="h-4 w-4" />
+                  {t('nav.savedProperties')}
                 </Button>
               </Link>
               <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="ghost" className="w-full justify-start">
-                  <User className="h-4 w-4 mr-2" />
-                  Dashboard
+                <Button variant="ghost" className="w-full justify-start gap-2">
+                  <User className="h-4 w-4" />
+                  {t('nav.dashboard')}
                 </Button>
               </Link>
               <div className="flex items-center justify-between pt-2 border-t mt-2">
-                <span className="text-sm text-muted-foreground">Theme</span>
+                <LanguageSwitcher />
                 <ThemeToggle />
               </div>
             </nav>
