@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/button";
 import { SlidersHorizontal } from "lucide-react";
 
 const cities = [
-  { key: "riyadh", slug: "riyadh" },
-  { key: "jeddah", slug: "jeddah" },
-  { key: "dammam", slug: "dammam" },
-  { key: "alKhobar", slug: "al-khobar" },
-  { key: "alAhsa", slug: "al-ahsa" },
-  { key: "abha", slug: "abha" },
-  { key: "buraydah", slug: "buraydah" },
+  { key: "riyadh", slug: "Riyadh" },
+  { key: "jeddah", slug: "Jeddah" },
+  { key: "dammam", slug: "Dammam" },
+  { key: "alKhobar", slug: "Al Khobar" },
+  { key: "alAhsa", slug: "Al Ahsa" },
+  { key: "abha", slug: "Abha" },
+  { key: "buraydah", slug: "Buraydah" },
 ];
 
 interface CityFilterTabsProps {
@@ -26,12 +26,12 @@ export function CityFilterTabs({ selectedCity }: CityFilterTabsProps) {
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 overflow-x-auto pb-2 -mb-2 flex-1">
             {cities.map((city) => (
-              <Link key={city.slug} href={`/properties?city=${t(`cities.${city.key}`)}`}>
+              <Link key={city.slug} href={`/properties?city=${city.slug}`}>
                 <Button
-                  variant={selectedCity === t(`cities.${city.key}`) ? "secondary" : "ghost"}
+                  variant={selectedCity === city.slug ? "secondary" : "ghost"}
                   size="sm"
                   className="shrink-0"
-                  data-testid={`button-city-${city.slug}`}
+                  data-testid={`button-city-${city.key}`}
                 >
                   {t('cities.warehousesIn')} {t(`cities.${city.key}`)}
                 </Button>
