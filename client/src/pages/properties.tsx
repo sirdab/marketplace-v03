@@ -141,9 +141,18 @@ export default function Properties() {
     });
   };
 
+  const handlePurposeChange = (purpose: PropertyPurpose | undefined) => {
+    setFilters((prev) => ({ ...prev, purpose }));
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
-      <Header onSearch={handleSearch} searchQuery={filters.searchQuery} />
+      <Header 
+        onSearch={handleSearch} 
+        searchQuery={filters.searchQuery} 
+        purpose={filters.purpose}
+        onPurposeChange={handlePurposeChange}
+      />
       
       <div className="border-b bg-background">
         <CategoryTabs
@@ -154,19 +163,26 @@ export default function Properties() {
 
       <main className="flex-1">
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between gap-4 mb-6">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-semibold">
-                {filters.category
-                  ? t(`categories.${filters.category === 'storefront-long' ? 'storefrontLong' : filters.category === 'storefront-short' ? 'storefrontShort' : filters.category}`)
-                  : t("properties.title")}
-              </h1>
-              <p className="text-muted-foreground mt-1">
-                {filteredProperties.length} {t("properties.available")}
-              </p>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+            <div className="flex items-center gap-4 flex-wrap">
+              <PurposeFilter
+                value={filters.purpose}
+                onChange={(purpose) => setFilters((prev) => ({ ...prev, purpose }))}
+                variant="default"
+              />
+              <div>
+                <h1 className="text-2xl md:text-3xl font-semibold">
+                  {filters.category
+                    ? t(`categories.${filters.category === 'storefront-long' ? 'storefrontLong' : filters.category === 'storefront-short' ? 'storefrontShort' : filters.category}`)
+                    : t("properties.title")}
+                </h1>
+                <p className="text-muted-foreground mt-1">
+                  {filteredProperties.length} {t("properties.available")}
+                </p>
+              </div>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 flex-wrap">
               <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
                 <SelectTrigger className="w-40" data-testid="select-sort">
                   <SelectValue placeholder={t("properties.sortBy")} />
@@ -221,6 +237,17 @@ export default function Properties() {
                   onClick={() => clearFilter("isVerified")}
                 >
                   {t("filters.verifiedOnly")}
+                  <X className="h-3 w-3" />
+                </Badge>
+              )}
+              {filters.purpose && (
+                <Badge
+                  variant="secondary"
+                  className="gap-1 cursor-pointer"
+                  onClick={() => clearFilter("purpose")}
+                  data-testid="badge-purpose-filter"
+                >
+                  {filters.purpose === "buy" ? t("purpose.buy") : filters.purpose === "rent" ? t("purpose.rent") : t("purpose.dailyRental")}
                   <X className="h-3 w-3" />
                 </Badge>
               )}

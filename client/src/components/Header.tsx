@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { Link, useLocation } from "wouter";
+import { Link, useLocation, useSearch } from "wouter";
 import { useTranslation } from "react-i18next";
 import { Search, Menu, X, Heart, User, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { PurposeFilter } from "./PurposeFilter";
+import { type PropertyPurpose } from "@shared/schema";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,17 +19,35 @@ import {
 interface HeaderProps {
   onSearch?: (query: string) => void;
   searchQuery?: string;
+  purpose?: PropertyPurpose;
+  onPurposeChange?: (purpose: PropertyPurpose | undefined) => void;
 }
 
-export function Header({ onSearch, searchQuery = "" }: HeaderProps) {
+export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }: HeaderProps) {
   const { t } = useTranslation();
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
+  const searchString = useSearch();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [localSearch, setLocalSearch] = useState(searchQuery);
+  const [localPurpose, setLocalPurpose] = useState<PropertyPurpose | undefined>(purpose);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch?.(localSearch);
+    if (onSearch) {
+      onSearch(localSearch);
+    } else {
+      const params = new URLSearchParams();
+      if (localSearch) params.set("q", localSearch);
+      if (localPurpose) params.set("purpose", localPurpose);
+      setLocation(`/properties${params.toString() ? `?${params.toString()}` : ""}`);
+    }
+  };
+
+  const handlePurposeChange = (newPurpose: PropertyPurpose | undefined) => {
+    setLocalPurpose(newPurpose);
+    if (onPurposeChange) {
+      onPurposeChange(newPurpose);
+    }
   };
 
   const isHome = location === "/";
@@ -44,10 +64,15 @@ export function Header({ onSearch, searchQuery = "" }: HeaderProps) {
           {!isHome && (
             <form
               onSubmit={handleSearchSubmit}
-              className="hidden md:flex flex-1 max-w-xl mx-4"
+              className="hidden md:flex flex-1 max-w-xl mx-4 gap-2"
             >
-              <div className="relative w-full">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <PurposeFilter
+                value={localPurpose}
+                onChange={handlePurposeChange}
+                variant="header"
+              />
+              <div className="relative flex-1">
+                <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
                   placeholder={t('hero.searchPlaceholder')}
