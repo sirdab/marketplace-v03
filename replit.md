@@ -4,7 +4,13 @@
 
 Sirdab Marketplace is a commercial real estate catalogue platform focused on the Saudi Arabian market. The platform enables users to discover, search, and book commercial properties including warehouses, workshops, storage units, and storefronts. The core value proposition is providing a unified, searchable online catalogue with verified listings, transparent pricing, and streamlined booking/visit scheduling.
 
-The project is built as a full-stack TypeScript application with a React frontend and Express backend, using PostgreSQL for data persistence.
+The project is built as a full-stack TypeScript application with a React frontend and Express backend, currently using in-memory storage with seed data for MVP demonstration.
+
+## Current Status
+- MVP complete with 15 seed commercial properties across 5 categories
+- Core user journeys implemented: browse, filter, view details, schedule visits, create bookings
+- Dark/light theme support
+- Responsive design for mobile and desktop
 
 ## User Preferences
 
