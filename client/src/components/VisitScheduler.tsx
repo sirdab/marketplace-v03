@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { format, addDays, isBefore, startOfToday } from "date-fns";
@@ -31,16 +32,16 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { type Property } from "@shared/schema";
 
-const visitSchema = z.object({
-  visitorName: z.string().min(2, "Name is required"),
-  visitorEmail: z.string().email("Valid email is required"),
-  visitorPhone: z.string().min(9, "Valid phone number is required"),
-  visitDate: z.date({ required_error: "Please select a date" }),
-  visitTime: z.string({ required_error: "Please select a time" }),
+const createVisitSchema = (t: (key: string) => string) => z.object({
+  visitorName: z.string().min(2, t("validation.nameRequired")),
+  visitorEmail: z.string().email(t("validation.emailRequired")),
+  visitorPhone: z.string().min(9, t("validation.phoneRequired")),
+  visitDate: z.date({ required_error: t("validation.dateRequired") }),
+  visitTime: z.string({ required_error: t("validation.timeRequired") }),
   notes: z.string().optional(),
 });
 
-type VisitFormData = z.infer<typeof visitSchema>;
+type VisitFormData = z.infer<ReturnType<typeof createVisitSchema>>;
 
 const timeSlots = [
   "09:00",
@@ -60,7 +61,10 @@ interface VisitSchedulerProps {
 }
 
 export function VisitScheduler({ property, onSubmit, isSubmitting }: VisitSchedulerProps) {
+  const { t } = useTranslation();
   const [isSuccess, setIsSuccess] = useState(false);
+  
+  const visitSchema = useMemo(() => createVisitSchema(t), [t]);
 
   const form = useForm<VisitFormData>({
     resolver: zodResolver(visitSchema),
@@ -85,13 +89,12 @@ export function VisitScheduler({ property, onSubmit, isSubmitting }: VisitSchedu
             <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-4">
               <CheckCircle className="h-8 w-8 text-green-600" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Visit Scheduled!</h3>
+            <h3 className="text-xl font-semibold mb-2">{t("form.visitScheduled")}</h3>
             <p className="text-muted-foreground mb-4">
-              We've received your visit request for {property.title}.
-              You'll receive a confirmation email shortly.
+              {t("form.visitScheduledDesc")}
             </p>
             <Button variant="outline" onClick={() => setIsSuccess(false)}>
-              Schedule Another Visit
+              {t("form.scheduleAnother")}
             </Button>
           </div>
         </CardContent>
@@ -104,7 +107,7 @@ export function VisitScheduler({ property, onSubmit, isSubmitting }: VisitSchedu
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Calendar className="h-5 w-5" />
-          Schedule a Visit
+          {t("property.scheduleVisit")}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -115,13 +118,13 @@ export function VisitScheduler({ property, onSubmit, isSubmitting }: VisitSchedu
               name="visitorName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Full Name</FormLabel>
+                  <FormLabel>{t("form.fullName")}</FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <User className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
-                        placeholder="Your name"
-                        className="pl-10"
+                        placeholder={t("form.yourName")}
+                        className="ps-10"
                         {...field}
                         data-testid="input-visitor-name"
                       />
@@ -138,14 +141,14 @@ export function VisitScheduler({ property, onSubmit, isSubmitting }: VisitSchedu
                 name="visitorEmail"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>{t("form.email")}</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Mail className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
                           type="email"
-                          placeholder="you@example.com"
-                          className="pl-10"
+                          placeholder={t("form.emailPlaceholder")}
+                          className="ps-10"
                           {...field}
                           data-testid="input-visitor-email"
                         />
@@ -161,14 +164,14 @@ export function VisitScheduler({ property, onSubmit, isSubmitting }: VisitSchedu
                 name="visitorPhone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Phone</FormLabel>
+                    <FormLabel>{t("form.phone")}</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Phone className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
                           type="tel"
-                          placeholder="+966 5XX XXX XXXX"
-                          className="pl-10"
+                          placeholder={t("form.phonePlaceholder")}
+                          className="ps-10"
                           {...field}
                           data-testid="input-visitor-phone"
                         />
@@ -186,19 +189,19 @@ export function VisitScheduler({ property, onSubmit, isSubmitting }: VisitSchedu
                 name="visitDate"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Preferred Date</FormLabel>
+                    <FormLabel>{t("form.preferredDate")}</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
                             variant="outline"
-                            className="w-full justify-start text-left font-normal"
+                            className="w-full justify-start text-start font-normal"
                             data-testid="button-visit-date"
                           >
-                            <Calendar className="mr-2 h-4 w-4" />
+                            <Calendar className="me-2 h-4 w-4" />
                             {field.value
                               ? format(field.value, "PPP")
-                              : "Select date"}
+                              : t("form.selectDate")}
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
@@ -225,12 +228,12 @@ export function VisitScheduler({ property, onSubmit, isSubmitting }: VisitSchedu
                 name="visitTime"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Preferred Time</FormLabel>
+                    <FormLabel>{t("form.preferredTime")}</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger data-testid="select-visit-time">
-                          <Clock className="mr-2 h-4 w-4" />
-                          <SelectValue placeholder="Select time" />
+                          <Clock className="me-2 h-4 w-4" />
+                          <SelectValue placeholder={t("form.selectTime")} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -252,10 +255,10 @@ export function VisitScheduler({ property, onSubmit, isSubmitting }: VisitSchedu
               name="notes"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Additional Notes (Optional)</FormLabel>
+                  <FormLabel>{t("form.additionalNotes")}</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Any specific requirements or questions..."
+                      placeholder={t("form.notesPlaceholder")}
                       className="resize-none"
                       {...field}
                       data-testid="textarea-visit-notes"
@@ -272,7 +275,7 @@ export function VisitScheduler({ property, onSubmit, isSubmitting }: VisitSchedu
               disabled={isSubmitting}
               data-testid="button-submit-visit"
             >
-              {isSubmitting ? "Scheduling..." : "Schedule Visit"}
+              {isSubmitting ? t("form.scheduling") : t("form.scheduleVisit")}
             </Button>
           </form>
         </Form>

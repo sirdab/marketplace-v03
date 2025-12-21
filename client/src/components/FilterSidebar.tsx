@@ -1,11 +1,11 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Filter, X, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Slider } from "@/components/ui/slider";
 import {
   Sheet,
   SheetContent,
@@ -22,7 +22,6 @@ import {
 import {
   type PropertyCategory,
   type PropertyFilters,
-  categoryLabels,
   propertySubTypes,
 } from "@shared/schema";
 
@@ -33,12 +32,12 @@ interface FilterSidebarProps {
   districts?: string[];
 }
 
-const categories: PropertyCategory[] = [
-  "warehouse",
-  "workshop",
-  "storage",
-  "storefront-long",
-  "storefront-short",
+const categories: { category: PropertyCategory; key: string }[] = [
+  { category: "warehouse", key: "warehouse" },
+  { category: "workshop", key: "workshop" },
+  { category: "storage", key: "storage" },
+  { category: "storefront-long", key: "storefrontLong" },
+  { category: "storefront-short", key: "storefrontShort" },
 ];
 
 function FilterSection({
@@ -71,8 +70,9 @@ function FilterContent({
   filters,
   onFiltersChange,
   cities = [],
-  districts = [],
 }: FilterSidebarProps) {
+  const { t } = useTranslation();
+  
   const activeFilterCount = Object.values(filters).filter(
     (v) => v !== undefined && v !== null && v !== ""
   ).length;
@@ -92,7 +92,7 @@ function FilterContent({
     <div className="space-y-1">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <span className="font-medium">Filters</span>
+          <span className="font-medium">{t("common.filters")}</span>
           {activeFilterCount > 0 && (
             <Badge variant="secondary" className="text-xs">
               {activeFilterCount}
@@ -107,14 +107,14 @@ function FilterContent({
             className="text-muted-foreground"
             data-testid="button-clear-filters"
           >
-            Clear all
+            {t("common.clearAll")}
           </Button>
         )}
       </div>
 
-      <FilterSection title="Property Type">
+      <FilterSection title={t("filters.propertyType")}>
         <div className="space-y-2">
-          {categories.map((category) => (
+          {categories.map(({ category, key }) => (
             <div key={category} className="flex items-center gap-2">
               <Checkbox
                 id={`category-${category}`}
@@ -128,7 +128,7 @@ function FilterContent({
                 htmlFor={`category-${category}`}
                 className="text-sm cursor-pointer"
               >
-                {categoryLabels[category]}
+                {t(`categories.${key}`)}
               </Label>
             </div>
           ))}
@@ -136,7 +136,7 @@ function FilterContent({
       </FilterSection>
 
       {filters.category && propertySubTypes[filters.category] && (
-        <FilterSection title="Sub-Type">
+        <FilterSection title={t("filters.subType")}>
           <div className="space-y-2">
             {propertySubTypes[filters.category].map((subType) => (
               <div key={subType} className="flex items-center gap-2">
@@ -159,11 +159,11 @@ function FilterContent({
         </FilterSection>
       )}
 
-      <FilterSection title="Price Range (SAR)">
+      <FilterSection title={t("filters.priceRange")}>
         <div className="space-y-4">
           <div className="flex gap-2">
             <div className="flex-1">
-              <Label className="text-xs text-muted-foreground">Min</Label>
+              <Label className="text-xs text-muted-foreground">{t("common.min")}</Label>
               <Input
                 type="number"
                 placeholder="0"
@@ -178,10 +178,10 @@ function FilterContent({
               />
             </div>
             <div className="flex-1">
-              <Label className="text-xs text-muted-foreground">Max</Label>
+              <Label className="text-xs text-muted-foreground">{t("common.max")}</Label>
               <Input
                 type="number"
-                placeholder="Any"
+                placeholder={t("common.any")}
                 value={filters.maxPrice || ""}
                 onChange={(e) =>
                   updateFilter(
@@ -196,11 +196,11 @@ function FilterContent({
         </div>
       </FilterSection>
 
-      <FilterSection title="Size (sqm)">
+      <FilterSection title={t("filters.sizeRange")}>
         <div className="space-y-4">
           <div className="flex gap-2">
             <div className="flex-1">
-              <Label className="text-xs text-muted-foreground">Min</Label>
+              <Label className="text-xs text-muted-foreground">{t("common.min")}</Label>
               <Input
                 type="number"
                 placeholder="0"
@@ -215,10 +215,10 @@ function FilterContent({
               />
             </div>
             <div className="flex-1">
-              <Label className="text-xs text-muted-foreground">Max</Label>
+              <Label className="text-xs text-muted-foreground">{t("common.max")}</Label>
               <Input
                 type="number"
-                placeholder="Any"
+                placeholder={t("common.any")}
                 value={filters.maxSize || ""}
                 onChange={(e) =>
                   updateFilter(
@@ -234,7 +234,7 @@ function FilterContent({
       </FilterSection>
 
       {cities.length > 0 && (
-        <FilterSection title="City" defaultOpen={false}>
+        <FilterSection title={t("filters.city")} defaultOpen={false}>
           <div className="space-y-2 max-h-40 overflow-y-auto">
             {cities.map((city) => (
               <div key={city} className="flex items-center gap-2">
@@ -254,7 +254,7 @@ function FilterContent({
         </FilterSection>
       )}
 
-      <FilterSection title="Verification">
+      <FilterSection title={t("filters.verification")}>
         <div className="flex items-center gap-2">
           <Checkbox
             id="verified-only"
@@ -265,7 +265,7 @@ function FilterContent({
             data-testid="checkbox-verified-only"
           />
           <Label htmlFor="verified-only" className="text-sm cursor-pointer">
-            Verified listings only
+            {t("filters.verifiedOnly")}
           </Label>
         </div>
       </FilterSection>
@@ -274,6 +274,7 @@ function FilterContent({
 }
 
 export function FilterSidebar(props: FilterSidebarProps) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const activeFilterCount = Object.values(props.filters).filter(
     (v) => v !== undefined && v !== null && v !== ""
@@ -292,9 +293,9 @@ export function FilterSidebar(props: FilterSidebarProps) {
           <SheetTrigger asChild>
             <Button variant="outline" className="gap-2" data-testid="button-open-filters">
               <Filter className="h-4 w-4" />
-              Filters
+              {t("common.filters")}
               {activeFilterCount > 0 && (
-                <Badge variant="secondary" className="ml-1">
+                <Badge variant="secondary" className="ms-1">
                   {activeFilterCount}
                 </Badge>
               )}
@@ -302,14 +303,14 @@ export function FilterSidebar(props: FilterSidebarProps) {
           </SheetTrigger>
           <SheetContent side="left" className="w-80">
             <SheetHeader>
-              <SheetTitle>Filters</SheetTitle>
+              <SheetTitle>{t("common.filters")}</SheetTitle>
             </SheetHeader>
             <div className="py-4 overflow-y-auto max-h-[calc(100vh-10rem)]">
               <FilterContent {...props} />
             </div>
             <SheetFooter>
               <Button onClick={() => setOpen(false)} className="w-full">
-                Apply Filters
+                {t("common.applyFilters")}
               </Button>
             </SheetFooter>
           </SheetContent>

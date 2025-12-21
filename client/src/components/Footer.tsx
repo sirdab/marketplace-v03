@@ -1,7 +1,10 @@
 import { Link } from "wouter";
+import { useTranslation } from "react-i18next";
 import { Building2, Mail, Phone, MapPin } from "lucide-react";
 
 export function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className="bg-card border-t">
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16">
@@ -12,8 +15,7 @@ export function Footer() {
               <span className="font-semibold text-xl">Sirdab</span>
             </Link>
             <p className="text-sm text-muted-foreground mb-4">
-              The unified online catalogue for commercial real estate in Saudi Arabia.
-              Find warehouses, workshops, storage, and storefronts.
+              {t("footer.description")}
             </p>
             <div className="flex flex-col gap-2 text-sm text-muted-foreground">
               <a href="mailto:hello@sirdab.co" className="flex items-center gap-2 hover:text-foreground">
@@ -28,93 +30,93 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold mb-4">Categories</h4>
+            <h4 className="font-semibold mb-4">{t("footer.categories")}</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link href="/properties?category=warehouse" className="hover:text-foreground">
-                  Warehouses
+                  {t("footer.warehouses")}
                 </Link>
               </li>
               <li>
                 <Link href="/properties?category=workshop" className="hover:text-foreground">
-                  Workshops
+                  {t("footer.workshops")}
                 </Link>
               </li>
               <li>
                 <Link href="/properties?category=storage" className="hover:text-foreground">
-                  Self-Storage
+                  {t("footer.selfStorage")}
                 </Link>
               </li>
               <li>
                 <Link href="/properties?category=storefront-long" className="hover:text-foreground">
-                  Long-Term Storefronts
+                  {t("footer.longTermStorefronts")}
                 </Link>
               </li>
               <li>
                 <Link href="/properties?category=storefront-short" className="hover:text-foreground">
-                  Short-Term Storefronts
+                  {t("footer.shortTermStorefronts")}
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-semibold mb-4">Company</h4>
+            <h4 className="font-semibold mb-4">{t("footer.company")}</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link href="/about" className="hover:text-foreground">
-                  About Us
+                  {t("footer.aboutUs")}
                 </Link>
               </li>
               <li>
                 <Link href="/contact" className="hover:text-foreground">
-                  Contact
+                  {t("footer.contact")}
                 </Link>
               </li>
               <li>
                 <Link href="/list-property" className="hover:text-foreground">
-                  List Your Property
+                  {t("footer.listYourProperty")}
                 </Link>
               </li>
               <li>
                 <Link href="/careers" className="hover:text-foreground">
-                  Careers
+                  {t("footer.careers")}
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-semibold mb-4">Locations</h4>
+            <h4 className="font-semibold mb-4">{t("footer.locations")}</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
-                <span>Riyadh</span>
+                <span>{t("cities.riyadh")}</span>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
-                <span>Jeddah</span>
+                <span>{t("cities.jeddah")}</span>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
-                <span>Dammam</span>
+                <span>{t("cities.dammam")}</span>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
-                <span>Makkah</span>
+                <span>{t("cities.makkah")}</span>
               </li>
             </ul>
           </div>
         </div>
 
         <div className="border-t mt-10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-          <p>2024 Sirdab. All rights reserved.</p>
+          <p>2024 Sirdab. {t("footer.rights")}</p>
           <div className="flex flex-wrap gap-4 md:gap-6">
             <Link href="/privacy" className="hover:text-foreground">
-              Privacy Policy
+              {t("footer.privacy")}
             </Link>
             <Link href="/terms" className="hover:text-foreground">
-              Terms of Service
+              {t("footer.terms")}
             </Link>
           </div>
         </div>

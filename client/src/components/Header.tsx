@@ -50,10 +50,10 @@ export function Header({ onSearch, searchQuery = "" }: HeaderProps) {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
-                  placeholder="Search by location, property type..."
+                  placeholder={t('hero.searchPlaceholder')}
                   value={localSearch}
                   onChange={(e) => setLocalSearch(e.target.value)}
-                  className="pl-10 pr-4"
+                  className="ps-10 pe-4"
                   data-testid="input-header-search"
                 />
               </div>

@@ -151,11 +151,11 @@ export default function Properties() {
             <div>
               <h1 className="text-2xl md:text-3xl font-semibold">
                 {filters.category
-                  ? `${filters.category.charAt(0).toUpperCase() + filters.category.slice(1).replace("-", " ")} Properties`
-                  : "All Properties"}
+                  ? t(`categories.${filters.category === 'storefront-long' ? 'storefrontLong' : filters.category === 'storefront-short' ? 'storefrontShort' : filters.category}`)
+                  : t("properties.title")}
               </h1>
               <p className="text-muted-foreground mt-1">
-                {filteredProperties.length} properties available
+                {filteredProperties.length} {t("properties.available")}
               </p>
             </div>
 
@@ -213,7 +213,7 @@ export default function Properties() {
                   className="gap-1 cursor-pointer"
                   onClick={() => clearFilter("isVerified")}
                 >
-                  Verified only
+                  {t("filters.verifiedOnly")}
                   <X className="h-3 w-3" />
                 </Badge>
               )}
@@ -236,7 +236,7 @@ export default function Properties() {
                     clearFilter("maxPrice");
                   }}
                 >
-                  Price: {filters.minPrice || 0} - {filters.maxPrice || "Any"}
+                  {t("property.price")}: {filters.minPrice || 0} - {filters.maxPrice || t("common.any")}
                   <X className="h-3 w-3" />
                 </Badge>
               )}

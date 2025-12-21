@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
+import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
 import {
   Calendar,
@@ -21,6 +22,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { type Visit, type Booking, type Property } from "@shared/schema";
 
 function StatusBadge({ status }: { status: string }) {
+  const { t } = useTranslation();
+  
   const variants: Record<string, { variant: "default" | "secondary" | "outline" | "destructive"; icon: React.ReactNode }> = {
     pending: { variant: "secondary", icon: <Clock className="h-3 w-3" /> },
     confirmed: { variant: "default", icon: <CheckCircle className="h-3 w-3" /> },
@@ -32,14 +35,16 @@ function StatusBadge({ status }: { status: string }) {
   const config = variants[status] || variants.pending;
 
   return (
-    <Badge variant={config.variant} className="gap-1 capitalize">
+    <Badge variant={config.variant} className="gap-1">
       {config.icon}
-      {status}
+      {t(`status.${status}`)}
     </Badge>
   );
 }
 
 export default function Dashboard() {
+  const { t, i18n } = useTranslation();
+  
   const { data: visits = [], isLoading: visitsLoading } = useQuery<Visit[]>({
     queryKey: ["/api/visits"],
   });
@@ -65,17 +70,17 @@ export default function Dashboard() {
 
   const stats = [
     {
-      label: "Scheduled Visits",
+      labelKey: "scheduledVisits",
       value: visits.filter((v) => v.status !== "cancelled").length,
       icon: <Calendar className="h-5 w-5" />,
     },
     {
-      label: "Active Bookings",
+      labelKey: "activeBookings",
       value: bookings.filter((b) => b.status === "active").length,
       icon: <CreditCard className="h-5 w-5" />,
     },
     {
-      label: "Total Bookings",
+      labelKey: "totalBookings",
       value: bookings.length,
       icon: <Building2 className="h-5 w-5" />,
     },
@@ -87,9 +92,9 @@ export default function Dashboard() {
       <main className="flex-1 bg-muted/30">
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-semibold mb-2">Dashboard</h1>
+            <h1 className="text-3xl font-semibold mb-2">{t("dashboard.title")}</h1>
             <p className="text-muted-foreground">
-              Manage your visits, bookings, and saved properties
+              {t("dashboard.subtitle")}
             </p>
           </div>
 
@@ -99,7 +104,7 @@ export default function Dashboard() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground">{stat.label}</p>
+                      <p className="text-sm text-muted-foreground">{t(`dashboard.${stat.labelKey}`)}</p>
                       <p className="text-3xl font-semibold mt-1">{stat.value}</p>
                     </div>
                     <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
@@ -115,21 +120,21 @@ export default function Dashboard() {
             <TabsList>
               <TabsTrigger value="visits" className="gap-2">
                 <Calendar className="h-4 w-4" />
-                Visits
+                {t("dashboard.visits")}
               </TabsTrigger>
               <TabsTrigger value="bookings" className="gap-2">
                 <CreditCard className="h-4 w-4" />
-                Bookings
+                {t("dashboard.bookings")}
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="visits">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between gap-4">
-                  <CardTitle>Upcoming Visits</CardTitle>
+                  <CardTitle>{t("dashboard.upcomingVisits")}</CardTitle>
                   <Link href="/visits">
                     <Button variant="ghost" size="sm" className="gap-2">
-                      View all
+                      {t("common.viewAll")}
                       <ArrowRight className="h-4 w-4" />
                     </Button>
                   </Link>
@@ -144,9 +149,9 @@ export default function Dashboard() {
                   ) : upcomingVisits.length === 0 ? (
                     <div className="text-center py-8">
                       <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                      <p className="text-muted-foreground mb-4">No upcoming visits</p>
+                      <p className="text-muted-foreground mb-4">{t("dashboard.noUpcomingVisits")}</p>
                       <Link href="/properties">
-                        <Button>Browse Properties</Button>
+                        <Button>{t("nav.browseProperties")}</Button>
                       </Link>
                     </div>
                   ) : (
@@ -187,10 +192,10 @@ export default function Dashboard() {
             <TabsContent value="bookings">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between gap-4">
-                  <CardTitle>Active Bookings</CardTitle>
+                  <CardTitle>{t("dashboard.activeBookings")}</CardTitle>
                   <Link href="/bookings">
                     <Button variant="ghost" size="sm" className="gap-2">
-                      View all
+                      {t("common.viewAll")}
                       <ArrowRight className="h-4 w-4" />
                     </Button>
                   </Link>
@@ -205,16 +210,16 @@ export default function Dashboard() {
                   ) : activeBookings.length === 0 ? (
                     <div className="text-center py-8">
                       <CreditCard className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                      <p className="text-muted-foreground mb-4">No active bookings</p>
+                      <p className="text-muted-foreground mb-4">{t("dashboard.noActiveBookings")}</p>
                       <Link href="/properties">
-                        <Button>Browse Properties</Button>
+                        <Button>{t("nav.browseProperties")}</Button>
                       </Link>
                     </div>
                   ) : (
                     <div className="space-y-4">
                       {activeBookings.map((booking) => {
                         const property = getProperty(booking.propertyId);
-                        const formattedTotal = new Intl.NumberFormat("en-SA", {
+                        const formattedTotal = new Intl.NumberFormat(i18n.language === "ar" ? "ar-SA" : "en-SA", {
                           style: "currency",
                           currency: "SAR",
                           maximumFractionDigits: 0,
@@ -241,7 +246,7 @@ export default function Dashboard() {
                                 {booking.startDate} - {booking.endDate}
                               </p>
                             </div>
-                            <div className="text-right">
+                            <div className="text-end">
                               <p className="font-semibold">{formattedTotal}</p>
                               <StatusBadge status={booking.status} />
                             </div>

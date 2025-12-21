@@ -2,6 +2,7 @@
   "common": {
     "search": "Search",
     "filter": "Filter",
+    "filters": "Filters",
     "viewAll": "View All",
     "viewDetails": "View Details",
     "book": "Book",
@@ -12,7 +13,16 @@
     "loading": "Loading...",
     "noResults": "No results found",
     "perMonth": "/month",
-    "sqm": "sqm"
+    "perDay": "/day",
+    "sqm": "sqm",
+    "clearAll": "Clear all",
+    "applyFilters": "Apply Filters",
+    "min": "Min",
+    "max": "Max",
+    "any": "Any",
+    "backTo": "Back to",
+    "error": "Error",
+    "properties": "properties"
   },
   "nav": {
     "home": "Home",
@@ -36,27 +46,39 @@
     "trustedSMEs": "Trusted by 1000+ SMEs"
   },
   "categories": {
-    "title": "Browse by Category",
-    "subtitle": "Find the perfect commercial space for your business needs",
+    "title": "Explore by Category",
+    "subtitle": "From industrial warehouses to pop-up storefronts, find the perfect space for your business needs.",
     "warehouse": "Warehouse",
     "workshop": "Workshop",
     "storage": "Storage",
     "storefrontLong": "Storefront (Long-term)",
-    "storefrontShort": "Storefront (Short-term)"
+    "storefrontShort": "Storefront (Short-term)",
+    "viewAllProperties": "View All Properties",
+    "propertiesCount": "{{count}} properties"
+  },
+  "categoryDescriptions": {
+    "warehouse": "Industrial storage and logistics facilities",
+    "workshop": "Manufacturing and production spaces",
+    "storage": "Self-storage and inventory units",
+    "storefrontLong": "Long-term retail and commercial spaces",
+    "storefrontShort": "Pop-up shops and temporary retail"
   },
   "featured": {
     "title": "Featured Properties",
-    "subtitle": "Handpicked commercial spaces with verified listings and competitive pricing"
+    "subtitle": "Verified listings with the best availability and pricing",
+    "viewAllFeatured": "View All Featured"
   },
   "value": {
-    "title": "Why Choose Sirdab Marketplace?",
-    "subtitle": "We provide the most comprehensive commercial real estate platform in Saudi Arabia",
+    "title": "Why Choose Sirdab",
+    "subtitle": "We're building the future of commercial real estate — transparent, accessible, and efficient.",
     "verifiedTitle": "Verified Listings",
-    "verifiedDesc": "Every property is verified with real photos and accurate information",
+    "verifiedDesc": "Every property is verified by our team. Real photos, accurate pricing, and confirmed availability.",
     "transparentTitle": "Transparent Pricing",
-    "transparentDesc": "No hidden fees. See all costs upfront before you commit",
+    "transparentDesc": "No hidden fees. What you see is what you pay. Monthly or daily rates clearly displayed.",
     "instantTitle": "Instant Booking",
-    "instantDesc": "Schedule visits and book properties online in minutes"
+    "instantDesc": "Schedule visits or book short-term spaces directly. No back-and-forth calls required.",
+    "secureTitle": "Secure Transactions",
+    "secureDesc": "Protected payments and clear contracts. Your deposits and payments are always secure."
   },
   "cities": {
     "riyadh": "Riyadh",
@@ -66,22 +88,33 @@
     "alAhsa": "Al Ahsa",
     "abha": "Abha",
     "buraydah": "Buraydah",
+    "makkah": "Makkah",
     "warehousesIn": "Warehouses in"
   },
   "property": {
     "verified": "Verified",
     "available": "Available",
+    "unavailable": "Unavailable",
+    "availableNow": "Available Now",
+    "notFound": "Property Not Found",
+    "notFoundDesc": "The property you're looking for doesn't exist or has been removed.",
     "details": "Property Details",
     "location": "Location",
     "size": "Size",
     "price": "Price",
+    "category": "Category",
+    "availability": "Availability",
     "amenities": "Amenities",
     "description": "Description",
     "bookNow": "Book Now",
-    "scheduleVisit": "Schedule a Visit",
-    "sar": "SR"
+    "bookThisSpace": "Book This Space",
+    "scheduleVisit": "Schedule Visit",
+    "contactOwner": "Contact Owner",
+    "sar": "SR",
+    "backToProperties": "Back to properties"
   },
   "properties": {
+    "title": "All Properties",
     "sortBy": "Sort by",
     "newest": "Newest",
     "priceLowToHigh": "Price: Low to High",
@@ -90,12 +123,116 @@
     "showMap": "Show Map",
     "available": "properties available"
   },
+  "filters": {
+    "title": "Filters",
+    "propertyType": "Property Type",
+    "subType": "Sub-Type",
+    "priceRange": "Price Range (SAR)",
+    "sizeRange": "Size (sqm)",
+    "city": "City",
+    "verification": "Verification",
+    "verifiedOnly": "Verified listings only"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Manage your visits, bookings, and saved properties",
+    "scheduledVisits": "Scheduled Visits",
+    "activeBookings": "Active Bookings",
+    "totalBookings": "Total Bookings",
+    "upcomingVisits": "Upcoming Visits",
+    "noUpcomingVisits": "No upcoming visits",
+    "noActiveBookings": "No active bookings",
+    "visits": "Visits",
+    "bookings": "Bookings"
+  },
+  "visit": {
+    "scheduled": "Visit Scheduled",
+    "scheduledDesc": "You will receive a confirmation email shortly.",
+    "failedToSchedule": "Failed to schedule visit. Please try again."
+  },
+  "booking": {
+    "submitted": "Booking Submitted",
+    "submittedDesc": "We'll contact you to confirm the booking.",
+    "failedToSubmit": "Failed to submit booking. Please try again."
+  },
+  "status": {
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "active": "Active"
+  },
+  "tabs": {
+    "details": "Details",
+    "visit": "Schedule Visit",
+    "book": "Book Space"
+  },
+  "form": {
+    "fullName": "Full Name",
+    "yourName": "Your name",
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "phone": "Phone",
+    "phonePlaceholder": "+966 5XX XXX XXXX",
+    "preferredDate": "Preferred Date",
+    "preferredTime": "Preferred Time",
+    "selectDate": "Select date",
+    "selectTime": "Select time",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "selectStartDate": "Select start date",
+    "selectEndDate": "Select end date",
+    "additionalNotes": "Additional Notes (Optional)",
+    "notesPlaceholder": "Any specific requirements or questions...",
+    "specialRequirements": "Any special requirements...",
+    "scheduling": "Scheduling...",
+    "scheduleVisit": "Schedule Visit",
+    "scheduleAnother": "Schedule Another Visit",
+    "continue": "Continue",
+    "back": "Back",
+    "reviewBooking": "Review Booking",
+    "confirmBooking": "Confirm Booking",
+    "processing": "Processing...",
+    "duration": "Duration",
+    "days": "days",
+    "basePrice": "Base Price",
+    "platformFee": "Platform Fee (5%)",
+    "total": "Total",
+    "bookingSummary": "Booking Summary",
+    "period": "Period",
+    "contactDetails": "Contact Details",
+    "visitScheduled": "Visit Scheduled!",
+    "visitScheduledDesc": "We've received your visit request. You'll receive a confirmation email shortly.",
+    "bookingSubmitted": "Booking Submitted!",
+    "bookingSubmittedDesc": "Your booking request has been submitted. We'll contact you shortly to confirm the details.",
+    "bookingReference": "Booking Reference"
+  },
+  "validation": {
+    "nameRequired": "Name is required",
+    "emailRequired": "Valid email is required",
+    "phoneRequired": "Valid phone number is required",
+    "dateRequired": "Please select a date",
+    "timeRequired": "Please select a time",
+    "startDateRequired": "Please select a start date",
+    "endDateRequired": "Please select an end date",
+    "endDateAfterStart": "End date must be after start date"
+  },
   "footer": {
-    "poweredBy": "Powered by Sirdab",
-    "rights": "All rights reserved",
-    "about": "About",
+    "description": "The unified online catalogue for commercial real estate in Saudi Arabia. Find warehouses, workshops, storage, and storefronts.",
+    "categories": "Categories",
+    "warehouses": "Warehouses",
+    "workshops": "Workshops",
+    "selfStorage": "Self-Storage",
+    "longTermStorefronts": "Long-Term Storefronts",
+    "shortTermStorefronts": "Short-Term Storefronts",
+    "company": "Company",
+    "aboutUs": "About Us",
     "contact": "Contact",
-    "terms": "Terms of Service",
-    "privacy": "Privacy Policy"
+    "listYourProperty": "List Your Property",
+    "careers": "Careers",
+    "locations": "Locations",
+    "rights": "All rights reserved",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
   }
 }

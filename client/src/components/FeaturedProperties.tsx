@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { useTranslation } from "react-i18next";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PropertyGrid } from "./PropertyGrid";
@@ -10,6 +11,7 @@ interface FeaturedPropertiesProps {
 }
 
 export function FeaturedProperties({ properties, isLoading }: FeaturedPropertiesProps) {
+  const { t } = useTranslation();
   const featured = properties.filter((p) => p.isVerified).slice(0, 6);
 
   return (
@@ -18,15 +20,15 @@ export function FeaturedProperties({ properties, isLoading }: FeaturedProperties
         <div className="flex items-end justify-between gap-4 mb-8 md:mb-10">
           <div>
             <h2 className="text-3xl md:text-4xl font-semibold mb-2">
-              Featured Properties
+              {t("featured.title")}
             </h2>
             <p className="text-muted-foreground">
-              Verified listings with the best availability and pricing
+              {t("featured.subtitle")}
             </p>
           </div>
           <Link href="/properties?verified=true" className="hidden sm:block">
             <Button variant="ghost" className="gap-2">
-              View all
+              {t("common.viewAll")}
               <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
@@ -40,7 +42,7 @@ export function FeaturedProperties({ properties, isLoading }: FeaturedProperties
         <div className="text-center mt-8 sm:hidden">
           <Link href="/properties?verified=true">
             <Button variant="outline" className="gap-2">
-              View All Featured
+              {t("featured.viewAllFeatured")}
               <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>

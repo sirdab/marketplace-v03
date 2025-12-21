@@ -2,6 +2,7 @@
   "common": {
     "search": "بحث",
     "filter": "تصفية",
+    "filters": "التصفية",
     "viewAll": "عرض الكل",
     "viewDetails": "عرض التفاصيل",
     "book": "حجز",
@@ -12,7 +13,16 @@
     "loading": "جاري التحميل...",
     "noResults": "لم يتم العثور على نتائج",
     "perMonth": "/شهر",
-    "sqm": "م²"
+    "perDay": "/يوم",
+    "sqm": "م²",
+    "clearAll": "مسح الكل",
+    "applyFilters": "تطبيق التصفية",
+    "min": "الحد الأدنى",
+    "max": "الحد الأقصى",
+    "any": "أي",
+    "backTo": "العودة إلى",
+    "error": "خطأ",
+    "properties": "عقارات"
   },
   "nav": {
     "home": "الرئيسية",
@@ -36,27 +46,39 @@
     "trustedSMEs": "موثوق به من +1000 شركة"
   },
   "categories": {
-    "title": "تصفح حسب الفئة",
-    "subtitle": "اعثر على المساحة التجارية المثالية لاحتياجات عملك",
+    "title": "استكشف حسب الفئة",
+    "subtitle": "من المستودعات الصناعية إلى المحلات المؤقتة، اعثر على المساحة المثالية لعملك.",
     "warehouse": "مستودع",
     "workshop": "ورشة عمل",
     "storage": "وحدة تخزين",
     "storefrontLong": "واجهة محل (طويل الأجل)",
-    "storefrontShort": "واجهة محل (قصير الأجل)"
+    "storefrontShort": "واجهة محل (قصير الأجل)",
+    "viewAllProperties": "عرض جميع العقارات",
+    "propertiesCount": "{{count}} عقار"
+  },
+  "categoryDescriptions": {
+    "warehouse": "مرافق التخزين الصناعية واللوجستية",
+    "workshop": "مساحات التصنيع والإنتاج",
+    "storage": "وحدات التخزين الذاتي والمخزون",
+    "storefrontLong": "مساحات تجارية وبيع بالتجزئة طويلة الأجل",
+    "storefrontShort": "محلات مؤقتة وبيع بالتجزئة قصير الأجل"
   },
   "featured": {
     "title": "العقارات المميزة",
-    "subtitle": "مساحات تجارية مختارة بعناية مع إعلانات موثقة وأسعار تنافسية"
+    "subtitle": "إعلانات موثقة مع أفضل التوفر والأسعار",
+    "viewAllFeatured": "عرض كل المميزات"
   },
   "value": {
-    "title": "لماذا تختار سوق سرداب؟",
-    "subtitle": "نوفر أشمل منصة عقارات تجارية في المملكة العربية السعودية",
+    "title": "لماذا تختار سرداب",
+    "subtitle": "نحن نبني مستقبل العقارات التجارية — شفاف وسهل الوصول وفعال.",
     "verifiedTitle": "إعلانات موثقة",
-    "verifiedDesc": "كل عقار موثق بصور حقيقية ومعلومات دقيقة",
+    "verifiedDesc": "كل عقار موثق من قبل فريقنا. صور حقيقية، أسعار دقيقة، وتوفر مؤكد.",
     "transparentTitle": "أسعار شفافة",
-    "transparentDesc": "لا رسوم خفية. اطلع على جميع التكاليف مقدماً",
+    "transparentDesc": "لا رسوم خفية. ما تراه هو ما تدفعه. أسعار شهرية أو يومية معروضة بوضوح.",
     "instantTitle": "حجز فوري",
-    "instantDesc": "جدول الزيارات واحجز العقارات عبر الإنترنت في دقائق"
+    "instantDesc": "جدول الزيارات أو احجز المساحات قصيرة الأجل مباشرة. لا حاجة للمكالمات المتكررة.",
+    "secureTitle": "معاملات آمنة",
+    "secureDesc": "مدفوعات محمية وعقود واضحة. ودائعك ومدفوعاتك آمنة دائماً."
   },
   "cities": {
     "riyadh": "الرياض",
@@ -66,22 +88,33 @@
     "alAhsa": "الأحساء",
     "abha": "أبها",
     "buraydah": "بريدة",
+    "makkah": "مكة المكرمة",
     "warehousesIn": "مستودعات في"
   },
   "property": {
     "verified": "موثق",
     "available": "متاح",
+    "unavailable": "غير متاح",
+    "availableNow": "متاح الآن",
+    "notFound": "العقار غير موجود",
+    "notFoundDesc": "العقار الذي تبحث عنه غير موجود أو تم إزالته.",
     "details": "تفاصيل العقار",
     "location": "الموقع",
     "size": "المساحة",
     "price": "السعر",
+    "category": "الفئة",
+    "availability": "التوفر",
     "amenities": "المرافق",
     "description": "الوصف",
     "bookNow": "احجز الآن",
+    "bookThisSpace": "احجز هذه المساحة",
     "scheduleVisit": "جدولة زيارة",
-    "sar": "ر.س"
+    "contactOwner": "تواصل مع المالك",
+    "sar": "ر.س",
+    "backToProperties": "العودة للعقارات"
   },
   "properties": {
+    "title": "جميع العقارات",
     "sortBy": "ترتيب حسب",
     "newest": "الأحدث",
     "priceLowToHigh": "السعر: من الأقل للأعلى",
@@ -90,12 +123,116 @@
     "showMap": "عرض الخريطة",
     "available": "عقارات متاحة"
   },
+  "filters": {
+    "title": "التصفية",
+    "propertyType": "نوع العقار",
+    "subType": "النوع الفرعي",
+    "priceRange": "نطاق السعر (ريال)",
+    "sizeRange": "المساحة (م²)",
+    "city": "المدينة",
+    "verification": "التوثيق",
+    "verifiedOnly": "العقارات الموثقة فقط"
+  },
+  "dashboard": {
+    "title": "لوحة التحكم",
+    "subtitle": "إدارة زياراتك وحجوزاتك والعقارات المحفوظة",
+    "scheduledVisits": "الزيارات المجدولة",
+    "activeBookings": "الحجوزات النشطة",
+    "totalBookings": "إجمالي الحجوزات",
+    "upcomingVisits": "الزيارات القادمة",
+    "noUpcomingVisits": "لا توجد زيارات قادمة",
+    "noActiveBookings": "لا توجد حجوزات نشطة",
+    "visits": "الزيارات",
+    "bookings": "الحجوزات"
+  },
+  "visit": {
+    "scheduled": "تم جدولة الزيارة",
+    "scheduledDesc": "ستتلقى رسالة تأكيد بالبريد الإلكتروني قريباً.",
+    "failedToSchedule": "فشل في جدولة الزيارة. يرجى المحاولة مرة أخرى."
+  },
+  "booking": {
+    "submitted": "تم إرسال الحجز",
+    "submittedDesc": "سنتواصل معك لتأكيد الحجز.",
+    "failedToSubmit": "فشل في إرسال الحجز. يرجى المحاولة مرة أخرى."
+  },
+  "status": {
+    "pending": "قيد الانتظار",
+    "confirmed": "مؤكد",
+    "completed": "مكتمل",
+    "cancelled": "ملغي",
+    "active": "نشط"
+  },
+  "tabs": {
+    "details": "التفاصيل",
+    "visit": "جدولة زيارة",
+    "book": "حجز المساحة"
+  },
+  "form": {
+    "fullName": "الاسم الكامل",
+    "yourName": "اسمك",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "you@example.com",
+    "phone": "رقم الهاتف",
+    "phonePlaceholder": "+966 5XX XXX XXXX",
+    "preferredDate": "التاريخ المفضل",
+    "preferredTime": "الوقت المفضل",
+    "selectDate": "اختر التاريخ",
+    "selectTime": "اختر الوقت",
+    "startDate": "تاريخ البدء",
+    "endDate": "تاريخ الانتهاء",
+    "selectStartDate": "اختر تاريخ البدء",
+    "selectEndDate": "اختر تاريخ الانتهاء",
+    "additionalNotes": "ملاحظات إضافية (اختياري)",
+    "notesPlaceholder": "أي متطلبات أو أسئلة محددة...",
+    "specialRequirements": "أي متطلبات خاصة...",
+    "scheduling": "جاري الجدولة...",
+    "scheduleVisit": "جدولة زيارة",
+    "scheduleAnother": "جدولة زيارة أخرى",
+    "continue": "متابعة",
+    "back": "رجوع",
+    "reviewBooking": "مراجعة الحجز",
+    "confirmBooking": "تأكيد الحجز",
+    "processing": "جاري المعالجة...",
+    "duration": "المدة",
+    "days": "أيام",
+    "basePrice": "السعر الأساسي",
+    "platformFee": "رسوم المنصة (5%)",
+    "total": "الإجمالي",
+    "bookingSummary": "ملخص الحجز",
+    "period": "الفترة",
+    "contactDetails": "بيانات الاتصال",
+    "visitScheduled": "تم جدولة الزيارة!",
+    "visitScheduledDesc": "تم استلام طلب زيارتك. ستتلقى رسالة تأكيد عبر البريد الإلكتروني قريباً.",
+    "bookingSubmitted": "تم إرسال الحجز!",
+    "bookingSubmittedDesc": "تم إرسال طلب الحجز الخاص بك. سنتواصل معك قريباً لتأكيد التفاصيل.",
+    "bookingReference": "رقم الحجز المرجعي"
+  },
+  "validation": {
+    "nameRequired": "الاسم مطلوب",
+    "emailRequired": "البريد الإلكتروني غير صالح",
+    "phoneRequired": "رقم الهاتف غير صالح",
+    "dateRequired": "يرجى اختيار التاريخ",
+    "timeRequired": "يرجى اختيار الوقت",
+    "startDateRequired": "يرجى اختيار تاريخ البدء",
+    "endDateRequired": "يرجى اختيار تاريخ الانتهاء",
+    "endDateAfterStart": "يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء"
+  },
   "footer": {
-    "poweredBy": "بدعم من سرداب",
-    "rights": "جميع الحقوق محفوظة",
-    "about": "عن سرداب",
+    "description": "الفهرس الموحد عبر الإنترنت للعقارات التجارية في المملكة العربية السعودية. اعثر على المستودعات وورش العمل والتخزين والمحلات.",
+    "categories": "الفئات",
+    "warehouses": "المستودعات",
+    "workshops": "ورش العمل",
+    "selfStorage": "التخزين الذاتي",
+    "longTermStorefronts": "واجهات المحلات طويلة الأجل",
+    "shortTermStorefronts": "واجهات المحلات قصيرة الأجل",
+    "company": "الشركة",
+    "aboutUs": "عن سرداب",
     "contact": "اتصل بنا",
-    "terms": "شروط الخدمة",
-    "privacy": "سياسة الخصوصية"
+    "listYourProperty": "أضف عقارك",
+    "careers": "وظائف",
+    "locations": "المواقع",
+    "rights": "جميع الحقوق محفوظة",
+    "privacy": "سياسة الخصوصية",
+    "terms": "شروط الخدمة"
   }
 }

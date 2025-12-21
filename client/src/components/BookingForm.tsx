@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { format, differenceInDays, addDays, isBefore, startOfToday } from "date-fns";
+import { format, differenceInDays, isBefore, startOfToday } from "date-fns";
 import {
   Calendar,
   User,
@@ -34,19 +35,19 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { type Property } from "@shared/schema";
 
-const bookingSchema = z.object({
-  customerName: z.string().min(2, "Name is required"),
-  customerEmail: z.string().email("Valid email is required"),
-  customerPhone: z.string().min(9, "Valid phone number is required"),
-  startDate: z.date({ required_error: "Please select a start date" }),
-  endDate: z.date({ required_error: "Please select an end date" }),
+const createBookingSchema = (t: (key: string) => string) => z.object({
+  customerName: z.string().min(2, t("validation.nameRequired")),
+  customerEmail: z.string().email(t("validation.emailRequired")),
+  customerPhone: z.string().min(9, t("validation.phoneRequired")),
+  startDate: z.date({ required_error: t("validation.startDateRequired") }),
+  endDate: z.date({ required_error: t("validation.endDateRequired") }),
   notes: z.string().optional(),
 }).refine((data) => data.endDate > data.startDate, {
-  message: "End date must be after start date",
+  message: t("validation.endDateAfterStart"),
   path: ["endDate"],
 });
 
-type BookingFormData = z.infer<typeof bookingSchema>;
+type BookingFormData = z.infer<ReturnType<typeof createBookingSchema>>;
 
 interface BookingFormProps {
   property: Property;
@@ -55,7 +56,10 @@ interface BookingFormProps {
 }
 
 export function BookingForm({ property, onSubmit, isSubmitting }: BookingFormProps) {
+  const { t, i18n } = useTranslation();
   const [step, setStep] = useState<"dates" | "details" | "confirm" | "success">("dates");
+  
+  const bookingSchema = useMemo(() => createBookingSchema(t), [t]);
 
   const form = useForm<BookingFormData>({
     resolver: zodResolver(bookingSchema),
@@ -90,7 +94,7 @@ export function BookingForm({ property, onSubmit, isSubmitting }: BookingFormPro
   const pricing = calculatePricing();
 
   const formattedPrice = (price: number) =>
-    new Intl.NumberFormat("en-SA", {
+    new Intl.NumberFormat(i18n.language === "ar" ? "ar-SA" : "en-SA", {
       style: "currency",
       currency: "SAR",
       maximumFractionDigits: 0,
@@ -114,13 +118,12 @@ export function BookingForm({ property, onSubmit, isSubmitting }: BookingFormPro
             <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-4">
               <CheckCircle className="h-8 w-8 text-green-600" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Booking Submitted!</h3>
+            <h3 className="text-xl font-semibold mb-2">{t("form.bookingSubmitted")}</h3>
             <p className="text-muted-foreground mb-4">
-              Your booking request for {property.title} has been submitted.
-              We'll contact you shortly to confirm the details.
+              {t("form.bookingSubmittedDesc")}
             </p>
             <Badge variant="secondary" className="mb-4">
-              Booking Reference: SRD-{Date.now().toString(36).toUpperCase()}
+              {t("form.bookingReference")}: SRD-{Date.now().toString(36).toUpperCase()}
             </Badge>
           </div>
         </CardContent>
@@ -133,7 +136,7 @@ export function BookingForm({ property, onSubmit, isSubmitting }: BookingFormPro
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <CreditCard className="h-5 w-5" />
-          Book This Space
+          {t("property.bookThisSpace")}
         </CardTitle>
         <div className="flex gap-2 mt-2">
           {["dates", "details", "confirm"].map((s, i) => (
@@ -159,19 +162,19 @@ export function BookingForm({ property, onSubmit, isSubmitting }: BookingFormPro
                     name="startDate"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Start Date</FormLabel>
+                        <FormLabel>{t("form.startDate")}</FormLabel>
                         <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
                                 variant="outline"
-                                className="w-full justify-start text-left font-normal"
+                                className="w-full justify-start text-start font-normal"
                                 data-testid="button-start-date"
                               >
-                                <Calendar className="mr-2 h-4 w-4" />
+                                <Calendar className="me-2 h-4 w-4" />
                                 {field.value
                                   ? format(field.value, "PPP")
-                                  : "Select start date"}
+                                  : t("form.selectStartDate")}
                               </Button>
                             </FormControl>
                           </PopoverTrigger>
@@ -195,19 +198,19 @@ export function BookingForm({ property, onSubmit, isSubmitting }: BookingFormPro
                     name="endDate"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>End Date</FormLabel>
+                        <FormLabel>{t("form.endDate")}</FormLabel>
                         <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
                                 variant="outline"
-                                className="w-full justify-start text-left font-normal"
+                                className="w-full justify-start text-start font-normal"
                                 data-testid="button-end-date"
                               >
-                                <Calendar className="mr-2 h-4 w-4" />
+                                <Calendar className="me-2 h-4 w-4" />
                                 {field.value
                                   ? format(field.value, "PPP")
-                                  : "Select end date"}
+                                  : t("form.selectEndDate")}
                               </Button>
                             </FormControl>
                           </PopoverTrigger>
@@ -232,20 +235,20 @@ export function BookingForm({ property, onSubmit, isSubmitting }: BookingFormPro
                 {pricing && (
                   <div className="bg-muted/50 rounded-md p-4 space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span>Duration</span>
-                      <span className="font-medium">{pricing.days} days</span>
+                      <span>{t("form.duration")}</span>
+                      <span className="font-medium">{pricing.days} {t("form.days")}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span>Base Price</span>
+                      <span>{t("form.basePrice")}</span>
                       <span>{formattedPrice(pricing.basePrice)}</span>
                     </div>
                     <div className="flex justify-between text-sm text-muted-foreground">
-                      <span>Platform Fee (5%)</span>
+                      <span>{t("form.platformFee")}</span>
                       <span>{formattedPrice(pricing.platformFee)}</span>
                     </div>
                     <Separator />
                     <div className="flex justify-between font-semibold">
-                      <span>Total</span>
+                      <span>{t("form.total")}</span>
                       <span>{formattedPrice(pricing.totalPrice)}</span>
                     </div>
                   </div>
@@ -260,13 +263,13 @@ export function BookingForm({ property, onSubmit, isSubmitting }: BookingFormPro
                   name="customerName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Full Name</FormLabel>
+                      <FormLabel>{t("form.fullName")}</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <User className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                           <Input
-                            placeholder="Your name"
-                            className="pl-10"
+                            placeholder={t("form.yourName")}
+                            className="ps-10"
                             {...field}
                             data-testid="input-customer-name"
                           />
@@ -283,14 +286,14 @@ export function BookingForm({ property, onSubmit, isSubmitting }: BookingFormPro
                     name="customerEmail"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email</FormLabel>
+                        <FormLabel>{t("form.email")}</FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Mail className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             <Input
                               type="email"
-                              placeholder="you@example.com"
-                              className="pl-10"
+                              placeholder={t("form.emailPlaceholder")}
+                              className="ps-10"
                               {...field}
                               data-testid="input-customer-email"
                             />
@@ -306,14 +309,14 @@ export function BookingForm({ property, onSubmit, isSubmitting }: BookingFormPro
                     name="customerPhone"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Phone</FormLabel>
+                        <FormLabel>{t("form.phone")}</FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Phone className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             <Input
                               type="tel"
-                              placeholder="+966 5XX XXX XXXX"
-                              className="pl-10"
+                              placeholder={t("form.phonePlaceholder")}
+                              className="ps-10"
                               {...field}
                               data-testid="input-customer-phone"
                             />
@@ -330,10 +333,10 @@ export function BookingForm({ property, onSubmit, isSubmitting }: BookingFormPro
                   name="notes"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Additional Notes (Optional)</FormLabel>
+                      <FormLabel>{t("form.additionalNotes")}</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Any special requirements..."
+                          placeholder={t("form.specialRequirements")}
                           className="resize-none"
                           {...field}
                           data-testid="textarea-booking-notes"
@@ -349,42 +352,42 @@ export function BookingForm({ property, onSubmit, isSubmitting }: BookingFormPro
             {step === "confirm" && pricing && (
               <div className="space-y-4">
                 <div className="bg-muted/50 rounded-md p-4">
-                  <h4 className="font-medium mb-3">Booking Summary</h4>
+                  <h4 className="font-medium mb-3">{t("form.bookingSummary")}</h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Property</span>
+                      <span className="text-muted-foreground">{t("nav.properties")}</span>
                       <span className="font-medium">{property.title}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Period</span>
+                      <span className="text-muted-foreground">{t("form.period")}</span>
                       <span>
                         {format(watchStartDate, "MMM d")} -{" "}
                         {format(watchEndDate, "MMM d, yyyy")}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Duration</span>
-                      <span>{pricing.days} days</span>
+                      <span className="text-muted-foreground">{t("form.duration")}</span>
+                      <span>{pricing.days} {t("form.days")}</span>
                     </div>
                     <Separator className="my-2" />
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Base Price</span>
+                      <span className="text-muted-foreground">{t("form.basePrice")}</span>
                       <span>{formattedPrice(pricing.basePrice)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Platform Fee</span>
+                      <span className="text-muted-foreground">{t("form.platformFee")}</span>
                       <span>{formattedPrice(pricing.platformFee)}</span>
                     </div>
                     <Separator className="my-2" />
                     <div className="flex justify-between text-base font-semibold">
-                      <span>Total</span>
+                      <span>{t("form.total")}</span>
                       <span>{formattedPrice(pricing.totalPrice)}</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="bg-muted/50 rounded-md p-4">
-                  <h4 className="font-medium mb-3">Contact Details</h4>
+                  <h4 className="font-medium mb-3">{t("form.contactDetails")}</h4>
                   <div className="space-y-1 text-sm">
                     <p>{form.getValues("customerName")}</p>
                     <p className="text-muted-foreground">
@@ -409,7 +412,7 @@ export function BookingForm({ property, onSubmit, isSubmitting }: BookingFormPro
             }
             className="flex-1"
           >
-            Back
+            {t("form.back")}
           </Button>
         )}
         {step === "dates" && (
@@ -421,7 +424,7 @@ export function BookingForm({ property, onSubmit, isSubmitting }: BookingFormPro
             className="flex-1 gap-2"
             data-testid="button-next-dates"
           >
-            Continue
+            {t("form.continue")}
             <ArrowRight className="h-4 w-4" />
           </Button>
         )}
@@ -438,7 +441,7 @@ export function BookingForm({ property, onSubmit, isSubmitting }: BookingFormPro
             className="flex-1 gap-2"
             data-testid="button-next-details"
           >
-            Review Booking
+            {t("form.reviewBooking")}
             <ArrowRight className="h-4 w-4" />
           </Button>
         )}
@@ -449,7 +452,7 @@ export function BookingForm({ property, onSubmit, isSubmitting }: BookingFormPro
             className="flex-1"
             data-testid="button-confirm-booking"
           >
-            {isSubmitting ? "Processing..." : "Confirm Booking"}
+            {isSubmitting ? t("form.processing") : t("form.confirmBooking")}
           </Button>
         )}
       </CardFooter>

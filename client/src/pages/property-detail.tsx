@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams, useSearch, Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
 import {
   MapPin,
@@ -29,11 +30,11 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import {
   type Property,
-  categoryLabels,
   type PropertyCategory,
 } from "@shared/schema";
 
 export default function PropertyDetail() {
+  const { t, i18n } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const searchString = useSearch();
   const params = new URLSearchParams(searchString);
@@ -42,6 +43,14 @@ export default function PropertyDetail() {
   const [activeTab, setActiveTab] = useState(initialAction);
   const [isSaved, setIsSaved] = useState(false);
   const { toast } = useToast();
+
+  const categoryTranslationKeys: Record<PropertyCategory, string> = {
+    "warehouse": "warehouse",
+    "workshop": "workshop",
+    "storage": "storage",
+    "storefront-long": "storefrontLong",
+    "storefront-short": "storefrontShort",
+  };
 
   const { data: property, isLoading } = useQuery<Property>({
     queryKey: ["/api/properties", id],
@@ -58,14 +67,14 @@ export default function PropertyDetail() {
     },
     onSuccess: () => {
       toast({
-        title: "Visit Scheduled",
-        description: "You will receive a confirmation email shortly.",
+        title: t("visit.scheduled"),
+        description: t("visit.scheduledDesc"),
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to schedule visit. Please try again.",
+        title: t("common.error"),
+        description: t("visit.failedToSchedule"),
         variant: "destructive",
       });
     },
@@ -82,14 +91,14 @@ export default function PropertyDetail() {
     },
     onSuccess: () => {
       toast({
-        title: "Booking Submitted",
-        description: "We'll contact you to confirm the booking.",
+        title: t("booking.submitted"),
+        description: t("booking.submittedDesc"),
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to submit booking. Please try again.",
+        title: t("common.error"),
+        description: t("booking.failedToSubmit"),
         variant: "destructive",
       });
     },
@@ -126,12 +135,12 @@ export default function PropertyDetail() {
         <Header />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-2xl font-semibold mb-2">Property Not Found</h1>
+            <h1 className="text-2xl font-semibold mb-2">{t("property.notFound")}</h1>
             <p className="text-muted-foreground mb-4">
-              The property you're looking for doesn't exist or has been removed.
+              {t("property.notFoundDesc")}
             </p>
             <Link href="/properties">
-              <Button>Browse Properties</Button>
+              <Button>{t("nav.browseProperties")}</Button>
             </Link>
           </div>
         </main>
@@ -140,13 +149,14 @@ export default function PropertyDetail() {
     );
   }
 
-  const formattedPrice = new Intl.NumberFormat("en-SA", {
+  const formattedPrice = new Intl.NumberFormat(i18n.language === "ar" ? "ar-SA" : "en-SA", {
     style: "currency",
     currency: "SAR",
     maximumFractionDigits: 0,
   }).format(property.price);
 
-  const priceLabel = property.priceUnit === "day" ? "/day" : "/month";
+  const priceLabel = property.priceUnit === "day" ? t("common.perDay") : t("common.perMonth");
+  const categoryKey = categoryTranslationKeys[property.category as PropertyCategory];
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -155,7 +165,7 @@ export default function PropertyDetail() {
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6">
           <Link href="/properties" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">
             <ArrowLeft className="h-4 w-4" />
-            Back to properties
+            {t("property.backToProperties")}
           </Link>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -166,7 +176,7 @@ export default function PropertyDetail() {
                   alt={property.title}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute top-4 left-4 flex gap-2">
+                <div className="absolute top-4 start-4 flex gap-2">
                   <Badge variant="secondary" className="bg-background/90 backdrop-blur-sm font-semibold text-lg px-3 py-1">
                     {formattedPrice}
                     <span className="text-muted-foreground font-normal text-sm">{priceLabel}</span>
@@ -175,13 +185,13 @@ export default function PropertyDetail() {
                 {property.isVerified && (
                   <Badge
                     variant="secondary"
-                    className="absolute top-4 right-16 bg-background/90 backdrop-blur-sm gap-1"
+                    className="absolute top-4 end-16 bg-background/90 backdrop-blur-sm gap-1"
                   >
                     <CheckCircle className="h-3.5 w-3.5 text-green-600" />
-                    Verified
+                    {t("property.verified")}
                   </Badge>
                 )}
-                <div className="absolute top-4 right-4 flex gap-2">
+                <div className="absolute top-4 end-4 flex gap-2">
                   <Button
                     variant="secondary"
                     size="icon"
@@ -205,10 +215,10 @@ export default function PropertyDetail() {
                   </div>
                   <div className="flex items-center gap-1">
                     <Ruler className="h-4 w-4" />
-                    <span>{property.size} sqm</span>
+                    <span>{property.size} {t("common.sqm")}</span>
                   </div>
                   <Badge variant="outline">
-                    {categoryLabels[property.category as PropertyCategory]}
+                    {t(`categories.${categoryKey}`)}
                   </Badge>
                   {property.subType && (
                     <Badge variant="outline">{property.subType}</Badge>
@@ -219,7 +229,7 @@ export default function PropertyDetail() {
               <Separator />
 
               <div>
-                <h2 className="text-xl font-semibold mb-3">Description</h2>
+                <h2 className="text-xl font-semibold mb-3">{t("property.description")}</h2>
                 <p className="text-muted-foreground leading-relaxed">
                   {property.description}
                 </p>
@@ -229,7 +239,7 @@ export default function PropertyDetail() {
                 <>
                   <Separator />
                   <div>
-                    <h2 className="text-xl font-semibold mb-3">Amenities</h2>
+                    <h2 className="text-xl font-semibold mb-3">{t("property.amenities")}</h2>
                     <div className="flex flex-wrap gap-2">
                       {property.amenities.map((amenity, i) => (
                         <Badge key={i} variant="secondary">
@@ -244,7 +254,7 @@ export default function PropertyDetail() {
               <Separator />
 
               <div>
-                <h2 className="text-xl font-semibold mb-3">Location</h2>
+                <h2 className="text-xl font-semibold mb-3">{t("property.location")}</h2>
                 <Card>
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3">
@@ -264,47 +274,47 @@ export default function PropertyDetail() {
                 <Separator />
                 <Tabs value={activeTab} onValueChange={setActiveTab}>
                   <TabsList className="w-full">
-                    <TabsTrigger value="details" className="flex-1">Details</TabsTrigger>
-                    <TabsTrigger value="visit" className="flex-1">Schedule Visit</TabsTrigger>
-                    <TabsTrigger value="book" className="flex-1">Book Space</TabsTrigger>
+                    <TabsTrigger value="details" className="flex-1">{t("tabs.details")}</TabsTrigger>
+                    <TabsTrigger value="visit" className="flex-1">{t("tabs.visit")}</TabsTrigger>
+                    <TabsTrigger value="book" className="flex-1">{t("tabs.book")}</TabsTrigger>
                   </TabsList>
                   <TabsContent value="details" className="mt-4">
                     <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                           <Building2 className="h-5 w-5" />
-                          Property Details
+                          {t("property.details")}
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-4">
                         <div className="grid grid-cols-2 gap-4 text-sm">
                           <div>
-                            <p className="text-muted-foreground">Size</p>
-                            <p className="font-medium">{property.size} sqm</p>
+                            <p className="text-muted-foreground">{t("property.size")}</p>
+                            <p className="font-medium">{property.size} {t("common.sqm")}</p>
                           </div>
                           <div>
-                            <p className="text-muted-foreground">Category</p>
+                            <p className="text-muted-foreground">{t("property.category")}</p>
                             <p className="font-medium">
-                              {categoryLabels[property.category as PropertyCategory]}
+                              {t(`categories.${categoryKey}`)}
                             </p>
                           </div>
                           <div>
-                            <p className="text-muted-foreground">Price</p>
+                            <p className="text-muted-foreground">{t("property.price")}</p>
                             <p className="font-medium">
                               {formattedPrice} {priceLabel}
                             </p>
                           </div>
                           <div>
-                            <p className="text-muted-foreground">Availability</p>
+                            <p className="text-muted-foreground">{t("property.availability")}</p>
                             <p className="font-medium">
-                              {property.isAvailable ? "Available" : "Not Available"}
+                              {property.isAvailable ? t("property.available") : t("property.unavailable")}
                             </p>
                           </div>
                         </div>
                         {property.ownerPhone && (
                           <Button className="w-full gap-2" variant="outline">
                             <Phone className="h-4 w-4" />
-                            Contact Owner
+                            {t("property.contactOwner")}
                           </Button>
                         )}
                       </CardContent>
@@ -347,20 +357,20 @@ export default function PropertyDetail() {
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div className="flex items-center gap-2">
                         <Ruler className="h-4 w-4 text-muted-foreground" />
-                        <span>{property.size} sqm</span>
+                        <span>{property.size} {t("common.sqm")}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Building2 className="h-4 w-4 text-muted-foreground" />
-                        <span>{property.subType || categoryLabels[property.category as PropertyCategory]}</span>
+                        <span>{property.subType || t(`categories.${categoryKey}`)}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Clock className="h-4 w-4 text-muted-foreground" />
-                        <span>{property.isAvailable ? "Available Now" : "Unavailable"}</span>
+                        <span>{property.isAvailable ? t("property.availableNow") : t("property.unavailable")}</span>
                       </div>
                       {property.isVerified && (
                         <div className="flex items-center gap-2">
                           <Shield className="h-4 w-4 text-green-600" />
-                          <span className="text-green-600">Verified</span>
+                          <span className="text-green-600">{t("property.verified")}</span>
                         </div>
                       )}
                     </div>
@@ -372,7 +382,7 @@ export default function PropertyDetail() {
                         data-testid="button-schedule-visit-desktop"
                       >
                         <Calendar className="h-4 w-4" />
-                        Schedule Visit
+                        {t("property.scheduleVisit")}
                       </Button>
                       <Button
                         variant="outline"
@@ -380,7 +390,7 @@ export default function PropertyDetail() {
                         onClick={() => setActiveTab("book")}
                         data-testid="button-book-space-desktop"
                       >
-                        Book This Space
+                        {t("property.bookThisSpace")}
                       </Button>
                     </div>
                     {property.ownerPhone && (
@@ -388,7 +398,7 @@ export default function PropertyDetail() {
                         <Separator />
                         <Button variant="ghost" className="w-full gap-2">
                           <Phone className="h-4 w-4" />
-                          Contact Owner
+                          {t("property.contactOwner")}
                         </Button>
                       </>
                     )}
