@@ -24,7 +24,9 @@ import {
   type Property,
   type PropertyCategory,
   type PropertyFilters,
+  type PropertyPurpose,
 } from "@shared/schema";
+import { PurposeFilter } from "@/components/PurposeFilter";
 
 type SortOption = "newest" | "price-low" | "price-high" | "size";
 
@@ -36,11 +38,13 @@ export default function Properties() {
   const initialCategory = params.get("category") as PropertyCategory | null;
   const initialQuery = params.get("q") || "";
   const initialVerified = params.get("verified") === "true";
+  const initialPurpose = params.get("purpose") as PropertyPurpose | null;
 
   const [filters, setFilters] = useState<PropertyFilters>({
     category: initialCategory || undefined,
     searchQuery: initialQuery,
     isVerified: initialVerified || undefined,
+    purpose: initialPurpose || undefined,
   });
   const [sortBy, setSortBy] = useState<SortOption>("newest");
   const [showMap, setShowMap] = useState(false);
@@ -80,6 +84,9 @@ export default function Properties() {
     }
     if (filters.isVerified) {
       result = result.filter((p) => p.isVerified);
+    }
+    if (filters.purpose) {
+      result = result.filter((p) => p.purpose === filters.purpose);
     }
     if (filters.searchQuery) {
       const query = filters.searchQuery.toLowerCase();

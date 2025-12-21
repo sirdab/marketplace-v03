@@ -22,7 +22,15 @@
     "any": "أي",
     "backTo": "العودة إلى",
     "error": "خطأ",
-    "properties": "عقارات"
+    "properties": "عقارات",
+    "reset": "إعادة تعيين",
+    "done": "تم"
+  },
+  "purpose": {
+    "title": "الغرض",
+    "buy": "شراء",
+    "rent": "إيجار",
+    "dailyRental": "إيجار يومي"
   },
   "nav": {
     "home": "الرئيسية",

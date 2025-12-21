@@ -22,7 +22,15 @@
     "any": "Any",
     "backTo": "Back to",
     "error": "Error",
-    "properties": "properties"
+    "properties": "properties",
+    "reset": "Reset",
+    "done": "Done"
+  },
+  "purpose": {
+    "title": "Purpose",
+    "buy": "Buy",
+    "rent": "Rent",
+    "dailyRental": "Daily Rental"
   },
   "nav": {
     "home": "Home",

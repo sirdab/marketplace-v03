@@ -22,6 +22,15 @@ export const insertUserSchema = createInsertSchema(users).pick({
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 
+// Property Purpose (Buy, Rent, Daily Rental)
+export type PropertyPurpose = "buy" | "rent" | "daily_rent";
+
+export const purposeLabels: Record<PropertyPurpose, string> = {
+  "buy": "Buy",
+  "rent": "Rent",
+  "daily_rent": "Daily Rental",
+};
+
 // Property Categories
 export type PropertyCategory = "warehouse" | "workshop" | "storage" | "storefront-long" | "storefront-short";
 
@@ -57,6 +66,7 @@ export const properties = pgTable("properties", {
   description: text("description").notNull(),
   category: text("category").notNull(), // PropertyCategory
   subType: text("sub_type").notNull(),
+  purpose: text("purpose").notNull().default("rent"), // "buy" | "rent" | "daily_rent"
   price: integer("price").notNull(), // SAR per month or per day
   priceUnit: text("price_unit").notNull().default("month"), // "month" | "day"
   size: integer("size").notNull(), // sqm
@@ -147,6 +157,7 @@ export type SavedProperty = typeof savedProperties.$inferSelect;
 export interface PropertyFilters {
   category?: PropertyCategory;
   subType?: string;
+  purpose?: PropertyPurpose;
   city?: string;
   district?: string;
   minPrice?: number;

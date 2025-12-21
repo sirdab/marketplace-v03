@@ -75,6 +75,7 @@ export class MemStorage implements IStorage {
         description: "State-of-the-art warehouse facility with high ceilings, loading docks, and 24/7 security. Perfect for logistics and distribution operations. Features include fire suppression systems, climate control options, and dedicated parking for trucks.",
         category: "warehouse",
         subType: "Dry / Ambient",
+        purpose: "rent",
         price: 85000,
         priceUnit: "month",
         size: 2500,
@@ -94,6 +95,7 @@ export class MemStorage implements IStorage {
         description: "Temperature-controlled warehouse near Jeddah Port. Ideal for perishable goods, food products, and pharmaceutical storage. Multiple temperature zones available from -25°C to +8°C.",
         category: "warehouse",
         subType: "Cold & Chilled",
+        purpose: "rent",
         price: 120000,
         priceUnit: "month",
         size: 1800,
@@ -113,6 +115,7 @@ export class MemStorage implements IStorage {
         description: "Strategic cross-dock facility for rapid goods transfer. Multiple loading bays on both sides for efficient throughput. Located at a major highway intersection.",
         category: "warehouse",
         subType: "Cross-dock",
+        purpose: "rent",
         price: 95000,
         priceUnit: "month",
         size: 3200,
@@ -132,6 +135,7 @@ export class MemStorage implements IStorage {
         description: "Fully equipped automotive workshop with hydraulic lifts, painting booth, and diagnostic equipment. Suitable for car repair, maintenance, and customization services.",
         category: "workshop",
         subType: "Auto Workshop",
+        purpose: "rent",
         price: 45000,
         priceUnit: "month",
         size: 800,
@@ -151,6 +155,7 @@ export class MemStorage implements IStorage {
         description: "Versatile light manufacturing space with 3-phase power, overhead crane, and goods lift. Perfect for assembly, packaging, or small-scale production operations.",
         category: "workshop",
         subType: "Light Manufacturing",
+        purpose: "rent",
         price: 55000,
         priceUnit: "month",
         size: 1200,
@@ -168,6 +173,7 @@ export class MemStorage implements IStorage {
         description: "Specialized woodworking facility with dust extraction system, natural lighting, and heavy-duty power connections. Ideal for furniture manufacturing and carpentry.",
         category: "workshop",
         subType: "Carpentry / Metal",
+        purpose: "rent",
         price: 38000,
         priceUnit: "month",
         size: 650,
@@ -187,6 +193,7 @@ export class MemStorage implements IStorage {
         description: "Flexible storage solutions for small and medium businesses. Units from 20 to 100 sqm available. Secure access, CCTV monitoring, and easy drive-up access.",
         category: "storage",
         subType: "SME Inventory",
+        purpose: "rent",
         price: 3500,
         priceUnit: "month",
         size: 50,
@@ -205,6 +212,7 @@ export class MemStorage implements IStorage {
         description: "Secure personal storage units for household items, seasonal goods, or personal belongings. Clean, well-lit facility with easy access.",
         category: "storage",
         subType: "Personal Storage",
+        purpose: "rent",
         price: 1200,
         priceUnit: "month",
         size: 15,
@@ -225,6 +233,7 @@ export class MemStorage implements IStorage {
         description: "High-visibility retail space on Tahlia Street. Large glass frontage, high foot traffic, and excellent parking. Perfect for luxury brands, electronics, or fashion retail.",
         category: "storefront-long",
         subType: "Showroom",
+        purpose: "rent",
         price: 180000,
         priceUnit: "month",
         size: 350,
@@ -244,6 +253,7 @@ export class MemStorage implements IStorage {
         description: "Ready-to-use dark store for e-commerce fulfillment. Ground floor with multiple entry points, perfect for quick commerce and delivery operations.",
         category: "storefront-long",
         subType: "Dark Store",
+        purpose: "rent",
         price: 65000,
         priceUnit: "month",
         size: 500,
@@ -261,6 +271,7 @@ export class MemStorage implements IStorage {
         description: "Affordable retail space for small businesses. Located in a busy commercial area with good visibility and foot traffic.",
         category: "storefront-long",
         subType: "SME Retail",
+        purpose: "rent",
         price: 28000,
         priceUnit: "month",
         size: 120,
@@ -274,12 +285,13 @@ export class MemStorage implements IStorage {
         isAvailable: true,
       },
 
-      // Short-Term Storefronts
+      // Short-Term Storefronts (Daily Rental)
       {
         title: "Event Pop-up Space - Mall of Arabia",
         description: "Premium pop-up location inside Mall of Arabia. High foot traffic, perfect for brand launches, seasonal campaigns, or product demonstrations.",
         category: "storefront-short",
         subType: "Event Pop-up",
+        purpose: "daily_rent",
         price: 5000,
         priceUnit: "day",
         size: 80,
@@ -299,6 +311,7 @@ export class MemStorage implements IStorage {
         description: "Flexible exhibition space at the Riyadh International Convention Center. Available for trade shows, exhibitions, and corporate events.",
         category: "storefront-short",
         subType: "Exhibition",
+        purpose: "daily_rent",
         price: 8000,
         priceUnit: "day",
         size: 100,
@@ -318,6 +331,7 @@ export class MemStorage implements IStorage {
         description: "Outdoor activation space at Riyadh Boulevard. Perfect for brand experiences, product launches, and interactive marketing campaigns.",
         category: "storefront-short",
         subType: "Brand Activation",
+        purpose: "daily_rent",
         price: 12000,
         priceUnit: "day",
         size: 200,
@@ -418,6 +432,9 @@ export class MemStorage implements IStorage {
     }
     if (filters.isVerified !== undefined) {
       results = results.filter((p) => p.isVerified === filters.isVerified);
+    }
+    if (filters.purpose) {
+      results = results.filter((p) => p.purpose === filters.purpose);
     }
     if (filters.searchQuery) {
       const query = filters.searchQuery.toLowerCase();

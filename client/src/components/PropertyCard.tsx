@@ -20,7 +20,7 @@ export function PropertyCard({ property, isSaved = false, onToggleSave }: Proper
     maximumFractionDigits: 0,
   }).format(property.price);
 
-  const priceLabel = t('common.perMonth');
+  const priceLabel = property.priceUnit === 'day' ? t('common.perDay') : t('common.perMonth');
 
   return (
     <Card className="group overflow-hidden hover-elevate" data-testid={`card-property-${property.id}`}>
@@ -30,20 +30,18 @@ export function PropertyCard({ property, isSaved = false, onToggleSave }: Proper
           alt={property.title}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
-        <div className="absolute top-3 start-3">
+        <div className="absolute top-3 start-3 flex flex-col gap-2">
           <Badge variant="secondary" className="bg-primary text-primary-foreground font-semibold px-3 py-1">
             {formattedPrice} {t('property.sar')}
             <span className="opacity-80 font-normal ms-1">{priceLabel}</span>
           </Badge>
-        </div>
-        {property.isVerified && (
-          <div className="absolute top-3 end-12">
-            <Badge variant="secondary" className="bg-background/90 backdrop-blur-sm gap-1">
+          {property.isVerified && (
+            <Badge variant="secondary" className="bg-background/90 backdrop-blur-sm gap-1 w-fit">
               <CheckCircle className="h-3 w-3 text-green-600" />
               {t('property.verified')}
             </Badge>
-          </div>
-        )}
+          )}
+        </div>
         <Button
           variant="ghost"
           size="icon"

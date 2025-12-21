@@ -11,7 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { type PropertyCategory } from "@shared/schema";
+import { PurposeFilter } from "@/components/PurposeFilter";
+import { type PropertyCategory, type PropertyPurpose } from "@shared/schema";
 
 const categories: PropertyCategory[] = [
   "warehouse",
@@ -26,12 +27,14 @@ export function HeroSection() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedPurpose, setSelectedPurpose] = useState<PropertyPurpose | undefined>("rent");
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
     if (searchQuery) params.set("q", searchQuery);
-    if (selectedCategory) params.set("category", selectedCategory);
+    if (selectedCategory && selectedCategory !== "all") params.set("category", selectedCategory);
+    if (selectedPurpose) params.set("purpose", selectedPurpose);
     setLocation(`/properties${params.toString() ? `?${params.toString()}` : ""}`);
   };
 
@@ -55,9 +58,14 @@ export function HeroSection() {
 
         <form
           onSubmit={handleSearch}
-          className="bg-white/10 backdrop-blur-md rounded-lg p-2 md:p-3 max-w-3xl mx-auto"
+          className="bg-white/10 backdrop-blur-md rounded-lg p-2 md:p-3 max-w-4xl mx-auto"
         >
           <div className="flex flex-col md:flex-row gap-2 md:gap-3">
+            <PurposeFilter
+              value={selectedPurpose}
+              onChange={setSelectedPurpose}
+              variant="hero"
+            />
             <div className="relative flex-1">
               <MapPin className="absolute start-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/60" />
               <Input
