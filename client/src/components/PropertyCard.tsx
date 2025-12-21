@@ -13,12 +13,15 @@ interface PropertyCardProps {
 
 export function PropertyCard({ property, isSaved = false, onToggleSave }: PropertyCardProps) {
   const formattedPrice = new Intl.NumberFormat("en-SA", {
-    style: "currency",
-    currency: "SAR",
     maximumFractionDigits: 0,
   }).format(property.price);
 
-  const priceLabel = property.priceUnit === "day" ? "/day" : "/month";
+  const priceUnitLabels: Record<string, string> = {
+    day: "/day",
+    month: "/month",
+    year: "/year",
+  };
+  const priceLabel = priceUnitLabels[property.priceUnit] || "/month";
 
   return (
     <Card className="group overflow-hidden hover-elevate" data-testid={`card-property-${property.id}`}>
@@ -29,9 +32,9 @@ export function PropertyCard({ property, isSaved = false, onToggleSave }: Proper
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         <div className="absolute top-3 left-3">
-          <Badge variant="secondary" className="bg-background/90 backdrop-blur-sm font-semibold">
-            {formattedPrice}
-            <span className="text-muted-foreground font-normal">{priceLabel}</span>
+          <Badge variant="secondary" className="bg-primary text-primary-foreground font-semibold px-3 py-1">
+            {formattedPrice} SR
+            <span className="opacity-80 font-normal ml-1">{priceLabel}</span>
           </Badge>
         </div>
         {property.isVerified && (
