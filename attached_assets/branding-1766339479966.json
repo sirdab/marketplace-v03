@@ -1,0 +1,128 @@
+{
+  "colorScheme": "light",
+  "fonts": [
+    {
+      "family": "__fontRubik_bf2ac6",
+      "count": 62
+    },
+    {
+      "family": "__fontRubik_Fallback_bf2ac6",
+      "count": 62
+    },
+    {
+      "family": "ui-sans-serif",
+      "count": 62
+    },
+    {
+      "family": "system-ui",
+      "count": 62
+    },
+    {
+      "family": "sans-serif",
+      "count": 62
+    },
+    {
+      "family": "Apple Color Emoji",
+      "count": 62
+    },
+    {
+      "family": "Segoe UI Emoji",
+      "count": 62
+    },
+    {
+      "family": "Segoe UI Symbol",
+      "count": 62
+    },
+    {
+      "family": "Noto Color Emoji",
+      "count": 62
+    }
+  ],
+  "colors": {
+    "primary": "#05999E",
+    "accent": "#1F2937",
+    "background": "#FFFFFF",
+    "textPrimary": "#0C0A09",
+    "link": "#1F2937"
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": "__fontRubik_bf2ac6",
+      "heading": "__fontRubik_bf2ac6"
+    },
+    "fontStacks": {
+      "body": [
+        "__fontRubik_bf2ac6",
+        "__fontRubik_Fallback_bf2ac6",
+        "ui-sans-serif",
+        "system-ui",
+        "sans-serif",
+        "Apple Color Emoji",
+        "Segoe UI Emoji",
+        "Segoe UI Symbol",
+        "Noto Color Emoji"
+      ],
+      "heading": [
+        "__fontRubik_bf2ac6",
+        "__fontRubik_Fallback_bf2ac6",
+        "ui-sans-serif",
+        "system-ui",
+        "sans-serif",
+        "Apple Color Emoji",
+        "Segoe UI Emoji",
+        "Segoe UI Symbol",
+        "Noto Color Emoji"
+      ],
+      "paragraph": [
+        "__fontRubik_bf2ac6",
+        "__fontRubik_Fallback_bf2ac6",
+        "ui-sans-serif",
+        "system-ui",
+        "sans-serif",
+        "Apple Color Emoji",
+        "Segoe UI Emoji",
+        "Segoe UI Symbol",
+        "Noto Color Emoji"
+      ]
+    },
+    "fontSizes": {
+      "h1": "60px",
+      "h2": "16px",
+      "body": "14px"
+    }
+  },
+  "spacing": {
+    "baseUnit": 4,
+    "borderRadius": "0px"
+  },
+  "components": {},
+  "images": {
+    "logo": "https://marketplace.sirdab.co/images/powered-by-sirdab.svg",
+    "favicon": null,
+    "ogImage": "File saved at: attached_assets/ogImage.jpg"
+  },
+  "__framework_hints": [],
+  "__llm_logo_reasoning": {
+    "selectedIndex": 0,
+    "reasoning": "Strong indicators: header logo linking to homepage, header location, visible, highest logo on page, reasonable size. Score: 102 (clear winner by 41 points)",
+    "confidence": 0.9
+  },
+  "__llm_button_reasoning": {
+    "primary": {
+      "index": -1,
+      "text": "N/A",
+      "reasoning": "LLM failed"
+    },
+    "secondary": {
+      "index": -1,
+      "text": "N/A",
+      "reasoning": "LLM failed"
+    },
+    "confidence": 0
+  },
+  "confidence": {
+    "buttons": 0,
+    "colors": 0,
+    "overall": 0
+  }
+}
