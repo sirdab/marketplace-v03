@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation, useSearch } from "wouter";
 import { useTranslation } from "react-i18next";
 import { Search, Menu, X, Heart, User, Building2 } from "lucide-react";
@@ -30,6 +30,14 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const [localPurpose, setLocalPurpose] = useState<PropertyPurpose | undefined>(purpose);
+
+  useEffect(() => {
+    setLocalPurpose(purpose);
+  }, [purpose]);
+
+  useEffect(() => {
+    setLocalSearch(searchQuery);
+  }, [searchQuery]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();

@@ -44,7 +44,7 @@ export function PurposeFilter({ value, onChange, variant = "default" }: PurposeF
   };
 
   const buttonClassName = variant === "hero"
-    ? "h-12 bg-white/10 border-white/20 text-white hover:bg-white/20 gap-2"
+    ? "h-12 bg-white/10 border-white/20 text-white gap-2"
     : variant === "header"
     ? "h-9 gap-2"
     : "h-10 gap-2";
