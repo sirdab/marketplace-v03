@@ -1,0 +1,211 @@
+# **Internal Experiment Memo**
+
+## Summary
+
+We believe commercial real estate is fundamentally broken online.
+
+**Commercial real estate still lives offline:** fragmented across brokers, WhatsApp messages, phone calls, and word of mouth. There is no trusted, structured, searchable catalogue, despite strong and obvious demand.
+
+Sirdab Marketplace 2.0 is an experiment to test whether **AI-driven aggregation + a clean catalogue + lightweight transactions** can unlock this market at scale.
+
+This is a 3-month, tightly scoped experiment with clear success metrics.
+
+---
+
+## Core Thesis
+
+1. **Commercial real estate can be 10x better**
+    - Discovery today is slow, manual, and opaque
+    - Supply exists, but it is not structured or searchable
+2. **Most marketplaces ignore commercial real estate**
+    - Residential dominates because it’s easier to aggregate
+    - Commercial is more valuable, but harder to standardize
+3. **There is no high-quality online catalogue**
+    - Users want:
+        - Clear pricing
+        - Real photos
+        - Location clarity
+        - Availability
+        - Booking and visits
+    - Today, none of this exists in one place
+4. **AI changes the cost structure of aggregation**
+    - Scrapers + agents + WhatsApp outreach allow us to:
+        - Aggregate faster
+        - Verify cheaper
+        - Scale supply without large ops teams
+
+---
+
+## Context & Learnings So Far
+
+We previously built **marketplace.sirdab.co** primarily as an SEO experiment.
+
+What worked:
+
+- Strong SEO traction
+- Consistent inbound demand
+- Clear user intent
+
+What didn’t scale:
+
+- Manual aggregation
+- Limited listing depth
+- No transactions
+
+Key insight:
+
+> Users don’t just want listings.
+> 
+> 
+> They want a **real catalogue** they can actually act on.
+> 
+
+This experiment builds on that learning.
+
+---
+
+## What We’re Building
+
+**Sirdab Marketplace 2.0**
+
+A unified online catalogue for commercial real estate, powered by automated aggregation and AI agents.
+
+### Initial Categories
+
+1. **Warehouses**
+    - Dry / ambient
+    - Cold & chilled
+    - Cross-dock
+    - Industrial storage
+2. **Workshops**
+    - Auto workshops
+    - Light manufacturing
+    - Carpentry / metal shops
+    - Small industrial units
+3. **Self-Storage**
+    - SME inventory
+    - Personal storage
+    - Overflow & seasonal use
+4. **Long-Term Storefronts**
+    - Dark stores
+    - Showrooms
+    - SME retail spaces
+    - Service-based businesses
+5. **Short-Term Storefronts**
+    - Event pop-ups
+    - Temporary retail
+    - Exhibitions
+    - Brand activations
+
+---
+
+## Product Scope (Experiment MVP)
+
+We are **not** building a full real estate platform.
+
+We are testing demand and supply liquidity.
+
+### Core Capabilities
+
+1. **Automated Supply Aggregation**
+    - Scrapers for public sources
+    - AI agents reaching owners via WhatsApp
+    - Semi-automated listing creation
+    - Light verification layer
+2. **Visit Scheduling**
+    - Book site visits directly from listings
+    - Availability coordination
+3. **Short-Term Booking**
+    - Daily or multi-day bookings
+    - Clear pricing and availability
+4. **User Accounts**
+    - Authentication
+    - Saved listings
+    - Visit & booking history
+5. **Payments**
+    - Reservation fees
+    - Short-term bookings
+    - Long-term deposits
+    - Platform fee capture
+6. **Design & UX**
+    - Catalogue-first experience
+    - Strong filters (location, size, use case, duration)
+    - Mobile-first
+
+---
+
+## Team & Budget
+
+**Team (Lean by design)**
+
+- **1 AI Engineer**
+    - Aggregation, agents, automation
+    - 25,000 SAR / month
+- **1 BD Analyst**
+    - Verification, outreach, ops support
+    - 7,000 SAR / month
+
+**Total**
+
+- 32,000 SAR / month
+- **96,000 SAR total (3 months)**
+
+---
+
+## Success Metrics (Non-Negotiable)
+
+### Supply
+
+- **20 verified listings per week**
+- **Per category**
+- Sustained for **4 consecutive weeks**
+
+> Previously: ~20 listings per month total at peak
+> 
+
+---
+
+### Demand
+
+- **200 unique users per day**
+- Sustained for **30 days**
+
+> Previously: peak was ~94/day
+> 
+
+---
+
+### Revenue Validation
+
+- **10 real transactions**
+- Average transaction value: **200,000 SAR**
+- Platform take: **5%**
+- **Target revenue: 100,000 SAR**
+
+---
+
+## What We’re Testing
+
+By the end of 3 months, we should have clear answers to:
+
+1. Can AI unlock commercial real estate supply at scale?
+2. Do users treat Sirdab as a discovery destination?
+3. Will people transact through us?
+4. Is this a standalone marketplace opportunity?
+
+---
+
+## Why This Matters (Even If It Fails)
+
+Even in the downside case, we walk away with:
+
+- A strong SEO and content moat
+- Reusable AI aggregation infrastructure
+- Deep insight into commercial real estate demand
+- Optionality to integrate with Sirdab’s core logistics platform
+
+In the upside case:
+
+- This becomes the **default catalogue for commercial real estate**
+- High-value transactions
+- Strong strategic leverage for Sirdab long-term
