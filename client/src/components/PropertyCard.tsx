@@ -1,9 +1,10 @@
 import { Link } from "wouter";
+import { useTranslation } from "react-i18next";
 import { MapPin, Ruler, Heart, CheckCircle, Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { type Property, categoryLabels, type PropertyCategory } from "@shared/schema";
+import { type Property, type PropertyCategory } from "@shared/schema";
 
 interface PropertyCardProps {
   property: Property;
@@ -12,16 +13,14 @@ interface PropertyCardProps {
 }
 
 export function PropertyCard({ property, isSaved = false, onToggleSave }: PropertyCardProps) {
-  const formattedPrice = new Intl.NumberFormat("en-SA", {
+  const { t, i18n } = useTranslation();
+  const isArabic = i18n.language === 'ar';
+  
+  const formattedPrice = new Intl.NumberFormat(isArabic ? "ar-SA" : "en-SA", {
     maximumFractionDigits: 0,
   }).format(property.price);
 
-  const priceUnitLabels: Record<string, string> = {
-    day: "/day",
-    month: "/month",
-    year: "/year",
-  };
-  const priceLabel = priceUnitLabels[property.priceUnit] || "/month";
+  const priceLabel = t('common.perMonth');
 
   return (
     <Card className="group overflow-hidden hover-elevate" data-testid={`card-property-${property.id}`}>
@@ -31,24 +30,24 @@ export function PropertyCard({ property, isSaved = false, onToggleSave }: Proper
           alt={property.title}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
-        <div className="absolute top-3 left-3">
+        <div className="absolute top-3 start-3">
           <Badge variant="secondary" className="bg-primary text-primary-foreground font-semibold px-3 py-1">
-            {formattedPrice} SR
-            <span className="opacity-80 font-normal ml-1">{priceLabel}</span>
+            {formattedPrice} {t('property.sar')}
+            <span className="opacity-80 font-normal ms-1">{priceLabel}</span>
           </Badge>
         </div>
         {property.isVerified && (
-          <div className="absolute top-3 right-12">
+          <div className="absolute top-3 end-12">
             <Badge variant="secondary" className="bg-background/90 backdrop-blur-sm gap-1">
               <CheckCircle className="h-3 w-3 text-green-600" />
-              Verified
+              {t('property.verified')}
             </Badge>
           </div>
         )}
         <Button
           variant="ghost"
           size="icon"
-          className={`absolute top-2 right-2 bg-background/80 backdrop-blur-sm ${
+          className={`absolute top-2 end-2 bg-background/80 backdrop-blur-sm ${
             isSaved ? "text-red-500" : ""
           }`}
           onClick={(e) => {
@@ -74,10 +73,10 @@ export function PropertyCard({ property, isSaved = false, onToggleSave }: Proper
         <div className="flex flex-wrap gap-2 mb-4">
           <Badge variant="outline" className="gap-1">
             <Ruler className="h-3 w-3" />
-            {property.size} sqm
+            {property.size} {t('common.sqm')}
           </Badge>
           <Badge variant="outline">
-            {categoryLabels[property.category as PropertyCategory]}
+            {t(`categories.${property.category === 'storefront-long' ? 'storefrontLong' : property.category === 'storefront-short' ? 'storefrontShort' : property.category}`)}
           </Badge>
           {property.subType && (
             <Badge variant="outline" className="text-muted-foreground">
@@ -88,7 +87,7 @@ export function PropertyCard({ property, isSaved = false, onToggleSave }: Proper
         <div className="flex gap-2">
           <Link href={`/property/${property.id}`} className="flex-1">
             <Button variant="outline" className="w-full" data-testid={`button-view-${property.id}`}>
-              View Details
+              {t('common.viewDetails')}
             </Button>
           </Link>
           <Link href={`/property/${property.id}?action=visit`}>

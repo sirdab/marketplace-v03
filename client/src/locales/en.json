@@ -1,0 +1,87 @@
+{
+  "common": {
+    "search": "Search",
+    "filter": "Filter",
+    "viewAll": "View All",
+    "viewDetails": "View Details",
+    "book": "Book",
+    "scheduleVisit": "Schedule Visit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "loading": "Loading...",
+    "noResults": "No results found",
+    "perMonth": "/month",
+    "sqm": "sqm"
+  },
+  "nav": {
+    "home": "Home",
+    "properties": "Properties",
+    "dashboard": "Dashboard",
+    "login": "Login",
+    "register": "Register"
+  },
+  "hero": {
+    "title": "Sirdab Marketplace",
+    "subtitle": "Your integrated logistics solution. Browse warehouses, workshops, storage units, and commercial spaces for rent. Clear pricing, real photos, and instant visit booking.",
+    "searchPlaceholder": "Search by location or keyword...",
+    "allCategories": "All Categories",
+    "verifiedListings": "500+ Verified Listings",
+    "instantBooking": "Instant Visit Booking",
+    "trustedSMEs": "Trusted by 1000+ SMEs"
+  },
+  "categories": {
+    "title": "Browse by Category",
+    "subtitle": "Find the perfect commercial space for your business needs",
+    "warehouse": "Warehouse",
+    "workshop": "Workshop",
+    "storage": "Storage",
+    "storefrontLong": "Storefront (Long-term)",
+    "storefrontShort": "Storefront (Short-term)"
+  },
+  "featured": {
+    "title": "Featured Properties",
+    "subtitle": "Handpicked commercial spaces with verified listings and competitive pricing"
+  },
+  "value": {
+    "title": "Why Choose Sirdab Marketplace?",
+    "subtitle": "We provide the most comprehensive commercial real estate platform in Saudi Arabia",
+    "verifiedTitle": "Verified Listings",
+    "verifiedDesc": "Every property is verified with real photos and accurate information",
+    "transparentTitle": "Transparent Pricing",
+    "transparentDesc": "No hidden fees. See all costs upfront before you commit",
+    "instantTitle": "Instant Booking",
+    "instantDesc": "Schedule visits and book properties online in minutes"
+  },
+  "cities": {
+    "riyadh": "Riyadh",
+    "jeddah": "Jeddah",
+    "dammam": "Dammam",
+    "alKhobar": "Al Khobar",
+    "alAhsa": "Al Ahsa",
+    "abha": "Abha",
+    "buraydah": "Buraydah",
+    "warehousesIn": "Warehouses in"
+  },
+  "property": {
+    "verified": "Verified",
+    "available": "Available",
+    "details": "Property Details",
+    "location": "Location",
+    "size": "Size",
+    "price": "Price",
+    "amenities": "Amenities",
+    "description": "Description",
+    "bookNow": "Book Now",
+    "scheduleVisit": "Schedule a Visit",
+    "sar": "SR"
+  },
+  "footer": {
+    "poweredBy": "Powered by Sirdab",
+    "rights": "All rights reserved",
+    "about": "About",
+    "contact": "Contact",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy"
+  }
+}

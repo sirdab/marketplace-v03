@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/lib/theme";
+import { useDirection } from "@/hooks/useDirection";
 import Home from "@/pages/home";
 import Properties from "@/pages/properties";
 import PropertyDetail from "@/pages/property-detail";
@@ -25,13 +26,20 @@ function Router() {
   );
 }
 
+function DirectionWrapper({ children }: { children: React.ReactNode }) {
+  useDirection();
+  return <>{children}</>;
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <TooltipProvider>
-          <Toaster />
-          <Router />
+          <DirectionWrapper>
+            <Toaster />
+            <Router />
+          </DirectionWrapper>
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>

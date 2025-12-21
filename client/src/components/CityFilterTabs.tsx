@@ -1,15 +1,16 @@
 import { Link } from "wouter";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { SlidersHorizontal } from "lucide-react";
 
 const cities = [
-  { name: "Riyadh", slug: "riyadh" },
-  { name: "Jeddah", slug: "jeddah" },
-  { name: "Dammam", slug: "dammam" },
-  { name: "Al Khobar", slug: "al-khobar" },
-  { name: "Al Ahsa", slug: "al-ahsa" },
-  { name: "Abha", slug: "abha" },
-  { name: "Buraydah", slug: "buraydah" },
+  { key: "riyadh", slug: "riyadh" },
+  { key: "jeddah", slug: "jeddah" },
+  { key: "dammam", slug: "dammam" },
+  { key: "alKhobar", slug: "al-khobar" },
+  { key: "alAhsa", slug: "al-ahsa" },
+  { key: "abha", slug: "abha" },
+  { key: "buraydah", slug: "buraydah" },
 ];
 
 interface CityFilterTabsProps {
@@ -17,20 +18,22 @@ interface CityFilterTabsProps {
 }
 
 export function CityFilterTabs({ selectedCity }: CityFilterTabsProps) {
+  const { t } = useTranslation();
+  
   return (
     <section className="py-6 border-b bg-background">
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 overflow-x-auto pb-2 -mb-2 flex-1">
             {cities.map((city) => (
-              <Link key={city.slug} href={`/properties?city=${city.name}`}>
+              <Link key={city.slug} href={`/properties?city=${t(`cities.${city.key}`)}`}>
                 <Button
-                  variant={selectedCity === city.name ? "secondary" : "ghost"}
+                  variant={selectedCity === t(`cities.${city.key}`) ? "secondary" : "ghost"}
                   size="sm"
                   className="shrink-0"
                   data-testid={`button-city-${city.slug}`}
                 >
-                  Warehouses in {city.name}
+                  {t('cities.warehousesIn')} {t(`cities.${city.key}`)}
                 </Button>
               </Link>
             ))}

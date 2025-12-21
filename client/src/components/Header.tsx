@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
+import { useTranslation } from "react-i18next";
 import { Search, Menu, X, Heart, User, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "./ThemeToggle";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +20,7 @@ interface HeaderProps {
 }
 
 export function Header({ onSearch, searchQuery = "" }: HeaderProps) {
+  const { t } = useTranslation();
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [localSearch, setLocalSearch] = useState(searchQuery);
@@ -101,6 +104,7 @@ export function Header({ onSearch, searchQuery = "" }: HeaderProps) {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+            <LanguageSwitcher />
             <ThemeToggle />
           </nav>
 
