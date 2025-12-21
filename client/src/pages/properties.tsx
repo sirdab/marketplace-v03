@@ -1,13 +1,17 @@
 import { useState, useMemo } from "react";
 import { useSearch } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { Header } from "@/components/Header";
 import { CategoryTabs } from "@/components/CategoryTabs";
 import { FilterSidebar } from "@/components/FilterSidebar";
 import { PropertyGrid } from "@/components/PropertyGrid";
+import { PropertyMap } from "@/components/PropertyMap";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -15,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LayoutGrid, List, X } from "lucide-react";
+import { Map, X } from "lucide-react";
 import {
   type Property,
   type PropertyCategory,
@@ -25,6 +29,7 @@ import {
 type SortOption = "newest" | "price-low" | "price-high" | "size";
 
 export default function Properties() {
+  const { t } = useTranslation();
   const searchString = useSearch();
   const params = new URLSearchParams(searchString);
   
@@ -38,13 +43,14 @@ export default function Properties() {
     isVerified: initialVerified || undefined,
   });
   const [sortBy, setSortBy] = useState<SortOption>("newest");
+  const [showMap, setShowMap] = useState(false);
 
   const { data: properties = [], isLoading } = useQuery<Property[]>({
     queryKey: ["/api/properties"],
   });
 
   const cities = useMemo(() => {
-    const uniqueCities = [...new Set(properties.map((p) => p.city))];
+    const uniqueCities = Array.from(new Set(properties.map((p) => p.city)));
     return uniqueCities.sort();
   }, [properties]);
 
@@ -153,18 +159,29 @@ export default function Properties() {
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4">
               <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
                 <SelectTrigger className="w-40" data-testid="select-sort">
-                  <SelectValue placeholder="Sort by" />
+                  <SelectValue placeholder={t("properties.sortBy")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="newest">Newest</SelectItem>
-                  <SelectItem value="price-low">Price: Low to High</SelectItem>
-                  <SelectItem value="price-high">Price: High to Low</SelectItem>
-                  <SelectItem value="size">Size</SelectItem>
+                  <SelectItem value="newest">{t("properties.newest")}</SelectItem>
+                  <SelectItem value="price-low">{t("properties.priceLowToHigh")}</SelectItem>
+                  <SelectItem value="price-high">{t("properties.priceHighToLow")}</SelectItem>
+                  <SelectItem value="size">{t("properties.size")}</SelectItem>
                 </SelectContent>
               </Select>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="show-map" className="text-sm text-muted-foreground whitespace-nowrap">
+                  {t("properties.showMap")}
+                </Label>
+                <Switch
+                  id="show-map"
+                  checked={showMap}
+                  onCheckedChange={setShowMap}
+                  data-testid="switch-show-map"
+                />
+              </div>
             </div>
           </div>
 
@@ -234,7 +251,13 @@ export default function Properties() {
             />
             
             <div className="flex-1">
-              <PropertyGrid properties={filteredProperties} isLoading={isLoading} />
+              {showMap ? (
+                <div className="h-[600px]">
+                  <PropertyMap properties={filteredProperties} />
+                </div>
+              ) : (
+                <PropertyGrid properties={filteredProperties} isLoading={isLoading} />
+              )}
             </div>
           </div>
         </div>

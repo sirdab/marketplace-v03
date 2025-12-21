@@ -81,6 +81,15 @@
     "scheduleVisit": "Schedule a Visit",
     "sar": "SR"
   },
+  "properties": {
+    "sortBy": "Sort by",
+    "newest": "Newest",
+    "priceLowToHigh": "Price: Low to High",
+    "priceHighToLow": "Price: High to Low",
+    "size": "Size",
+    "showMap": "Show Map",
+    "available": "properties available"
+  },
   "footer": {
     "poweredBy": "Powered by Sirdab",
     "rights": "All rights reserved",

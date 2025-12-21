@@ -81,6 +81,15 @@
     "scheduleVisit": "جدولة زيارة",
     "sar": "ر.س"
   },
+  "properties": {
+    "sortBy": "ترتيب حسب",
+    "newest": "الأحدث",
+    "priceLowToHigh": "السعر: من الأقل للأعلى",
+    "priceHighToLow": "السعر: من الأعلى للأقل",
+    "size": "المساحة",
+    "showMap": "عرض الخريطة",
+    "available": "عقارات متاحة"
+  },
   "footer": {
     "poweredBy": "بدعم من سرداب",
     "rights": "جميع الحقوق محفوظة",
