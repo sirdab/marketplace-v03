@@ -14,11 +14,20 @@
 ## Typography
 
 **Font Stack**: Google Fonts
-- **Primary**: Inter (UI, body text, data)
+- **Primary**: Rubik (UI, body text, data) - matching Sirdab marketplace branding
   - Regular (400): Body text, descriptions
   - Medium (500): Labels, secondary headings
   - Semibold (600): Card titles, CTAs, primary headings
   - Bold (700): Page headers, hero text
+
+## Brand Colors
+
+**Primary Palette**: Sirdab Teal
+- Primary: #05999E (HSL 181 95% 32%) - Main brand color, CTAs, active states
+- Primary Foreground: White (#FFFFFF)
+- Accent: #1F2937 (Dark gray) - Secondary text, navigation
+- Background: #FFFFFF (White)
+- Text Primary: #0C0A09 (Near black)
 
 **Hierarchy**:
 - Hero/H1: text-4xl md:text-5xl lg:text-6xl, font-bold

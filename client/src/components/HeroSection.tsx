@@ -45,13 +45,10 @@ export function HeroSection() {
       
       <div className="relative z-10 max-w-5xl mx-auto px-4 md:px-6 lg:px-8 text-center">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 md:mb-6">
-          Find Your Perfect
-          <br />
-          <span className="text-primary-foreground">Commercial Space</span>
+          Sirdab Marketplace
         </h1>
         <p className="text-lg md:text-xl text-white/90 mb-8 md:mb-10 max-w-2xl mx-auto">
-          The unified catalogue for warehouses, workshops, storage, and storefronts.
-          Clear pricing. Real photos. Book visits instantly.
+          Your integrated logistics solution. Browse warehouses, workshops, storage units, and commercial spaces for rent. Clear pricing, real photos, and instant visit booking.
         </p>
 
         <form
