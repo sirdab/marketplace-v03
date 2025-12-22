@@ -88,6 +88,20 @@
     "secureTitle": "Secure Transactions",
     "secureDesc": "Protected payments and clear contracts. Your deposits and payments are always secure."
   },
+  "homeCategoryBar": {
+    "warehouses": "Warehouses",
+    "workshops": "Workshops",
+    "selfStorage": "Self-Storage",
+    "longTermStorefronts": "Long-Term Storefronts",
+    "all": "All",
+    "listYourSpace": "List your space",
+    "warehousesPlural": "Warehouses",
+    "workshopsPlural": "Workshops",
+    "selfStoragePlural": "Self-Storage",
+    "longTermStorefrontsPlural": "Long-Term Storefronts",
+    "allProperties": "Properties",
+    "in": "in"
+  },
   "cities": {
     "riyadh": "Riyadh",
     "jeddah": "Jeddah",

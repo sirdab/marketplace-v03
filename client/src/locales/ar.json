@@ -88,6 +88,20 @@
     "secureTitle": "معاملات آمنة",
     "secureDesc": "مدفوعات محمية وعقود واضحة. ودائعك ومدفوعاتك آمنة دائماً."
   },
+  "homeCategoryBar": {
+    "warehouses": "مستودعات",
+    "workshops": "ورش",
+    "selfStorage": "وحدات تخزين ذاتي",
+    "longTermStorefronts": "واجهات محلات",
+    "all": "الكل",
+    "listYourSpace": "شارك عقارك",
+    "warehousesPlural": "مستودعات",
+    "workshopsPlural": "ورش",
+    "selfStoragePlural": "وحدات تخزين ذاتي",
+    "longTermStorefrontsPlural": "واجهات محلات",
+    "allProperties": "عقارات",
+    "in": "في"
+  },
   "cities": {
     "riyadh": "الرياض",
     "jeddah": "جدة",
