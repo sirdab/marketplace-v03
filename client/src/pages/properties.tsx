@@ -173,7 +173,7 @@ export default function Properties() {
               <div>
                 <h1 className="text-2xl md:text-3xl font-semibold">
                   {filters.category
-                    ? t(`categories.${filters.category === 'storefront-long' ? 'storefrontLong' : filters.category === 'storefront-short' ? 'storefrontShort' : filters.category}`)
+                    ? t(`categories.${filters.category === 'storefront-long' ? 'storefrontLong' : filters.category}`)
                     : t("properties.title")}
                 </h1>
                 <p className="text-muted-foreground mt-1">

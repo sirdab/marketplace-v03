@@ -1,4 +1,4 @@
-import { Warehouse, Wrench, Package, Store, Sparkles } from "lucide-react";
+import { Warehouse, Wrench, Package, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { type PropertyCategory, categoryLabels } from "@shared/schema";
 
@@ -7,7 +7,6 @@ const categoryIcons: Record<PropertyCategory, React.ReactNode> = {
   "workshop": <Wrench className="h-4 w-4" />,
   "storage": <Package className="h-4 w-4" />,
   "storefront-long": <Store className="h-4 w-4" />,
-  "storefront-short": <Sparkles className="h-4 w-4" />,
 };
 
 const categories: PropertyCategory[] = [
@@ -15,7 +14,6 @@ const categories: PropertyCategory[] = [
   "workshop", 
   "storage",
   "storefront-long",
-  "storefront-short",
 ];
 
 interface CategoryTabsProps {

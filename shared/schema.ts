@@ -32,14 +32,13 @@ export const purposeLabels: Record<PropertyPurpose, string> = {
 };
 
 // Property Categories
-export type PropertyCategory = "warehouse" | "workshop" | "storage" | "storefront-long" | "storefront-short";
+export type PropertyCategory = "warehouse" | "workshop" | "storage" | "storefront-long";
 
 export const categoryLabels: Record<PropertyCategory, string> = {
   "warehouse": "Warehouses",
   "workshop": "Workshops",
   "storage": "Self-Storage",
   "storefront-long": "Long-Term Storefronts",
-  "storefront-short": "Short-Term Storefronts",
 };
 
 export const categoryDescriptions: Record<PropertyCategory, string> = {
@@ -47,7 +46,6 @@ export const categoryDescriptions: Record<PropertyCategory, string> = {
   "workshop": "Auto, manufacturing & light industrial",
   "storage": "SME inventory & personal storage",
   "storefront-long": "Showrooms, retail & service spaces",
-  "storefront-short": "Pop-ups, events & brand activations",
 };
 
 // Property sub-types
@@ -56,7 +54,6 @@ export const propertySubTypes: Record<PropertyCategory, string[]> = {
   "workshop": ["Auto Workshop", "Light Manufacturing", "Carpentry / Metal", "Small Industrial"],
   "storage": ["SME Inventory", "Personal Storage", "Overflow / Seasonal"],
   "storefront-long": ["Dark Store", "Showroom", "SME Retail", "Service Business"],
-  "storefront-short": ["Event Pop-up", "Temporary Retail", "Exhibition", "Brand Activation"],
 };
 
 // Properties table

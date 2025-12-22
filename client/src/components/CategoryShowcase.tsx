@@ -40,13 +40,6 @@ const categoryData: {
     image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&q=80",
     count: 67,
   },
-  {
-    category: "storefront-short",
-    key: "storefrontShort",
-    icon: <Sparkles className="h-6 w-6" />,
-    image: "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=600&q=80",
-    count: 43,
-  },
 ];
 
 export function CategoryShowcase() {
