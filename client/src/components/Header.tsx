@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useSearch } from "wouter";
 import { useTranslation } from "react-i18next";
-import { Search, Menu, X, Heart, User, Building2 } from "lucide-react";
+import { Search, Menu, X, Heart, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { PurposeFilter } from "./PurposeFilter";
 import { type PropertyPurpose } from "@shared/schema";
+import logoPath from "@assets/Sirdab_Marketplace_2.0_1766388879292.png";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -65,8 +66,7 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2 shrink-0">
-            <Building2 className="h-7 w-7 text-primary" />
-            <span className="font-semibold text-xl hidden sm:inline">Sirdab</span>
+            <img src={logoPath} alt="Sirdab" className="h-10 w-auto" />
           </Link>
 
           {!isHome && (
@@ -97,8 +97,7 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
             <Link href="/list-property">
               <Button
                 variant="outline"
-                className="mx-2"
-                style={{ backgroundColor: '#089c9f', color: '#ffffff', borderColor: '#089c9f' }}
+                className="mx-2 bg-[#089c9f] text-[#ffffff] hover:bg-[#067e81] hover:text-[#ffffff] border-none"
                 data-testid="button-list-your-space-nav"
               >
                 {t("homeCategoryBar.listYourSpace")}
@@ -196,7 +195,7 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
                 </Button>
               </Link>
               <Link href="/list-property" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="outline" className="w-full justify-start mt-2">
+                <Button variant="outline" className="w-full justify-start mt-2 bg-[#089c9f] text-[#ffffff] hover:bg-[#067e81] hover:text-[#ffffff] border-none">
                   {t("homeCategoryBar.listYourSpace")}
                 </Button>
               </Link>
