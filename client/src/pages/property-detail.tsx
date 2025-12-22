@@ -49,7 +49,6 @@ export default function PropertyDetail() {
     "workshop": "workshop",
     "storage": "storage",
     "storefront-long": "storefrontLong",
-    "storefront-short": "storefrontShort",
   };
 
   const { data: property, isLoading } = useQuery<Property>({
@@ -162,40 +161,34 @@ export default function PropertyDetail() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6">
-          <Link href="/properties" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">
+        <div className="max-w-7xl mx-auto px-3 md:px-6 lg:px-8 py-4 md:py-6">
+          <Link href="/properties" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-4 md:mb-6 text-sm md:text-base">
             <ArrowLeft className="h-4 w-4" />
             {t("property.backToProperties")}
           </Link>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-6">
-              <div className="relative aspect-video rounded-lg overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
+            <div className="lg:col-span-2 space-y-4 md:space-y-6">
+              <div className="relative aspect-[4/3] md:aspect-video rounded-lg overflow-hidden">
                 <img
                   src={property.imageUrl}
                   alt={property.title}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute top-4 start-4 flex gap-2">
-                  <Badge variant="secondary" className="bg-background/90 backdrop-blur-sm font-semibold text-lg px-3 py-1">
-                    {formattedPrice}
-                    <span className="text-muted-foreground font-normal text-sm">{priceLabel}</span>
-                  </Badge>
-                </div>
                 {property.isVerified && (
                   <Badge
                     variant="secondary"
-                    className="absolute top-4 end-16 bg-background/90 backdrop-blur-sm gap-1"
+                    className="absolute top-3 start-3 bg-background/90 backdrop-blur-sm gap-1"
                   >
                     <CheckCircle className="h-3.5 w-3.5 text-green-600" />
                     {t("property.verified")}
                   </Badge>
                 )}
-                <div className="absolute top-4 end-4 flex gap-2">
+                <div className="absolute top-3 end-3 flex gap-2">
                   <Button
                     variant="secondary"
                     size="icon"
-                    className="bg-background/90 backdrop-blur-sm"
+                    className="bg-background/90 backdrop-blur-sm h-8 w-8 md:h-9 md:w-9"
                     onClick={() => setIsSaved(!isSaved)}
                     data-testid="button-save-property"
                   >
@@ -205,23 +198,27 @@ export default function PropertyDetail() {
               </div>
 
               <div>
-                <h1 className="text-3xl md:text-4xl font-semibold mb-2" data-testid="text-property-title">
+                <p className="font-bold text-xl md:text-2xl lg:text-3xl mb-1">
+                  {formattedPrice}
+                  <span className="text-muted-foreground font-normal text-sm md:text-base ms-2">{priceLabel}</span>
+                </p>
+                <h1 className="text-lg md:text-xl lg:text-2xl font-semibold mb-2" data-testid="text-property-title">
                   {property.title}
                 </h1>
-                <div className="flex flex-wrap items-center gap-4 text-muted-foreground">
+                <div className="flex flex-wrap items-center gap-2 md:gap-4 text-muted-foreground text-sm md:text-base">
                   <div className="flex items-center gap-1">
-                    <MapPin className="h-4 w-4" />
+                    <MapPin className="h-3.5 w-3.5 md:h-4 md:w-4" />
                     <span>{property.district}, {property.city}</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Ruler className="h-4 w-4" />
+                    <Ruler className="h-3.5 w-3.5 md:h-4 md:w-4" />
                     <span>{property.size} {t("common.sqm")}</span>
                   </div>
-                  <Badge variant="outline">
+                  <Badge variant="outline" className="text-xs md:text-sm">
                     {t(`categories.${categoryKey}`)}
                   </Badge>
                   {property.subType && (
-                    <Badge variant="outline">{property.subType}</Badge>
+                    <Badge variant="outline" className="text-xs md:text-sm">{property.subType}</Badge>
                   )}
                 </div>
               </div>
@@ -229,8 +226,8 @@ export default function PropertyDetail() {
               <Separator />
 
               <div>
-                <h2 className="text-xl font-semibold mb-3">{t("property.description")}</h2>
-                <p className="text-muted-foreground leading-relaxed">
+                <h2 className="text-base md:text-xl font-semibold mb-2 md:mb-3">{t("property.description")}</h2>
+                <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
                   {property.description}
                 </p>
               </div>
@@ -239,10 +236,10 @@ export default function PropertyDetail() {
                 <>
                   <Separator />
                   <div>
-                    <h2 className="text-xl font-semibold mb-3">{t("property.amenities")}</h2>
-                    <div className="flex flex-wrap gap-2">
+                    <h2 className="text-base md:text-xl font-semibold mb-2 md:mb-3">{t("property.amenities")}</h2>
+                    <div className="flex flex-wrap gap-1.5 md:gap-2">
                       {property.amenities.map((amenity, i) => (
-                        <Badge key={i} variant="secondary">
+                        <Badge key={i} variant="secondary" className="text-xs md:text-sm">
                           {amenity}
                         </Badge>
                       ))}
@@ -254,14 +251,14 @@ export default function PropertyDetail() {
               <Separator />
 
               <div>
-                <h2 className="text-xl font-semibold mb-3">{t("property.location")}</h2>
+                <h2 className="text-base md:text-xl font-semibold mb-2 md:mb-3">{t("property.location")}</h2>
                 <Card>
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-3">
-                      <MapPin className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
+                  <CardContent className="p-3 md:p-4">
+                    <div className="flex items-start gap-2 md:gap-3">
+                      <MapPin className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground shrink-0 mt-0.5" />
                       <div>
-                        <p className="font-medium">{property.location}</p>
-                        <p className="text-muted-foreground text-sm">
+                        <p className="font-medium text-sm md:text-base">{property.location}</p>
+                        <p className="text-muted-foreground text-xs md:text-sm">
                           {property.district}, {property.city}
                         </p>
                       </div>

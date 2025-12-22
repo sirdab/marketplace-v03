@@ -15,7 +15,7 @@ const purposes: PropertyPurpose[] = ["buy", "rent", "daily_rent"];
 interface PurposeFilterProps {
   value: PropertyPurpose | undefined;
   onChange: (value: PropertyPurpose | undefined) => void;
-  variant?: "hero" | "header" | "default";
+  variant?: "hero" | "header" | "default" | "mobile";
 }
 
 export function PurposeFilter({ value, onChange, variant = "default" }: PurposeFilterProps) {
@@ -63,6 +63,8 @@ export function PurposeFilter({ value, onChange, variant = "default" }: PurposeF
 
   const buttonClassName = variant === "header"
     ? "h-9 gap-2"
+    : variant === "mobile"
+    ? "h-10 gap-1 rounded-full px-4 shrink-0"
     : "h-10 gap-2";
 
   return (

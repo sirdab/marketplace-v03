@@ -12,17 +12,15 @@ interface PropertyGridProps {
 function PropertySkeleton() {
   return (
     <div className="rounded-md border overflow-hidden">
-      <Skeleton className="aspect-video" />
-      <div className="p-4 space-y-3">
-        <Skeleton className="h-6 w-3/4" />
-        <Skeleton className="h-4 w-1/2" />
+      <Skeleton className="aspect-[4/3] md:aspect-video" />
+      <div className="p-3 md:p-4 space-y-2 md:space-y-3">
+        <Skeleton className="h-5 md:h-6 w-1/2" />
+        <Skeleton className="h-4 w-1/3" />
+        <Skeleton className="h-4 w-3/4" />
+        <Skeleton className="h-3 w-1/2" />
         <div className="flex gap-2">
-          <Skeleton className="h-6 w-20" />
-          <Skeleton className="h-6 w-24" />
-        </div>
-        <div className="flex gap-2">
-          <Skeleton className="h-9 flex-1" />
-          <Skeleton className="h-9 w-9" />
+          <Skeleton className="h-8 md:h-9 flex-1" />
+          <Skeleton className="h-8 md:h-9 w-8 md:w-9" />
         </div>
       </div>
     </div>
@@ -37,7 +35,7 @@ export function PropertyGrid({
 }: PropertyGridProps) {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
         {Array.from({ length: 6 }).map((_, i) => (
           <PropertySkeleton key={i} />
         ))}
@@ -72,7 +70,7 @@ export function PropertyGrid({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="property-grid">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6" data-testid="property-grid">
       {properties.map((property) => (
         <PropertyCard
           key={property.id}

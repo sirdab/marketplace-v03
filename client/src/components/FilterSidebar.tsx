@@ -272,7 +272,7 @@ function FilterContent({
   );
 }
 
-export function FilterSidebar(props: FilterSidebarProps) {
+export function MobileFilterTrigger(props: FilterSidebarProps) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const activeFilterCount = Object.values(props.filters).filter(
@@ -280,41 +280,43 @@ export function FilterSidebar(props: FilterSidebarProps) {
   ).length;
 
   return (
-    <>
-      <aside className="hidden lg:block w-64 shrink-0">
-        <div className="sticky top-20 p-4 border rounded-md bg-card">
-          <FilterContent {...props} />
-        </div>
-      </aside>
-
-      <div className="lg:hidden">
-        <Sheet open={open} onOpenChange={setOpen}>
-          <SheetTrigger asChild>
-            <Button variant="outline" className="gap-2" data-testid="button-open-filters">
-              <Filter className="h-4 w-4" />
-              {t("common.filters")}
-              {activeFilterCount > 0 && (
-                <Badge variant="secondary" className="ms-1">
-                  {activeFilterCount}
-                </Badge>
-              )}
+    <div className="lg:hidden">
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetTrigger asChild>
+          <Button variant="outline" size="sm" className="gap-2" data-testid="button-open-filters">
+            <Filter className="h-4 w-4" />
+            {t("common.filters")}
+            {activeFilterCount > 0 && (
+              <Badge variant="secondary" className="ms-1 text-xs">
+                {activeFilterCount}
+              </Badge>
+            )}
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="w-80">
+          <SheetHeader>
+            <SheetTitle>{t("common.filters")}</SheetTitle>
+          </SheetHeader>
+          <div className="py-4 overflow-y-auto max-h-[calc(100vh-10rem)]">
+            <FilterContent {...props} />
+          </div>
+          <SheetFooter>
+            <Button onClick={() => setOpen(false)} className="w-full">
+              {t("common.applyFilters")}
             </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-80">
-            <SheetHeader>
-              <SheetTitle>{t("common.filters")}</SheetTitle>
-            </SheetHeader>
-            <div className="py-4 overflow-y-auto max-h-[calc(100vh-10rem)]">
-              <FilterContent {...props} />
-            </div>
-            <SheetFooter>
-              <Button onClick={() => setOpen(false)} className="w-full">
-                {t("common.applyFilters")}
-              </Button>
-            </SheetFooter>
-          </SheetContent>
-        </Sheet>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
+    </div>
+  );
+}
+
+export function FilterSidebar(props: FilterSidebarProps) {
+  return (
+    <aside className="hidden lg:block w-64 shrink-0">
+      <div className="sticky top-20 p-4 border rounded-md bg-card">
+        <FilterContent {...props} />
       </div>
-    </>
+    </aside>
   );
 }

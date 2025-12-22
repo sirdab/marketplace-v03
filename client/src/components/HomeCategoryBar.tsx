@@ -24,28 +24,31 @@ export function HomeCategoryBar({ selectedCategory, onCategoryChange }: HomeCate
 
   return (
     <div className="border-b bg-background">
-      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-        <div className="flex items-center justify-center gap-4 py-3">
-          <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-center py-2 md:py-3 overflow-x-auto scrollbar-hide">
+          <div className="flex items-center gap-1 px-3 md:px-6 lg:px-8">
             {categories.map(({ value, icon: Icon, labelKey }) => (
               <Button
                 key={value}
                 variant={selectedCategory === value ? "secondary" : "ghost"}
-                className="gap-2 whitespace-nowrap shrink-0"
+                size="sm"
+                className="gap-1.5 md:gap-2 whitespace-nowrap shrink-0 text-xs md:text-sm h-8 md:h-9 px-2.5 md:px-4"
                 onClick={() => onCategoryChange(value)}
                 data-testid={`button-category-${value}`}
               >
-                <Icon className="h-4 w-4" />
-                {t(labelKey)}
+                <Icon className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                <span className="hidden sm:inline">{t(labelKey)}</span>
+                <span className="sm:hidden">{t(labelKey).split(' ')[0]}</span>
               </Button>
             ))}
             <Button
               variant={selectedCategory === "all" ? "secondary" : "ghost"}
-              className="gap-2 whitespace-nowrap shrink-0"
+              size="sm"
+              className="gap-1.5 md:gap-2 whitespace-nowrap shrink-0 text-xs md:text-sm h-8 md:h-9 px-2.5 md:px-4"
               onClick={() => onCategoryChange("all")}
               data-testid="button-category-all"
             >
-              <LayoutGrid className="h-4 w-4" />
+              <LayoutGrid className="h-3.5 w-3.5 md:h-4 md:w-4" />
               {t("homeCategoryBar.all")}
             </Button>
           </div>
@@ -74,8 +77,8 @@ export function CategoryHeading({ category, city = "riyadh" }: { category: HomeC
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6">
-      <h2 className="text-2xl md:text-3xl font-semibold" data-testid="text-category-heading">
+    <div className="max-w-7xl mx-auto px-3 md:px-6 lg:px-8 py-4 md:py-6">
+      <h2 className="text-lg md:text-2xl lg:text-3xl font-semibold" data-testid="text-category-heading">
         {getCategoryLabel()} {t("homeCategoryBar.in")} {t(`cities.${city}`)}
       </h2>
     </div>

@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { Header } from "@/components/Header";
 import { CategoryTabs } from "@/components/CategoryTabs";
-import { FilterSidebar } from "@/components/FilterSidebar";
+import { FilterSidebar, MobileFilterTrigger } from "@/components/FilterSidebar";
 import { PropertyGrid } from "@/components/PropertyGrid";
 import { PropertyMap } from "@/components/PropertyMap";
 import { Footer } from "@/components/Footer";
@@ -162,39 +162,41 @@ export default function Properties() {
       </div>
 
       <main className="flex-1">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-            <div className="flex items-center gap-4 flex-wrap">
-              <PurposeFilter
-                value={filters.purpose}
-                onChange={(purpose) => setFilters((prev) => ({ ...prev, purpose }))}
-                variant="default"
-              />
+        <div className="max-w-7xl mx-auto px-3 md:px-6 lg:px-8 py-4 md:py-6">
+          <div className="flex flex-col gap-3 md:gap-4 mb-4 md:mb-6">
+            <div className="flex items-center justify-between gap-2">
               <div>
-                <h1 className="text-2xl md:text-3xl font-semibold">
+                <h1 className="text-lg md:text-2xl lg:text-3xl font-semibold">
                   {filters.category
                     ? t(`categories.${filters.category === 'storefront-long' ? 'storefrontLong' : filters.category}`)
                     : t("properties.title")}
                 </h1>
-                <p className="text-muted-foreground mt-1">
+                <p className="text-muted-foreground text-sm md:text-base">
                   {filteredProperties.length} {t("properties.available")}
                 </p>
               </div>
-            </div>
-
-            <div className="flex items-center gap-4 flex-wrap">
-              <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
-                <SelectTrigger className="w-40" data-testid="select-sort">
-                  <SelectValue placeholder={t("properties.sortBy")} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="newest">{t("properties.newest")}</SelectItem>
-                  <SelectItem value="price-low">{t("properties.priceLowToHigh")}</SelectItem>
-                  <SelectItem value="price-high">{t("properties.priceHighToLow")}</SelectItem>
-                  <SelectItem value="size">{t("properties.size")}</SelectItem>
-                </SelectContent>
-              </Select>
               <div className="flex items-center gap-2">
+                <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
+                  <SelectTrigger className="w-28 md:w-40 text-xs md:text-sm" data-testid="select-sort">
+                    <SelectValue placeholder={t("properties.sortBy")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="newest">{t("properties.newest")}</SelectItem>
+                    <SelectItem value="price-low">{t("properties.priceLowToHigh")}</SelectItem>
+                    <SelectItem value="price-high">{t("properties.priceHighToLow")}</SelectItem>
+                    <SelectItem value="size">{t("properties.size")}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2 flex-wrap">
+              <MobileFilterTrigger
+                filters={filters}
+                onFiltersChange={setFilters}
+                cities={cities}
+              />
+              <div className="hidden md:flex items-center gap-2 ms-auto">
                 <Label htmlFor="show-map" className="text-sm text-muted-foreground whitespace-nowrap">
                   {t("properties.showMap")}
                 </Label>
@@ -277,16 +279,16 @@ export default function Properties() {
             </div>
           )}
 
-          <div className="flex gap-6">
+          <div className="flex gap-4 md:gap-6">
             <FilterSidebar
               filters={filters}
               onFiltersChange={setFilters}
               cities={cities}
             />
             
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               {showMap ? (
-                <div className="h-[600px]">
+                <div className="h-[400px] md:h-[600px]">
                   <PropertyMap properties={filteredProperties} />
                 </div>
               ) : (

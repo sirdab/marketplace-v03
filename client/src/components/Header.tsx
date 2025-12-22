@@ -64,7 +64,7 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-        <div className="flex h-20 items-center justify-between gap-4">
+        <div className="flex h-14 md:h-16 items-center justify-between gap-2 md:gap-4">
           <div className="md:hidden">
             <Button
               variant="ghost"
@@ -72,18 +72,18 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               data-testid="button-mobile-menu"
             >
-              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
 
           <Link href="/" className="flex items-center gap-2 shrink-0 md:ms-0 absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0">
-            <img src={logoPath} alt="Sirdab" className="h-12 md:h-14 w-auto" />
+            <img src={logoPath} alt="Sirdab" className="h-8 md:h-12 w-auto" />
           </Link>
 
-          <div className="md:hidden flex items-center gap-2">
+          <div className="md:hidden flex items-center gap-1">
             <Link href="/saved">
               <Button variant="ghost" size="icon" data-testid="link-saved-mobile">
-                <Heart className="h-6 w-6" />
+                <Heart className="h-5 w-5" />
               </Button>
             </Link>
           </div>
@@ -169,6 +169,32 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
             <ThemeToggle />
           </nav>
         </div>
+
+        {!isHome && (
+          <form
+            onSubmit={handleSearchSubmit}
+            className="md:hidden pb-3"
+          >
+            <div className="flex gap-2 items-center">
+              <PurposeFilter
+                value={localPurpose}
+                onChange={handlePurposeChange}
+                variant="mobile"
+              />
+              <div className="relative flex-1">
+                <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder={t('hero.searchPlaceholder')}
+                  value={localSearch}
+                  onChange={(e) => setLocalSearch(e.target.value)}
+                  className="ps-10 pe-4 rounded-full h-10"
+                  data-testid="input-mobile-header-search"
+                />
+              </div>
+            </div>
+          </form>
+        )}
 
         {mobileMenuOpen && (
           <div className="md:hidden py-4 border-t">

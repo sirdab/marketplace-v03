@@ -38,7 +38,7 @@ export default function Home() {
         />
         <CityFilterTabs category={selectedCategory} />
         <CategoryHeading category={selectedCategory} city="riyadh" />
-        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 pb-12">
+        <div className="max-w-7xl mx-auto px-3 md:px-6 lg:px-8 pb-8 md:pb-12">
           <PropertyGrid properties={filteredProperties} isLoading={isLoading} />
         </div>
         <CategoryShowcase />

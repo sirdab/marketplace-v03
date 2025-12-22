@@ -24,24 +24,18 @@ export function PropertyCard({ property, isSaved = false, onToggleSave }: Proper
 
   return (
     <Card className="group overflow-hidden hover-elevate" data-testid={`card-property-${property.id}`}>
-      <div className="relative aspect-video overflow-hidden">
+      <div className="relative aspect-[4/3] md:aspect-video overflow-hidden">
         <img
           src={property.imageUrl}
           alt={property.title}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
-        <div className="absolute top-3 start-3 flex flex-col gap-2">
-          <Badge variant="secondary" className="bg-primary text-primary-foreground font-semibold px-3 py-1">
-            {formattedPrice} {t('property.sar')}
-            <span className="opacity-80 font-normal ms-1">{priceLabel}</span>
+        {property.isVerified && (
+          <Badge variant="secondary" className="absolute top-3 start-3 bg-background/90 backdrop-blur-sm gap-1">
+            <CheckCircle className="h-3 w-3 text-green-600" />
+            {t('property.verified')}
           </Badge>
-          {property.isVerified && (
-            <Badge variant="secondary" className="bg-background/90 backdrop-blur-sm gap-1 w-fit">
-              <CheckCircle className="h-3 w-3 text-green-600" />
-              {t('property.verified')}
-            </Badge>
-          )}
-        </div>
+        )}
         <Button
           variant="ghost"
           size="icon"
@@ -58,33 +52,32 @@ export function PropertyCard({ property, isSaved = false, onToggleSave }: Proper
           <Heart className={`h-4 w-4 ${isSaved ? "fill-current" : ""}`} />
         </Button>
       </div>
-      <CardContent className="p-4">
-        <div className="flex items-start justify-between gap-2 mb-2">
-          <h3 className="font-semibold text-lg line-clamp-1" data-testid={`text-title-${property.id}`}>
-            {property.title}
-          </h3>
+      <CardContent className="p-3 md:p-4">
+        <div className="flex items-center justify-between gap-2 mb-1">
+          <p className="font-bold text-lg md:text-xl text-foreground" data-testid={`text-price-${property.id}`}>
+            {formattedPrice} {t('property.sar')}
+            <span className="text-muted-foreground font-normal text-sm ms-1">{priceLabel}</span>
+          </p>
         </div>
-        <div className="flex items-center gap-1 text-muted-foreground text-sm mb-3">
-          <MapPin className="h-3.5 w-3.5 shrink-0" />
-          <span className="line-clamp-1">{property.district}, {property.city}</span>
-        </div>
-        <div className="flex flex-wrap gap-2 mb-4">
-          <Badge variant="outline" className="gap-1">
-            <Ruler className="h-3 w-3" />
+        <div className="flex items-center gap-3 text-muted-foreground text-sm mb-2">
+          <span className="flex items-center gap-1">
+            <Ruler className="h-3.5 w-3.5" />
             {property.size} {t('common.sqm')}
-          </Badge>
-          <Badge variant="outline">
+          </span>
+          <span className="text-xs px-2 py-0.5 bg-muted rounded">
             {t(`categories.${property.category === 'storefront-long' ? 'storefrontLong' : property.category === 'storefront-short' ? 'storefrontShort' : property.category}`)}
-          </Badge>
-          {property.subType && (
-            <Badge variant="outline" className="text-muted-foreground">
-              {property.subType}
-            </Badge>
-          )}
+          </span>
+        </div>
+        <h3 className="font-medium text-sm md:text-base line-clamp-1 mb-1" data-testid={`text-title-${property.id}`}>
+          {property.title}
+        </h3>
+        <div className="flex items-center gap-1 text-muted-foreground text-xs md:text-sm mb-3">
+          <MapPin className="h-3 w-3 shrink-0" />
+          <span className="line-clamp-1">{property.district}, {property.city}</span>
         </div>
         <div className="flex gap-2">
           <Link href={`/property/${property.id}`} className="flex-1">
-            <Button variant="outline" className="w-full" data-testid={`button-view-${property.id}`}>
+            <Button variant="outline" size="sm" className="w-full text-xs md:text-sm" data-testid={`button-view-${property.id}`}>
               {t('common.viewDetails')}
             </Button>
           </Link>
