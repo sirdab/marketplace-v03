@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
 import { HomeCategoryBar, CategoryHeading } from "@/components/HomeCategoryBar";
+import { CityFilterTabs } from "@/components/CityFilterTabs";
 import { PropertyGrid } from "@/components/PropertyGrid";
 import { CategoryShowcase } from "@/components/CategoryShowcase";
 import { FeaturedProperties } from "@/components/FeaturedProperties";
@@ -35,6 +36,7 @@ export default function Home() {
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
         />
+        <CityFilterTabs category={selectedCategory} />
         <CategoryHeading category={selectedCategory} city="riyadh" />
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 pb-12">
           <PropertyGrid properties={filteredProperties} isLoading={isLoading} />
