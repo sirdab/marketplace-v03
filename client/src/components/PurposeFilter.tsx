@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   Popover,
   PopoverContent,
@@ -38,14 +39,29 @@ export function PurposeFilter({ value, onChange, variant = "default" }: PurposeF
     setOpen(false);
   };
 
-  const handleReset = () => {
-    onChange(undefined);
-    setOpen(false);
-  };
+  if (variant === "hero") {
+    return (
+      <div className="inline-flex bg-white/10 backdrop-blur-md p-1 rounded-full border border-white/20 mb-6">
+        {purposes.map((purpose) => (
+          <button
+            key={purpose}
+            type="button"
+            onClick={() => onChange(purpose)}
+            className={cn(
+              "px-6 py-2 rounded-full text-sm font-medium transition-all",
+              (value === purpose || (!value && purpose === "rent"))
+                ? "bg-white text-primary shadow-sm"
+                : "text-white hover:bg-white/10"
+            )}
+          >
+            {getPurposeLabel(purpose)}
+          </button>
+        ))}
+      </div>
+    );
+  }
 
-  const buttonClassName = variant === "hero"
-    ? "h-12 bg-white/10 border-white/20 text-white gap-2"
-    : variant === "header"
+  const buttonClassName = variant === "header"
     ? "h-9 gap-2"
     : "h-10 gap-2";
 
@@ -82,7 +98,10 @@ export function PurposeFilter({ value, onChange, variant = "default" }: PurposeF
               variant="ghost"
               size="sm"
               className="flex-1"
-              onClick={handleReset}
+              onClick={() => {
+                onChange(undefined);
+                setOpen(false);
+              }}
               data-testid="button-purpose-reset"
             >
               {t("common.reset")}

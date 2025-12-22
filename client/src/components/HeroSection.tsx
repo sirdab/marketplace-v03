@@ -19,7 +19,6 @@ const categories: PropertyCategory[] = [
   "workshop",
   "storage",
   "storefront-long",
-  "storefront-short",
 ];
 
 export function HeroSection() {
@@ -56,30 +55,34 @@ export function HeroSection() {
           {t('hero.subtitle')}
         </p>
 
-        <form
-          onSubmit={handleSearch}
-          className="bg-white/10 backdrop-blur-md rounded-lg p-2 md:p-3 max-w-4xl mx-auto"
-        >
-          <div className="flex flex-col md:flex-row gap-2 md:gap-3">
-            <PurposeFilter
-              value={selectedPurpose}
-              onChange={setSelectedPurpose}
-              variant="hero"
-            />
-            <div className="relative flex-1">
-              <MapPin className="absolute start-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/60" />
+        <div className="max-w-4xl mx-auto">
+          <PurposeFilter
+            value={selectedPurpose}
+            onChange={setSelectedPurpose}
+            variant="hero"
+          />
+
+          <form
+            onSubmit={handleSearch}
+            className="bg-white rounded-full p-2 flex flex-col md:flex-row items-center gap-2 shadow-xl"
+          >
+            <div className="relative flex-1 w-full">
+              <Search className="absolute start-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                 type="text"
                 placeholder={t('hero.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="ps-10 h-12 bg-white/10 border-white/20 text-white placeholder:text-white/60 focus:bg-white/20"
+                className="ps-11 h-12 border-0 bg-transparent focus-visible:ring-0 text-foreground text-lg"
                 data-testid="input-hero-search"
               />
             </div>
+
+            <div className="hidden md:block w-px h-8 bg-border" />
+
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
               <SelectTrigger
-                className="w-full md:w-48 h-12 bg-white/10 border-white/20 text-white"
+                className="w-full md:w-48 h-12 border-0 bg-transparent focus:ring-0 shadow-none text-foreground text-lg"
                 data-testid="select-hero-category"
               >
                 <SelectValue placeholder={t('hero.allCategories')} />
@@ -88,22 +91,22 @@ export function HeroSection() {
                 <SelectItem value="all">{t('hero.allCategories')}</SelectItem>
                 {categories.map((cat) => (
                   <SelectItem key={cat} value={cat}>
-                    {t(`categories.${cat === 'storefront-long' ? 'storefrontLong' : cat === 'storefront-short' ? 'storefrontShort' : cat}`)}
+                    {t(`categories.${cat === 'storefront-long' ? 'storefrontLong' : cat}`)}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+
             <Button
               type="submit"
               size="lg"
-              className="h-12 px-8 gap-2"
+              className="h-12 px-10 rounded-full gap-2 text-lg font-semibold"
               data-testid="button-hero-search"
             >
-              <Search className="h-5 w-5" />
-              <span className="hidden sm:inline">{t('common.search')}</span>
+              {t('common.search')}
             </Button>
-          </div>
-        </form>
+          </form>
+        </div>
 
         <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 mt-8 text-white/80 text-sm">
           <div className="flex items-center gap-2">
