@@ -98,6 +98,7 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
               <Button
                 variant="outline"
                 className="mx-2"
+                style={{ backgroundColor: '#089c9f', color: '#ffffff', borderColor: '#089c9f' }}
                 data-testid="button-list-your-space-nav"
               >
                 {t("homeCategoryBar.listYourSpace")}
