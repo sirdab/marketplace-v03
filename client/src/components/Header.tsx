@@ -94,6 +94,15 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
           )}
 
           <nav className="hidden md:flex items-center gap-1">
+            <Link href="/list-property">
+              <Button
+                variant="outline"
+                className="mx-2"
+                data-testid="button-list-your-space-nav"
+              >
+                {t("homeCategoryBar.listYourSpace")}
+              </Button>
+            </Link>
             <Link href="/properties">
               <Button
                 variant={location.startsWith("/properties") ? "secondary" : "ghost"}
@@ -183,6 +192,11 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
                 <Button variant="ghost" className="w-full justify-start gap-2">
                   <User className="h-4 w-4" />
                   {t('nav.dashboard')}
+                </Button>
+              </Link>
+              <Link href="/list-property" onClick={() => setMobileMenuOpen(false)}>
+                <Button variant="outline" className="w-full justify-start mt-2">
+                  {t("homeCategoryBar.listYourSpace")}
                 </Button>
               </Link>
               <div className="flex items-center justify-between pt-2 border-t mt-2">

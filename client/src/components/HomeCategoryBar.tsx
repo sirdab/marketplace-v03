@@ -21,16 +21,11 @@ const categories: { value: HomeCategoryOption; icon: typeof Warehouse; labelKey:
 
 export function HomeCategoryBar({ selectedCategory, onCategoryChange }: HomeCategoryBarProps) {
   const { t } = useTranslation();
-  const [, setLocation] = useLocation();
-
-  const handleListYourSpace = () => {
-    setLocation("/list-property");
-  };
 
   return (
     <div className="border-b bg-background">
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-4 py-3">
+        <div className="flex items-center justify-center gap-4 py-3">
           <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
             {categories.map(({ value, icon: Icon, labelKey }) => (
               <Button
@@ -54,14 +49,6 @@ export function HomeCategoryBar({ selectedCategory, onCategoryChange }: HomeCate
               {t("homeCategoryBar.all")}
             </Button>
           </div>
-          <Button
-            variant="outline"
-            className="shrink-0 whitespace-nowrap"
-            onClick={handleListYourSpace}
-            data-testid="button-list-your-space"
-          >
-            {t("homeCategoryBar.listYourSpace")}
-          </Button>
         </div>
       </div>
     </div>
