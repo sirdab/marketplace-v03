@@ -64,10 +64,29 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between gap-4">
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <img src={logoPath} alt="Sirdab" className="h-10 w-auto" />
+        <div className="flex h-20 items-center justify-between gap-4">
+          <div className="md:hidden">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              data-testid="button-mobile-menu"
+            >
+              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </Button>
+          </div>
+
+          <Link href="/" className="flex items-center gap-2 shrink-0 md:ms-0 absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0">
+            <img src={logoPath} alt="Sirdab" className="h-12 md:h-14 w-auto" />
           </Link>
+
+          <div className="md:hidden flex items-center gap-2">
+            <Link href="/saved">
+              <Button variant="ghost" size="icon" data-testid="link-saved-mobile">
+                <Heart className="h-6 w-6" />
+              </Button>
+            </Link>
+          </div>
 
           {!isHome && (
             <form
@@ -149,16 +168,6 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
             <LanguageSwitcher />
             <ThemeToggle />
           </nav>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            data-testid="button-mobile-menu"
-          >
-            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </Button>
         </div>
 
         {mobileMenuOpen && (
