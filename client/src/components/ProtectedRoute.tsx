@@ -19,7 +19,8 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   }
 
   if (!user) {
-    const returnUrl = encodeURIComponent(location);
+    const normalizedPath = location.startsWith('/') ? location : `/${location}`;
+    const returnUrl = encodeURIComponent(normalizedPath);
     return <Redirect to={`/auth?returnUrl=${returnUrl}`} />;
   }
 

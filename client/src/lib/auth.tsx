@@ -34,10 +34,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const sendMagicLink = async (email: string, redirectTo?: string) => {
+    let redirectUrl: string;
+    try {
+      const path = redirectTo || '/dashboard';
+      const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+      redirectUrl = new URL(normalizedPath, window.location.origin).toString();
+    } catch {
+      redirectUrl = new URL('/dashboard', window.location.origin).toString();
+    }
+    
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: redirectTo || window.location.origin + '/dashboard',
+        emailRedirectTo: redirectUrl,
       },
     });
     return { error };
