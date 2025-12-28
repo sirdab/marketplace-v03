@@ -7,9 +7,12 @@ Sirdab Marketplace is a commercial real estate catalogue platform focused on the
 The project is built as a full-stack TypeScript application with a React frontend and Express backend, currently using in-memory storage with seed data for MVP demonstration.
 
 ## Current Status
-- MVP complete with 15 seed commercial properties across 5 categories
+- MVP complete with real property listings from Supabase database
 - Core user journeys implemented: browse, filter, view details, schedule visits, create bookings
+- Supabase authentication integrated (login, register, logout)
+- Protected dashboard routes requiring authentication
 - Dark/light theme support
+- Bilingual support (English/Arabic) with RTL layout
 - Responsive design for mobile and desktop
 
 ## User Preferences
@@ -35,14 +38,27 @@ Key pages:
 ### Backend Architecture
 - **Framework**: Express.js with TypeScript
 - **API Design**: RESTful JSON API under /api prefix
+- **Database**: Supabase PostgreSQL (read-only for properties via ads table)
 - **Database ORM**: Drizzle ORM with PostgreSQL dialect
 - **Schema Validation**: Zod with drizzle-zod integration for type-safe schemas
 
 API endpoints handle:
-- Property CRUD and search/filter operations
+- Property read and search/filter operations (GET only - Supabase is source of truth)
 - Visit scheduling
 - Booking management
 - Saved properties (favorites)
+
+### Authentication
+- **Supabase Auth**: Client-side authentication via @supabase/supabase-js
+- **Auth Context**: React context providing user state, signIn, signUp, signOut methods
+- **Protected Routes**: Dashboard routes require authentication, redirect to /auth with returnUrl
+- **Session Persistence**: Supabase handles session tokens and refresh automatically
+
+Key auth files:
+- `client/src/lib/supabase.ts`: Supabase client initialization
+- `client/src/lib/auth.tsx`: AuthProvider context and useAuth hook
+- `client/src/pages/auth.tsx`: Login/register page with useForm + Zod validation
+- `client/src/components/ProtectedRoute.tsx`: Route guard component
 
 ### Data Models
 Core entities defined in shared/schema.ts:

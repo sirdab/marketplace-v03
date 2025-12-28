@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/lib/theme";
 import { AuthProvider } from "@/lib/auth";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { useDirection } from "@/hooks/useDirection";
 import Home from "@/pages/home";
 import Properties from "@/pages/properties";
@@ -13,16 +14,24 @@ import Dashboard from "@/pages/dashboard";
 import AuthPage from "@/pages/auth";
 import NotFound from "@/pages/not-found";
 
+function ProtectedDashboard() {
+  return (
+    <ProtectedRoute>
+      <Dashboard />
+    </ProtectedRoute>
+  );
+}
+
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/properties" component={Properties} />
       <Route path="/property/:id" component={PropertyDetail} />
-      <Route path="/dashboard" component={Dashboard} />
-      <Route path="/bookings" component={Dashboard} />
-      <Route path="/visits" component={Dashboard} />
-      <Route path="/saved" component={Dashboard} />
+      <Route path="/dashboard" component={ProtectedDashboard} />
+      <Route path="/bookings" component={ProtectedDashboard} />
+      <Route path="/visits" component={ProtectedDashboard} />
+      <Route path="/saved" component={ProtectedDashboard} />
       <Route path="/auth" component={AuthPage} />
       <Route component={NotFound} />
     </Switch>

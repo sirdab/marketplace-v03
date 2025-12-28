@@ -1,98 +1,117 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'wouter';
+import { useLocation, useSearch } from 'wouter';
 import { useAuth } from '@/lib/auth';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 
+const loginSchema = z.object({
+  email: z.string().email('Valid email is required'),
+  password: z.string().min(1, 'Password is required'),
+});
+
+const registerSchema = z.object({
+  email: z.string().email('Valid email is required'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+  confirmPassword: z.string().min(1, 'Please confirm your password'),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
+type RegisterFormData = z.infer<typeof registerSchema>;
+
 export default function AuthPage() {
   const { t } = useTranslation();
   const [, navigate] = useLocation();
-  const { signIn, signUp, user } = useAuth();
+  const searchString = useSearch();
+  const { signIn, signUp, user, loading: authLoading } = useAuth();
   const { toast } = useToast();
   
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+
+  const returnUrl = new URLSearchParams(searchString).get('returnUrl') || '/dashboard';
+
+  useEffect(() => {
+    if (user && !authLoading) {
+      navigate(returnUrl);
+    }
+  }, [user, authLoading, navigate, returnUrl]);
+
+  const loginForm = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: '', password: '' },
+  });
+
+  const registerForm = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: { email: '', password: '', confirmPassword: '' },
+  });
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   if (user) {
-    navigate('/dashboard');
     return null;
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      if (isLogin) {
-        const { error } = await signIn(email, password);
-        if (error) {
-          toast({
-            variant: 'destructive',
-            title: t('common.error'),
-            description: t('auth.invalidCredentials'),
-          });
-        } else {
-          toast({
-            title: t('auth.loginSuccess'),
-          });
-          navigate('/dashboard');
-        }
-      } else {
-        if (password.length < 6) {
-          toast({
-            variant: 'destructive',
-            title: t('common.error'),
-            description: t('auth.passwordTooShort'),
-          });
-          setLoading(false);
-          return;
-        }
-        if (password !== confirmPassword) {
-          toast({
-            variant: 'destructive',
-            title: t('common.error'),
-            description: t('auth.passwordsDontMatch'),
-          });
-          setLoading(false);
-          return;
-        }
-
-        const { error } = await signUp(email, password);
-        if (error) {
-          if (error.message.includes('already registered')) {
-            toast({
-              variant: 'destructive',
-              title: t('common.error'),
-              description: t('auth.emailInUse'),
-            });
-          } else {
-            toast({
-              variant: 'destructive',
-              title: t('common.error'),
-              description: error.message,
-            });
-          }
-        } else {
-          toast({
-            title: t('auth.registrationSuccess'),
-          });
-          setIsLogin(true);
-        }
-      }
-    } finally {
-      setLoading(false);
+  const onLoginSubmit = async (data: LoginFormData) => {
+    const { error } = await signIn(data.email, data.password);
+    if (error) {
+      toast({
+        variant: 'destructive',
+        title: t('common.error'),
+        description: t('auth.invalidCredentials'),
+      });
+    } else {
+      toast({ title: t('auth.loginSuccess') });
+      navigate(returnUrl);
     }
+  };
+
+  const onRegisterSubmit = async (data: RegisterFormData) => {
+    const { error } = await signUp(data.email, data.password);
+    if (error) {
+      if (error.message.includes('already registered')) {
+        toast({
+          variant: 'destructive',
+          title: t('common.error'),
+          description: t('auth.emailInUse'),
+        });
+      } else {
+        toast({
+          variant: 'destructive',
+          title: t('common.error'),
+          description: error.message,
+        });
+      }
+    } else {
+      toast({ title: t('auth.registrationSuccess') });
+      setIsLogin(true);
+      registerForm.reset();
+    }
+  };
+
+  const switchMode = () => {
+    setIsLogin(!isLogin);
+    loginForm.reset();
+    registerForm.reset();
   };
 
   return (
@@ -109,88 +128,187 @@ export default function AuthPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">{t('auth.email')}</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="you@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10"
-                    required
-                    data-testid="input-email"
+            {isLogin ? (
+              <Form {...loginForm}>
+                <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
+                  <FormField
+                    control={loginForm.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('auth.email')}</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              type="email"
+                              placeholder="you@example.com"
+                              className="pl-10"
+                              data-testid="input-email"
+                              {...field}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="password">{t('auth.password')}</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="password"
-                    type={showPassword ? 'text' : 'password'}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 pr-10"
-                    required
-                    data-testid="input-password"
+                  
+                  <FormField
+                    control={loginForm.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('auth.password')}</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              type={showPassword ? 'text' : 'password'}
+                              className="pl-10 pr-10"
+                              data-testid="input-password"
+                              {...field}
+                            />
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="absolute right-0 top-0 h-full px-3"
+                              onClick={() => setShowPassword(!showPassword)}
+                              data-testid="button-toggle-password"
+                            >
+                              {showPassword ? (
+                                <EyeOff className="h-4 w-4 text-muted-foreground" />
+                              ) : (
+                                <Eye className="h-4 w-4 text-muted-foreground" />
+                              )}
+                            </Button>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
+
                   <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="absolute right-0 top-0 h-full px-3"
-                    onClick={() => setShowPassword(!showPassword)}
-                    data-testid="button-toggle-password"
+                    type="submit"
+                    className="w-full"
+                    disabled={loginForm.formState.isSubmitting}
+                    data-testid="button-submit-auth"
                   >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-muted-foreground" />
+                    {loginForm.formState.isSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        {t('auth.signingIn')}
+                      </>
                     ) : (
-                      <Eye className="h-4 w-4 text-muted-foreground" />
+                      t('auth.signIn')
                     )}
                   </Button>
-                </div>
-              </div>
+                </form>
+              </Form>
+            ) : (
+              <Form {...registerForm}>
+                <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
+                  <FormField
+                    control={registerForm.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('auth.email')}</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              type="email"
+                              placeholder="you@example.com"
+                              className="pl-10"
+                              data-testid="input-email"
+                              {...field}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={registerForm.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('auth.password')}</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              type={showPassword ? 'text' : 'password'}
+                              className="pl-10 pr-10"
+                              data-testid="input-password"
+                              {...field}
+                            />
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="absolute right-0 top-0 h-full px-3"
+                              onClick={() => setShowPassword(!showPassword)}
+                              data-testid="button-toggle-password"
+                            >
+                              {showPassword ? (
+                                <EyeOff className="h-4 w-4 text-muted-foreground" />
+                              ) : (
+                                <Eye className="h-4 w-4 text-muted-foreground" />
+                              )}
+                            </Button>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-              {!isLogin && (
-                <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">{t('auth.confirmPassword')}</Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="confirmPassword"
-                      type={showPassword ? 'text' : 'password'}
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="pl-10"
-                      required
-                      data-testid="input-confirm-password"
-                    />
-                  </div>
-                </div>
-              )}
+                  <FormField
+                    control={registerForm.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('auth.confirmPassword')}</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              type={showPassword ? 'text' : 'password'}
+                              className="pl-10"
+                              data-testid="input-confirm-password"
+                              {...field}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={loading}
-                data-testid="button-submit-auth"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {isLogin ? t('auth.signingIn') : t('auth.signingUp')}
-                  </>
-                ) : (
-                  isLogin ? t('auth.signIn') : t('auth.signUp')
-                )}
-              </Button>
-            </form>
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={registerForm.formState.isSubmitting}
+                    data-testid="button-submit-auth"
+                  >
+                    {registerForm.formState.isSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        {t('auth.signingUp')}
+                      </>
+                    ) : (
+                      t('auth.signUp')
+                    )}
+                  </Button>
+                </form>
+              </Form>
+            )}
 
             <div className="mt-6 text-center text-sm">
               <span className="text-muted-foreground">
@@ -199,11 +317,7 @@ export default function AuthPage() {
               <button
                 type="button"
                 className="text-primary hover:underline font-semibold"
-                onClick={() => {
-                  setIsLogin(!isLogin);
-                  setPassword('');
-                  setConfirmPassword('');
-                }}
+                onClick={switchMode}
                 data-testid="button-switch-auth-mode"
               >
                 {isLogin ? t('auth.signUp') : t('auth.signIn')}
