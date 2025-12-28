@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useSearch } from "wouter";
 import { useTranslation } from "react-i18next";
-import { Search, Menu, X, Heart, User } from "lucide-react";
+import { Search, Menu, X, Heart, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "./ThemeToggle";
@@ -9,6 +9,8 @@ import { LanguageSwitcher } from "./LanguageSwitcher";
 import { PurposeFilter } from "./PurposeFilter";
 import { type PropertyPurpose } from "@shared/schema";
 import logoPath from "@assets/Sirdab_Marketplace_2.0_1766388879292.png";
+import { useAuth } from "@/lib/auth";
+import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,6 +33,14 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const [localPurpose, setLocalPurpose] = useState<PropertyPurpose | undefined>(purpose);
+  const { user, signOut, loading: authLoading } = useAuth();
+  const { toast } = useToast();
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast({ title: t('auth.logoutSuccess') });
+    setLocation('/');
+  };
 
   useEffect(() => {
     setLocalPurpose(purpose);
@@ -135,36 +145,57 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
                 <Heart className="h-5 w-5" />
               </Button>
             </Link>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" data-testid="button-user-menu">
-                  <User className="h-5 w-5" />
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" data-testid="button-user-menu">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <div className="px-2 py-1.5 text-sm text-muted-foreground truncate">
+                    {user.email}
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard" className="w-full cursor-pointer">
+                      {t('nav.dashboard')}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/bookings" className="w-full cursor-pointer">
+                      {t('nav.myBookings')}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/visits" className="w-full cursor-pointer">
+                      {t('nav.scheduledVisits')}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/saved" className="w-full cursor-pointer">
+                      {t('nav.savedProperties')}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleSignOut}
+                    className="cursor-pointer text-destructive focus:text-destructive"
+                    data-testid="button-logout"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    {t('auth.signOut')}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link href="/auth">
+                <Button variant="ghost" data-testid="button-login">
+                  {t('nav.login')}
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem asChild>
-                  <Link href="/dashboard" className="w-full cursor-pointer">
-                    {t('nav.dashboard')}
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/bookings" className="w-full cursor-pointer">
-                    {t('nav.myBookings')}
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/visits" className="w-full cursor-pointer">
-                    {t('nav.scheduledVisits')}
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/saved" className="w-full cursor-pointer">
-                    {t('nav.savedProperties')}
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              </Link>
+            )}
             <LanguageSwitcher />
             <ThemeToggle />
           </nav>
@@ -223,12 +254,35 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
                   {t('nav.savedProperties')}
                 </Button>
               </Link>
-              <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="ghost" className="w-full justify-start gap-2">
-                  <User className="h-4 w-4" />
-                  {t('nav.dashboard')}
-                </Button>
-              </Link>
+              {user ? (
+                <>
+                  <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start gap-2">
+                      <User className="h-4 w-4" />
+                      {t('nav.dashboard')}
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-2 text-destructive"
+                    onClick={() => {
+                      handleSignOut();
+                      setMobileMenuOpen(false);
+                    }}
+                    data-testid="button-mobile-logout"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    {t('auth.signOut')}
+                  </Button>
+                </>
+              ) : (
+                <Link href="/auth" onClick={() => setMobileMenuOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start gap-2">
+                    <User className="h-4 w-4" />
+                    {t('nav.login')}
+                  </Button>
+                </Link>
+              )}
               <Link href="/list-property" onClick={() => setMobileMenuOpen(false)}>
                 <Button variant="outline" className="w-full justify-start mt-2 bg-[#089c9f] text-[#ffffff] hover:bg-[#067e81] hover:text-[#ffffff] border-none">
                   {t("homeCategoryBar.listYourSpace")}

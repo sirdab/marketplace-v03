@@ -4,11 +4,13 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/lib/theme";
+import { AuthProvider } from "@/lib/auth";
 import { useDirection } from "@/hooks/useDirection";
 import Home from "@/pages/home";
 import Properties from "@/pages/properties";
 import PropertyDetail from "@/pages/property-detail";
 import Dashboard from "@/pages/dashboard";
+import AuthPage from "@/pages/auth";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -21,6 +23,7 @@ function Router() {
       <Route path="/bookings" component={Dashboard} />
       <Route path="/visits" component={Dashboard} />
       <Route path="/saved" component={Dashboard} />
+      <Route path="/auth" component={AuthPage} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -35,12 +38,14 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <TooltipProvider>
-          <DirectionWrapper>
-            <Toaster />
-            <Router />
-          </DirectionWrapper>
-        </TooltipProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <DirectionWrapper>
+              <Toaster />
+              <Router />
+            </DirectionWrapper>
+          </TooltipProvider>
+        </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
