@@ -2,7 +2,6 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import {
-  insertPropertySchema,
   insertVisitSchema,
   insertBookingSchema,
   insertSavedPropertySchema,
@@ -61,45 +60,6 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/properties", async (req, res) => {
-    try {
-      const parsed = insertPropertySchema.safeParse(req.body);
-      if (!parsed.success) {
-        return res.status(400).json({ error: parsed.error.errors });
-      }
-      const property = await storage.createProperty(parsed.data);
-      res.status(201).json(property);
-    } catch (error) {
-      console.error("Error creating property:", error);
-      res.status(500).json({ error: "Failed to create property" });
-    }
-  });
-
-  app.patch("/api/properties/:id", async (req, res) => {
-    try {
-      const property = await storage.updateProperty(req.params.id, req.body);
-      if (!property) {
-        return res.status(404).json({ error: "Property not found" });
-      }
-      res.json(property);
-    } catch (error) {
-      console.error("Error updating property:", error);
-      res.status(500).json({ error: "Failed to update property" });
-    }
-  });
-
-  app.delete("/api/properties/:id", async (req, res) => {
-    try {
-      const deleted = await storage.deleteProperty(req.params.id);
-      if (!deleted) {
-        return res.status(404).json({ error: "Property not found" });
-      }
-      res.status(204).send();
-    } catch (error) {
-      console.error("Error deleting property:", error);
-      res.status(500).json({ error: "Failed to delete property" });
-    }
-  });
 
   // Visits endpoints
   app.get("/api/visits", async (req, res) => {
