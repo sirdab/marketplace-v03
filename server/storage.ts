@@ -132,10 +132,10 @@ export class DatabaseStorage implements IStorage {
         results = results.filter((p) => p.district.toLowerCase() === filters.district!.toLowerCase());
       }
       if (filters.minPrice !== undefined) {
-        results = results.filter((p) => p.price >= filters.minPrice!);
+        results = results.filter((p) => p.annualPrice >= filters.minPrice!);
       }
       if (filters.maxPrice !== undefined) {
-        results = results.filter((p) => p.price <= filters.maxPrice!);
+        results = results.filter((p) => p.annualPrice <= filters.maxPrice!);
       }
       if (filters.minSize !== undefined) {
         results = results.filter((p) => p.size >= filters.minSize!);

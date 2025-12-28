@@ -156,8 +156,9 @@ export interface Property {
   category: PropertyCategory;
   subType: string;
   purpose: PropertyPurpose;
-  price: number;
-  priceUnit: string;
+  price: number; // Display price (converted based on payment term)
+  priceUnit: string; // Display unit: "year", "month", or "day"
+  annualPrice: number; // Raw annual price for filters/sorting
   size: number;
   location: string;
   city: string;
@@ -269,14 +270,15 @@ export function adToProperty(ad: Ad): Property {
   }
 
   // Map payment term to purpose
+  // Note: Database stores prices as yearly amounts
   let purpose: PropertyPurpose = "rent";
-  let priceUnit = "month";
-  const paymentTerm = ad.paymentTerm?.toLowerCase() || "monthly";
+  let priceUnit = "year"; // Default to year since DB stores yearly prices
+  const paymentTerm = ad.paymentTerm?.toLowerCase() || "yearly";
   if (paymentTerm === "daily") {
     purpose = "daily_rent";
     priceUnit = "day";
-  } else if (paymentTerm === "yearly" || paymentTerm === "annual") {
-    priceUnit = "year";
+  } else if (paymentTerm === "monthly") {
+    priceUnit = "month";
   }
 
   // Build amenities from license fields
@@ -294,8 +296,18 @@ export function adToProperty(ad: Ad): Property {
   if (ad.rackingSystem) amenities.push(`Racking: ${ad.rackingSystem}`);
   if (ad.temperatureSettings) amenities.push(`Temp: ${ad.temperatureSettings}`);
 
-  const parsedPrice = parseInt(ad.price, 10);
+  const parsedYearlyPrice = parseInt(ad.price, 10);
   const parsedSize = parseInt(ad.areaInM2 || "0", 10);
+  
+  // Convert yearly price to display price based on payment term
+  let displayPrice = isNaN(parsedYearlyPrice) ? 0 : parsedYearlyPrice;
+  if (paymentTerm === "monthly" && displayPrice > 0) {
+    displayPrice = Math.round(displayPrice / 12);
+  } else if (paymentTerm === "daily" && displayPrice > 0) {
+    displayPrice = Math.round(displayPrice / 365);
+  }
+  
+  const annualPrice = isNaN(parsedYearlyPrice) ? 0 : parsedYearlyPrice;
   
   return {
     id: String(ad.id),
@@ -304,8 +316,9 @@ export function adToProperty(ad: Ad): Property {
     category,
     subType: ad.type || "General",
     purpose,
-    price: isNaN(parsedPrice) ? 0 : parsedPrice,
+    price: displayPrice,
     priceUnit,
+    annualPrice,
     size: isNaN(parsedSize) ? 0 : parsedSize,
     location: ad.address !== "-" ? ad.address : `${ad.district}, ${ad.city}`,
     city: ad.city !== "-" ? ad.city : "Unknown",

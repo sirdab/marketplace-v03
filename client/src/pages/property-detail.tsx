@@ -154,7 +154,11 @@ export default function PropertyDetail() {
     maximumFractionDigits: 0,
   }).format(property.price);
 
-  const priceLabel = property.priceUnit === "day" ? t("common.perDay") : t("common.perMonth");
+  const priceLabel = property.priceUnit === "day" 
+    ? t("common.perDay") 
+    : property.priceUnit === "month" 
+      ? t("common.perMonth") 
+      : t("common.perYear");
   const categoryKey = categoryTranslationKeys[property.category as PropertyCategory];
 
   return (

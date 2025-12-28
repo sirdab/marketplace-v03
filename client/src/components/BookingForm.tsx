@@ -80,10 +80,14 @@ export function BookingForm({ property, onSubmit, isSubmitting }: BookingFormPro
     const days = differenceInDays(watchEndDate, watchStartDate);
     if (days <= 0) return null;
 
-    const isDaily = property.priceUnit === "day";
-    const basePrice = isDaily
-      ? property.price * days
-      : Math.ceil(days / 30) * property.price;
+    let basePrice: number;
+    if (property.priceUnit === "day") {
+      basePrice = property.price * days;
+    } else if (property.priceUnit === "month") {
+      basePrice = Math.ceil(days / 30) * property.price;
+    } else {
+      basePrice = Math.ceil(days / 365) * property.price;
+    }
     
     const platformFee = Math.round(basePrice * 0.05);
     const totalPrice = basePrice + platformFee;

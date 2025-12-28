@@ -138,7 +138,13 @@ export function PropertyMap({ properties, selectedPropertyId, onPropertySelect }
                 <div className="flex items-center justify-between gap-2 mb-2">
                   <Badge variant="secondary" className="text-xs bg-primary text-primary-foreground">
                     {formatPrice(property.price)} {t("property.sar")}
-                    <span className="opacity-80 font-normal ms-1">{t("common.perMonth")}</span>
+                    <span className="opacity-80 font-normal ms-1">
+                      {property.priceUnit === "day" 
+                        ? t("common.perDay") 
+                        : property.priceUnit === "month" 
+                          ? t("common.perMonth") 
+                          : t("common.perYear")}
+                    </span>
                   </Badge>
                   <span className="text-xs text-muted-foreground">
                     {property.size} {t("common.sqm")}
