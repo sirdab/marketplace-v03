@@ -50,14 +50,15 @@ API endpoints handle:
 
 ### Authentication
 - **Supabase Auth**: Client-side authentication via @supabase/supabase-js
-- **Auth Context**: React context providing user state, signIn, signUp, signOut methods
+- **Magic Link**: Passwordless email authentication using signInWithOtp
+- **Auth Context**: React context providing user state, sendMagicLink, signOut methods
 - **Protected Routes**: Dashboard routes require authentication, redirect to /auth with returnUrl
 - **Session Persistence**: Supabase handles session tokens and refresh automatically
 
 Key auth files:
 - `client/src/lib/supabase.ts`: Supabase client initialization
 - `client/src/lib/auth.tsx`: AuthProvider context and useAuth hook
-- `client/src/pages/auth.tsx`: Login/register page with useForm + Zod validation
+- `client/src/pages/auth.tsx`: Magic link login page with email form
 - `client/src/components/ProtectedRoute.tsx`: Route guard component
 
 ### Data Models
