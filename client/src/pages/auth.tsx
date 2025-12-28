@@ -10,36 +10,25 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { Loader2, Mail, CheckCircle } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 
-const loginSchema = z.object({
+const emailSchema = z.object({
   email: z.string().email('Valid email is required'),
-  password: z.string().min(1, 'Password is required'),
 });
 
-const registerSchema = z.object({
-  email: z.string().email('Valid email is required'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  confirmPassword: z.string().min(1, 'Please confirm your password'),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
-
-type LoginFormData = z.infer<typeof loginSchema>;
-type RegisterFormData = z.infer<typeof registerSchema>;
+type EmailFormData = z.infer<typeof emailSchema>;
 
 export default function AuthPage() {
   const { t } = useTranslation();
   const [, navigate] = useLocation();
   const searchString = useSearch();
-  const { signIn, signUp, user, loading: authLoading } = useAuth();
+  const { sendMagicLink, user, loading: authLoading } = useAuth();
   const { toast } = useToast();
   
-  const [isLogin, setIsLogin] = useState(true);
-  const [showPassword, setShowPassword] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
+  const [sentToEmail, setSentToEmail] = useState('');
 
   const returnUrl = new URLSearchParams(searchString).get('returnUrl') || '/dashboard';
 
@@ -49,14 +38,9 @@ export default function AuthPage() {
     }
   }, [user, authLoading, navigate, returnUrl]);
 
-  const loginForm = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: { email: '', password: '' },
-  });
-
-  const registerForm = useForm<RegisterFormData>({
-    resolver: zodResolver(registerSchema),
-    defaultValues: { email: '', password: '', confirmPassword: '' },
+  const form = useForm<EmailFormData>({
+    resolver: zodResolver(emailSchema),
+    defaultValues: { email: '' },
   });
 
   if (authLoading) {
@@ -71,47 +55,20 @@ export default function AuthPage() {
     return null;
   }
 
-  const onLoginSubmit = async (data: LoginFormData) => {
-    const { error } = await signIn(data.email, data.password);
+  const onSubmit = async (data: EmailFormData) => {
+    const redirectTo = window.location.origin + returnUrl;
+    const { error } = await sendMagicLink(data.email, redirectTo);
+    
     if (error) {
       toast({
         variant: 'destructive',
         title: t('common.error'),
-        description: t('auth.invalidCredentials'),
+        description: error.message,
       });
     } else {
-      toast({ title: t('auth.loginSuccess') });
-      navigate(returnUrl);
+      setEmailSent(true);
+      setSentToEmail(data.email);
     }
-  };
-
-  const onRegisterSubmit = async (data: RegisterFormData) => {
-    const { error } = await signUp(data.email, data.password);
-    if (error) {
-      if (error.message.includes('already registered')) {
-        toast({
-          variant: 'destructive',
-          title: t('common.error'),
-          description: t('auth.emailInUse'),
-        });
-      } else {
-        toast({
-          variant: 'destructive',
-          title: t('common.error'),
-          description: error.message,
-        });
-      }
-    } else {
-      toast({ title: t('auth.registrationSuccess') });
-      setIsLogin(true);
-      registerForm.reset();
-    }
-  };
-
-  const switchMode = () => {
-    setIsLogin(!isLogin);
-    loginForm.reset();
-    registerForm.reset();
   };
 
   return (
@@ -121,97 +78,43 @@ export default function AuthPage() {
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl font-bold text-center">
-              {isLogin ? t('auth.welcomeBack') : t('auth.createAccount')}
+              {emailSent ? t('auth.checkEmail') : t('auth.signInTitle')}
             </CardTitle>
             <CardDescription className="text-center">
-              {isLogin ? t('auth.loginSubtitle') : t('auth.registerSubtitle')}
+              {emailSent 
+                ? t('auth.magicLinkSent') 
+                : t('auth.magicLinkDescription')
+              }
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {isLogin ? (
-              <Form {...loginForm}>
-                <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
-                  <FormField
-                    control={loginForm.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t('auth.email')}</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input
-                              type="email"
-                              placeholder="you@example.com"
-                              className="pl-10"
-                              data-testid="input-email"
-                              {...field}
-                            />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={loginForm.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t('auth.password')}</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input
-                              type={showPassword ? 'text' : 'password'}
-                              className="pl-10 pr-10"
-                              data-testid="input-password"
-                              {...field}
-                            />
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon"
-                              className="absolute right-0 top-0 h-full px-3"
-                              onClick={() => setShowPassword(!showPassword)}
-                              data-testid="button-toggle-password"
-                            >
-                              {showPassword ? (
-                                <EyeOff className="h-4 w-4 text-muted-foreground" />
-                              ) : (
-                                <Eye className="h-4 w-4 text-muted-foreground" />
-                              )}
-                            </Button>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={loginForm.formState.isSubmitting}
-                    data-testid="button-submit-auth"
-                  >
-                    {loginForm.formState.isSubmitting ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        {t('auth.signingIn')}
-                      </>
-                    ) : (
-                      t('auth.signIn')
-                    )}
-                  </Button>
-                </form>
-              </Form>
+            {emailSent ? (
+              <div className="text-center space-y-4">
+                <div className="flex justify-center">
+                  <CheckCircle className="h-16 w-16 text-primary" />
+                </div>
+                <p className="text-muted-foreground">
+                  {t('auth.linkSentTo')} <strong>{sentToEmail}</strong>
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {t('auth.checkSpam')}
+                </p>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setEmailSent(false);
+                    form.reset();
+                  }}
+                  data-testid="button-try-different-email"
+                >
+                  {t('auth.tryDifferentEmail')}
+                </Button>
+              </div>
             ) : (
-              <Form {...registerForm}>
-                <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                   <FormField
-                    control={registerForm.control}
+                    control={form.control}
                     name="email"
                     render={({ field }) => (
                       <FormItem>
@@ -232,97 +135,25 @@ export default function AuthPage() {
                       </FormItem>
                     )}
                   />
-                  
-                  <FormField
-                    control={registerForm.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t('auth.password')}</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input
-                              type={showPassword ? 'text' : 'password'}
-                              className="pl-10 pr-10"
-                              data-testid="input-password"
-                              {...field}
-                            />
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon"
-                              className="absolute right-0 top-0 h-full px-3"
-                              onClick={() => setShowPassword(!showPassword)}
-                              data-testid="button-toggle-password"
-                            >
-                              {showPassword ? (
-                                <EyeOff className="h-4 w-4 text-muted-foreground" />
-                              ) : (
-                                <Eye className="h-4 w-4 text-muted-foreground" />
-                              )}
-                            </Button>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={registerForm.control}
-                    name="confirmPassword"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t('auth.confirmPassword')}</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input
-                              type={showPassword ? 'text' : 'password'}
-                              className="pl-10"
-                              data-testid="input-confirm-password"
-                              {...field}
-                            />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
 
                   <Button
                     type="submit"
                     className="w-full"
-                    disabled={registerForm.formState.isSubmitting}
-                    data-testid="button-submit-auth"
+                    disabled={form.formState.isSubmitting}
+                    data-testid="button-send-magic-link"
                   >
-                    {registerForm.formState.isSubmitting ? (
+                    {form.formState.isSubmitting ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        {t('auth.signingUp')}
+                        {t('auth.sendingLink')}
                       </>
                     ) : (
-                      t('auth.signUp')
+                      t('auth.sendMagicLink')
                     )}
                   </Button>
                 </form>
               </Form>
             )}
-
-            <div className="mt-6 text-center text-sm">
-              <span className="text-muted-foreground">
-                {isLogin ? t('auth.noAccount') : t('auth.haveAccount')}
-              </span>{' '}
-              <button
-                type="button"
-                className="text-primary hover:underline font-semibold"
-                onClick={switchMode}
-                data-testid="button-switch-auth-mode"
-              >
-                {isLogin ? t('auth.signUp') : t('auth.signIn')}
-              </button>
-            </div>
           </CardContent>
         </Card>
       </main>
