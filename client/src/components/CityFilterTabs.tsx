@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { SlidersHorizontal } from "lucide-react";
 
-const cities = [
+export const cities = [
   { key: "riyadh", slug: "Riyadh" },
   { key: "jeddah", slug: "Jeddah" },
   { key: "dammam", slug: "Dammam" },
@@ -16,28 +16,17 @@ const cities = [
 interface CityFilterTabsProps {
   selectedCity?: string;
   category?: string;
+  onCityChange?: (city: string | undefined) => void;
 }
 
-export function CityFilterTabs({ selectedCity, category = "warehouse" }: CityFilterTabsProps) {
+export function CityFilterTabs({ selectedCity, category = "warehouse", onCityChange }: CityFilterTabsProps) {
   const { t } = useTranslation();
-  
-  const getCategoryLabel = () => {
-    switch (category) {
-      case "warehouse":
-        return t("homeCategoryBar.warehousesPlural");
-      case "workshop":
-        return t("homeCategoryBar.workshopsPlural");
-      case "storage":
-        return t("homeCategoryBar.selfStoragePlural");
-      case "storefront-long":
-        return t("homeCategoryBar.longTermStorefrontsPlural");
-      case "all":
-      default:
-        return t("homeCategoryBar.allProperties");
+
+  const handleCityClick = (citySlug: string) => {
+    if (onCityChange) {
+      onCityChange(selectedCity === citySlug ? undefined : citySlug);
     }
   };
-
-  const categoryLabel = getCategoryLabel();
 
   return (
     <section className="py-2 md:py-4 border-b bg-background">
@@ -45,16 +34,29 @@ export function CityFilterTabs({ selectedCity, category = "warehouse" }: CityFil
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5 md:gap-2 overflow-x-auto pb-1 -mb-1 flex-1 scrollbar-hide px-3 md:px-6 lg:px-8">
             {cities.map((city) => (
-              <Link key={city.slug} href={`/properties?city=${city.slug}&category=${category}`}>
+              onCityChange ? (
                 <Button
+                  key={city.slug}
                   variant={selectedCity === city.slug ? "secondary" : "outline"}
                   size="sm"
                   className="shrink-0 text-xs md:text-sm h-7 md:h-8 px-2 md:px-3 rounded-full"
+                  onClick={() => handleCityClick(city.slug)}
                   data-testid={`button-city-${city.key}`}
                 >
                   {t(`cities.${city.key}`)}
                 </Button>
-              </Link>
+              ) : (
+                <Link key={city.slug} href={`/properties?city=${city.slug}&category=${category}`}>
+                  <Button
+                    variant={selectedCity === city.slug ? "secondary" : "outline"}
+                    size="sm"
+                    className="shrink-0 text-xs md:text-sm h-7 md:h-8 px-2 md:px-3 rounded-full"
+                    data-testid={`button-city-${city.key}`}
+                  >
+                    {t(`cities.${city.key}`)}
+                  </Button>
+                </Link>
+              )
             ))}
           </div>
           <div className="pe-3 md:pe-6 lg:pe-8 shrink-0">
