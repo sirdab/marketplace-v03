@@ -101,7 +101,7 @@ export function HeroSection() {
             <Button
               type="submit"
               size="lg"
-              className="w-full md:w-auto h-10 md:h-12 px-6 md:px-10 rounded-full gap-2 text-sm md:text-lg font-semibold"
+              className="w-full md:w-auto h-10 md:h-12 px-6 md:px-10 rounded-full gap-2 text-sm md:text-lg font-semibold shadow-lg hover:shadow-xl"
               data-testid="button-hero-search"
             >
               {t('common.search')}

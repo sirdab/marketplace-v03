@@ -72,9 +72,9 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
   const isHome = location === "/";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/80">
+    <header className="sticky top-0 z-50 w-full border-b border-border/30 dark:border-white/10 bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80">
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-        <div className="flex h-14 md:h-16 items-center justify-between gap-2 md:gap-4">
+        <div className="flex h-16 md:h-[4.5rem] items-center justify-between gap-3 md:gap-6">
           <div className="md:hidden">
             <Button
               variant="ghost"
@@ -87,14 +87,14 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
           </div>
 
           <Link href="/" className="flex items-center gap-2 shrink-0 md:ms-0">
-            <img src={logoPath} alt="Sirdab" className="h-8 md:h-10 w-auto" />
+            <img src={logoPath} alt="Sirdab" className="h-9 md:h-11 w-auto" />
           </Link>
 
-          <div className="md:hidden flex items-center gap-1">
+          <div className="md:hidden flex items-center gap-1.5 bg-muted/50 dark:bg-white/5 backdrop-blur-sm rounded-full px-1 py-0.5">
             <Link href="/list-property">
               <Button
                 size="sm"
-                className="bg-[#089c9f] text-white hover:bg-[#067e81] text-xs px-2"
+                className="bg-[#089c9f] text-white hover:bg-[#067e81] text-xs px-3 rounded-full shadow-sm"
                 data-testid="button-list-property-mobile"
               >
                 <Building2 className="h-3.5 w-3.5 me-1" />
@@ -102,7 +102,7 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
               </Button>
             </Link>
             <Link href="/saved">
-              <Button variant="ghost" size="icon" data-testid="link-saved-mobile">
+              <Button variant="ghost" size="icon" className="rounded-full" data-testid="link-saved-mobile">
                 <Heart className="h-5 w-5" />
               </Button>
             </Link>
@@ -132,17 +132,17 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
             </form>
           )}
 
-          <nav className="hidden md:flex items-center gap-2">
+          <nav className="hidden md:flex items-center gap-3">
             <Link href="/list-property">
               <Button
-                className="bg-[#089c9f] text-white hover:bg-[#067e81] font-medium shadow-sm"
+                className="bg-[#089c9f] text-white hover:bg-[#067e81] font-medium shadow-md hover:shadow-lg"
                 data-testid="button-list-your-space-nav"
               >
                 <Building2 className="h-4 w-4 me-2" />
                 {t("homeCategoryBar.listYourSpace")}
               </Button>
             </Link>
-            <div className="w-px h-6 bg-border/60 mx-1" />
+            <div className="w-px h-6 bg-border/40 mx-1" />
             <Link href="/properties">
               <Button
                 variant={location.startsWith("/properties") ? "secondary" : "ghost"}
@@ -207,7 +207,7 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
                 </Button>
               </Link>
             )}
-            <div className="w-px h-6 bg-border/60 mx-1" />
+            <div className="w-px h-6 bg-border/40 mx-1" />
             <LanguageSwitcher />
             <ThemeToggle />
           </nav>
