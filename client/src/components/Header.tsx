@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation, useSearch } from "wouter";
 import { useTranslation } from "react-i18next";
 import { Search, Menu, X, Heart, User, LogOut, Building2 } from "lucide-react";
-import { useDirection } from "@/hooks/useDirection";
+import { useDirection } from "@/hooks/use-direction";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "./ThemeToggle";

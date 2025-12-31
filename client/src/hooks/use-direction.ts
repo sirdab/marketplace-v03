@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Hook to manage document direction (RTL/LTR) based on current language
+ */
 export function useDirection() {
   const { i18n } = useTranslation();
 
