@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { PropertyCard } from "./PropertyCard";
 import { type Property } from "@shared/schema";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -33,6 +34,18 @@ export function PropertyGrid({
   onToggleSave,
   isLoading = false,
 }: PropertyGridProps) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Limit to 4 items on mobile, show all on larger screens
+  const displayProperties = isMobile ? properties.slice(0, 4) : properties;
+
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
@@ -71,7 +84,7 @@ export function PropertyGrid({
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6" data-testid="property-grid">
-      {properties.map((property) => (
+      {displayProperties.map((property) => (
         <PropertyCard
           key={property.id}
           property={property}
