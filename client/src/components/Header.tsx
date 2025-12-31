@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation, useSearch } from "wouter";
 import { useTranslation } from "react-i18next";
 import { Search, Menu, X, Heart, User, LogOut, Building2 } from "lucide-react";
+import { useDirection } from "@/hooks/useDirection";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "./ThemeToggle";
@@ -28,6 +29,8 @@ interface HeaderProps {
 
 export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }: HeaderProps) {
   const { t } = useTranslation();
+  const dir = useDirection();
+  const isRTL = dir === 'rtl';
   const [location, setLocation] = useLocation();
   const searchString = useSearch();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -94,11 +97,11 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
             <Link href="/list-property">
               <Button
                 size="sm"
-                className="bg-[#089c9f] text-white hover:bg-[#067e81] text-xs px-3 rounded-full shadow-sm"
+                className={`bg-[#089c9f] text-white hover:bg-[#067e81] text-xs px-3 rounded-full shadow-sm flex ${isRTL ? 'flex-row-reverse' : ''}`}
                 data-testid="button-list-property-mobile"
               >
-                <Building2 className="h-3.5 w-3.5 me-1" />
-                {t("homeCategoryBar.listYourSpace")}
+                <Building2 className="h-3.5 w-3.5 shrink-0" />
+                <span className={isRTL ? 'ms-1' : 'me-1'}>{t("homeCategoryBar.listYourSpace")}</span>
               </Button>
             </Link>
             <Link href="/saved">
@@ -135,11 +138,11 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
           <nav className="hidden md:flex items-center gap-3">
             <Link href="/list-property">
               <Button
-                className="bg-[#089c9f] text-white hover:bg-[#067e81] font-medium shadow-md hover:shadow-lg"
+                className={`bg-[#089c9f] text-white hover:bg-[#067e81] font-medium shadow-md hover:shadow-lg flex ${isRTL ? 'flex-row-reverse' : ''}`}
                 data-testid="button-list-your-space-nav"
               >
-                <Building2 className="h-4 w-4 me-2" />
-                {t("homeCategoryBar.listYourSpace")}
+                <Building2 className="h-4 w-4 shrink-0" />
+                <span className={isRTL ? 'ms-2' : 'me-2'}>{t("homeCategoryBar.listYourSpace")}</span>
               </Button>
             </Link>
             <div className="w-px h-6 bg-border/40 mx-1" />
