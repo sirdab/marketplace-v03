@@ -33,7 +33,7 @@ export function HomeCategoryBar({ selectedCategory, onCategoryChange }: HomeCate
                 key={value}
                 variant={selectedCategory === value ? "secondary" : "ghost"}
                 size="sm"
-                className={`gap-1.5 md:gap-2 whitespace-nowrap shrink-0 text-xs md:text-sm h-8 md:h-9 px-2.5 md:px-4 flex ${isRTL ? 'flex-row-reverse' : ''}`}
+                className={`gap-1.5 md:gap-2 whitespace-nowrap shrink-0 text-xs h-8 md:h-9 px-2.5 md:px-4 flex ${isRTL ? 'flex-row-reverse' : ''}`}
                 onClick={() => onCategoryChange(value)}
                 data-testid={`button-category-${value}`}
               >
@@ -45,7 +45,7 @@ export function HomeCategoryBar({ selectedCategory, onCategoryChange }: HomeCate
             <Button
               variant={selectedCategory === "all" ? "secondary" : "ghost"}
               size="sm"
-              className={`gap-1.5 md:gap-2 whitespace-nowrap shrink-0 text-xs md:text-sm h-8 md:h-9 px-2.5 md:px-4 flex ${isRTL ? 'flex-row-reverse' : ''}`}
+              className={`gap-1.5 md:gap-2 whitespace-nowrap shrink-0 text-xs h-8 md:h-9 px-2.5 md:px-4 flex ${isRTL ? 'flex-row-reverse ms-auto' : ''}`}
               onClick={() => onCategoryChange("all")}
               data-testid="button-category-all"
             >
