@@ -60,7 +60,7 @@
     "warehouse": "مستودع",
     "workshop": "ورشة عمل",
     "storage": "وحدة تخزين ذاتي",
-    "storefrontLong": "واجهة محل (طويل الأجل)",
+    "storefrontLong": "واجهة محل",
     "storefrontShort": "واجهة محل (قصير الأجل)",
     "viewAllProperties": "عرض جميع العقارات",
     "propertiesCount": "{{count}} عقار"
