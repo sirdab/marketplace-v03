@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useSearch } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Map, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import {
   type Property,
   type PropertyCategory,
@@ -29,6 +29,7 @@ import {
 import { PurposeFilter } from "@/components/PurposeFilter";
 
 type SortOption = "newest" | "price-low" | "price-high" | "size";
+const ITEMS_PER_PAGE = 12;
 
 export default function Properties() {
   const { t } = useTranslation();
@@ -48,6 +49,7 @@ export default function Properties() {
   });
   const [sortBy, setSortBy] = useState<SortOption>("newest");
   const [showMap, setShowMap] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const { data: properties = [], isLoading } = useQuery<Property[]>({
     queryKey: ["/api/properties"],
@@ -116,6 +118,18 @@ export default function Properties() {
 
     return result;
   }, [properties, filters, sortBy]);
+
+  // Reset to page 1 when filters or sort changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters, sortBy]);
+
+  const totalPages = Math.ceil(filteredProperties.length / ITEMS_PER_PAGE);
+  
+  const paginatedProperties = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredProperties.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredProperties, currentPage]);
 
   const activeFilterCount = Object.values(filters).filter(
     (v) => v !== undefined && v !== null && v !== ""
@@ -292,7 +306,60 @@ export default function Properties() {
                   <PropertyMap properties={filteredProperties} />
                 </div>
               ) : (
-                <PropertyGrid properties={filteredProperties} isLoading={isLoading} />
+                <>
+                  <PropertyGrid properties={paginatedProperties} isLoading={isLoading} />
+                  
+                  {totalPages > 1 && (
+                    <div className="flex items-center justify-center gap-2 mt-6 md:mt-8">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                        data-testid="button-pagination-prev"
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                      </Button>
+                      
+                      <div className="flex items-center gap-1">
+                        {Array.from({ length: totalPages }, (_, i) => i + 1)
+                          .filter((page) => {
+                            if (totalPages <= 7) return true;
+                            if (page === 1 || page === totalPages) return true;
+                            if (Math.abs(page - currentPage) <= 1) return true;
+                            return false;
+                          })
+                          .map((page, index, arr) => {
+                            const showEllipsis = index > 0 && page - arr[index - 1] > 1;
+                            return (
+                              <span key={page} className="flex items-center gap-1">
+                                {showEllipsis && <span className="px-1 text-muted-foreground">...</span>}
+                                <Button
+                                  variant={currentPage === page ? "default" : "outline"}
+                                  size="sm"
+                                  onClick={() => setCurrentPage(page)}
+                                  className="min-w-[2rem]"
+                                  data-testid={`button-pagination-${page}`}
+                                >
+                                  {page}
+                                </Button>
+                              </span>
+                            );
+                          })}
+                      </div>
+                      
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                        disabled={currentPage === totalPages}
+                        data-testid="button-pagination-next"
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>

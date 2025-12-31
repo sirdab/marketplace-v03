@@ -1,6 +1,7 @@
 import { Warehouse, Wrench, Package, Store } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { type PropertyCategory, categoryLabels } from "@shared/schema";
+import { type PropertyCategory } from "@shared/schema";
 
 const categoryIcons: Record<PropertyCategory, React.ReactNode> = {
   "warehouse": <Warehouse className="h-4 w-4" />,
@@ -16,12 +17,21 @@ const categories: PropertyCategory[] = [
   "storefront-long",
 ];
 
+const categoryTranslationKeys: Record<PropertyCategory, string> = {
+  "warehouse": "homeCategoryBar.warehouses",
+  "workshop": "homeCategoryBar.workshops",
+  "storage": "homeCategoryBar.selfStorage",
+  "storefront-long": "homeCategoryBar.longTermStorefronts",
+};
+
 interface CategoryTabsProps {
   selectedCategory: PropertyCategory | null;
   onCategoryChange: (category: PropertyCategory | null) => void;
 }
 
 export function CategoryTabs({ selectedCategory, onCategoryChange }: CategoryTabsProps) {
+  const { t } = useTranslation();
+  
   return (
     <div className="w-full overflow-x-auto scrollbar-hide -mx-1 px-1">
       <div className="flex items-center gap-1 md:gap-2 py-2 md:py-4 px-3 md:px-6 lg:px-8 min-w-max">
@@ -32,7 +42,7 @@ export function CategoryTabs({ selectedCategory, onCategoryChange }: CategoryTab
           className="shrink-0 text-xs md:text-sm h-8 md:h-9 px-3 md:px-4"
           data-testid="button-category-all"
         >
-          All
+          {t("homeCategoryBar.all")}
         </Button>
         {categories.map((category) => (
           <Button
@@ -44,8 +54,7 @@ export function CategoryTabs({ selectedCategory, onCategoryChange }: CategoryTab
             data-testid={`button-category-${category}`}
           >
             {categoryIcons[category]}
-            <span className="hidden sm:inline">{categoryLabels[category]}</span>
-            <span className="sm:hidden">{categoryLabels[category].split(" ")[0]}</span>
+            <span>{t(categoryTranslationKeys[category])}</span>
           </Button>
         ))}
       </div>
