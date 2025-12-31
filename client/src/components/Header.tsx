@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useSearch } from "wouter";
 import { useTranslation } from "react-i18next";
-import { Search, Menu, X, Heart, User, LogOut } from "lucide-react";
+import { Search, Menu, X, Heart, User, LogOut, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "./ThemeToggle";
@@ -72,7 +72,7 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
   const isHome = location === "/";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/80">
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
         <div className="flex h-14 md:h-16 items-center justify-between gap-2 md:gap-4">
           <div className="md:hidden">
@@ -86,11 +86,21 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
             </Button>
           </div>
 
-          <Link href="/" className="flex items-center gap-2 shrink-0 md:ms-0 absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0">
-            <img src={logoPath} alt="Sirdab" className="h-8 md:h-12 w-auto" />
+          <Link href="/" className="flex items-center gap-2 shrink-0 md:ms-0">
+            <img src={logoPath} alt="Sirdab" className="h-8 md:h-10 w-auto" />
           </Link>
 
           <div className="md:hidden flex items-center gap-1">
+            <Link href="/list-property">
+              <Button
+                size="sm"
+                className="bg-[#089c9f] text-white hover:bg-[#067e81] text-xs px-2"
+                data-testid="button-list-property-mobile"
+              >
+                <Building2 className="h-3.5 w-3.5 me-1" />
+                {t("homeCategoryBar.listYourSpace")}
+              </Button>
+            </Link>
             <Link href="/saved">
               <Button variant="ghost" size="icon" data-testid="link-saved-mobile">
                 <Heart className="h-5 w-5" />
@@ -122,16 +132,17 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
             </form>
           )}
 
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-2">
             <Link href="/list-property">
               <Button
-                variant="outline"
-                className="mx-2 bg-[#089c9f] text-[#ffffff] hover:bg-[#067e81] hover:text-[#ffffff] border-none"
+                className="bg-[#089c9f] text-white hover:bg-[#067e81] font-medium shadow-sm"
                 data-testid="button-list-your-space-nav"
               >
+                <Building2 className="h-4 w-4 me-2" />
                 {t("homeCategoryBar.listYourSpace")}
               </Button>
             </Link>
+            <div className="w-px h-6 bg-border/60 mx-1" />
             <Link href="/properties">
               <Button
                 variant={location.startsWith("/properties") ? "secondary" : "ghost"}
@@ -196,6 +207,7 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
                 </Button>
               </Link>
             )}
+            <div className="w-px h-6 bg-border/60 mx-1" />
             <LanguageSwitcher />
             <ThemeToggle />
           </nav>

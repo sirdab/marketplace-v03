@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { PurposeFilter } from "@/components/PurposeFilter";
 import { type PropertyCategory, type PropertyPurpose } from "@shared/schema";
+import coverImage from "@assets/Cover_Page_for_Sirdab_1767187345722.png";
 
 const categories: PropertyCategory[] = [
   "warehouse",
@@ -42,10 +43,10 @@ export function HeroSection() {
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1920&q=80')`,
+          backgroundImage: `url(${coverImage})`,
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50" />
       
       <div className="relative z-10 max-w-5xl mx-auto px-3 md:px-6 lg:px-8 text-center py-8">
         <h1 className="text-2xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-3 md:mb-6">
