@@ -28,7 +28,7 @@ export function PropertyCard({ property, isSaved = false, onToggleSave }: Proper
 
   return (
     <Card className="group overflow-hidden hover-elevate" data-testid={`card-property-${property.id}`}>
-      <div className="relative aspect-[1/1.2] md:aspect-video overflow-hidden">
+      <div className="relative aspect-video md:aspect-video overflow-hidden">
         <img
           src={property.imageUrl}
           alt={property.title}
