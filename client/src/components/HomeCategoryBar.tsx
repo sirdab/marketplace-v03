@@ -27,7 +27,7 @@ export function HomeCategoryBar({ selectedCategory, onCategoryChange }: HomeCate
     <div className="border-b bg-background">
       <div className="max-w-7xl mx-auto">
         <div className={`flex items-center py-2 md:py-3 overflow-x-auto scrollbar-hide ${isRTL ? 'flex-row-reverse' : ''}`}>
-          <div className={`flex items-center gap-1 px-3 md:px-6 lg:px-8 ${isRTL ? 'flex-row-reverse' : ''}`}>
+          <div className={`flex items-center gap-0.5 px-2 md:px-6 lg:px-8 ${isRTL ? 'flex-row-reverse' : ''}`}>
             {categories.map(({ value, icon: Icon, labelKey }) => (
               <Button
                 key={value}
