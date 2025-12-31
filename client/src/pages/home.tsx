@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { type Property, type PropertyCategory } from "@shared/schema";
 
 type HomeCategoryOption = "warehouse" | "workshop" | "storage" | "storefront-long" | "all";
-const ITEMS_PER_PAGE = 12;
+const ITEMS_PER_PAGE = 6;
 
 export default function Home() {
   const { t } = useTranslation();
