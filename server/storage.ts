@@ -9,11 +9,13 @@ import {
   type SavedProperty,
   type InsertSavedProperty,
   type PropertyFilters,
+  type Ad,
+  type InsertAd,
   ads,
   adToProperty,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, like, or, sql } from "drizzle-orm";
+import { eq, and, like, or, sql, desc } from "drizzle-orm";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -26,6 +28,12 @@ export interface IStorage {
   getProperties(): Promise<Property[]>;
   getProperty(id: string): Promise<Property | undefined>;
   searchProperties(filters: PropertyFilters): Promise<Property[]>;
+
+  // Ads (user's own ads - CRUD operations)
+  getAdsByUserId(userId: string): Promise<Ad[]>;
+  getAd(id: number): Promise<Ad | undefined>;
+  createAd(ad: InsertAd): Promise<Ad>;
+  updateAd(id: number, updates: Partial<InsertAd>): Promise<Ad | undefined>;
 
   // Visits
   getVisits(): Promise<Visit[]>;
@@ -165,6 +173,62 @@ export class DatabaseStorage implements IStorage {
     } catch (error) {
       console.error("Error searching properties:", error);
       return [];
+    }
+  }
+
+  // Ad methods - CRUD for user's own ads
+  async getAdsByUserId(userId: string): Promise<Ad[]> {
+    try {
+      const result = await db
+        .select()
+        .from(ads)
+        .where(and(eq(ads.userId, userId), eq(ads.deleted, false)))
+        .orderBy(desc(ads.createdAt));
+      return result;
+    } catch (error) {
+      console.error("Error fetching user ads:", error);
+      return [];
+    }
+  }
+
+  async getAd(id: number): Promise<Ad | undefined> {
+    try {
+      const result = await db
+        .select()
+        .from(ads)
+        .where(eq(ads.id, id))
+        .limit(1);
+      return result[0];
+    } catch (error) {
+      console.error("Error fetching ad:", error);
+      return undefined;
+    }
+  }
+
+  async createAd(insertAd: InsertAd): Promise<Ad> {
+    try {
+      const result = await db
+        .insert(ads)
+        .values(insertAd as any)
+        .returning();
+      return result[0];
+    } catch (error) {
+      console.error("Error creating ad:", error);
+      throw error;
+    }
+  }
+
+  async updateAd(id: number, updates: Partial<InsertAd>): Promise<Ad | undefined> {
+    try {
+      const result = await db
+        .update(ads)
+        .set(updates)
+        .where(eq(ads.id, id))
+        .returning();
+      return result[0];
+    } catch (error) {
+      console.error("Error updating ad:", error);
+      return undefined;
     }
   }
 

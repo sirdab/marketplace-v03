@@ -11,6 +11,8 @@ import Home from "@/pages/home";
 import Properties from "@/pages/properties";
 import PropertyDetail from "@/pages/property-detail";
 import Dashboard from "@/pages/dashboard";
+import MyAds from "@/pages/my-ads";
+import AdForm from "@/pages/ad-form";
 import AuthPage from "@/pages/auth";
 import NotFound from "@/pages/not-found";
 
@@ -18,6 +20,30 @@ function ProtectedDashboard() {
   return (
     <ProtectedRoute>
       <Dashboard />
+    </ProtectedRoute>
+  );
+}
+
+function ProtectedMyAds() {
+  return (
+    <ProtectedRoute>
+      <MyAds />
+    </ProtectedRoute>
+  );
+}
+
+function ProtectedCreateAd() {
+  return (
+    <ProtectedRoute>
+      <AdForm mode="create" />
+    </ProtectedRoute>
+  );
+}
+
+function ProtectedEditAd() {
+  return (
+    <ProtectedRoute>
+      <AdForm mode="edit" />
     </ProtectedRoute>
   );
 }
@@ -32,6 +58,9 @@ function Router() {
       <Route path="/bookings" component={ProtectedDashboard} />
       <Route path="/visits" component={ProtectedDashboard} />
       <Route path="/saved" component={ProtectedDashboard} />
+      <Route path="/my-ads" component={ProtectedMyAds} />
+      <Route path="/ads/new" component={ProtectedCreateAd} />
+      <Route path="/ads/:id/edit" component={ProtectedEditAd} />
       <Route path="/auth" component={AuthPage} />
       <Route component={NotFound} />
     </Switch>

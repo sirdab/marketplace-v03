@@ -1,0 +1,121 @@
+Implement/complete the “My Ads / إعلاناتي” dashboard page for logged-in users so that they can:
+
+View a list/table of their own ads only.
+
+Activate/deactivate each ad using a toggle bound to the published field.
+
+Edit an ad.
+
+Create a new ad.
+
+Use the attached screenshot/recording as a visual reference for the layout and columns.
+
+What I need you to do (step by step)
+
+Locate the existing dashboard ads page
+
+Find the current page/component that corresponds to “My Ads / إعلاناتي” in the dashboard (for example something like /dashboard/ads, /ads/index, or similar).
+
+Do not create a second, duplicate page; extend or refactor the existing one.
+
+Fetch only the current user’s ads
+
+Use the existing auth and data layer (Supabase/Prisma/API calls/etc.) to fetch ads for the logged-in user.
+
+Filter by user_id = currentUser.id (or whatever the equivalent field is in the current schema).
+
+Use the existing data types/models — don’t introduce new fields.
+
+Use loading and error states consistent with the rest of the project.
+
+Render an ads table/list similar to the design
+For each ad row, show at least:
+
+Name / title of the ad (e.g. warehouse name).
+
+Address / location.
+
+Availability dates (from/to) if available in the model.
+
+Creation date.
+
+Published status (toggle).
+
+Actions: Edit, maybe Delete.
+Use the project’s existing table, button, icon, and toggle components if they exist (to stay consistent with the design system).
+
+Implement the publish toggle (published field)
+
+The active/inactive state should be driven by a boolean field called published.
+
+When the user interacts with the toggle:
+
+Optimistically update the UI.
+
+Call the existing backend/API function to update that ad’s published value.
+
+If the update fails, revert the toggle and show an error message/toast consistent with existing patterns.
+
+Ensure only the owner of the ad can toggle it (rely on existing backend rules where possible).
+
+Wire up Edit and Create actions
+
+Edit:
+
+Add an “Edit / تعديل” button or icon in each row.
+
+When clicked, navigate to the existing edit route for that ad (or create a minimal edit route/component if it doesn’t exist yet and wire it properly).
+
+Create:
+
+Add a prominent “Create Ad / إنشاء إعلان” button in the page header (like in the screenshot).
+
+On click, navigate to the existing “create ad” page/route or open the existing creation flow.
+
+Arabic & English support (RTL/LTR)
+
+Use the existing i18n mechanism in the project; do not invent a new one.
+
+All visible strings on this page must come from translation files / i18n (e.g. myAds.title, myAds.createButton, myAds.columns.name, etc.).
+
+Make sure:
+
+Arabic uses RTL layout and correct labels: “إعلاناتي”, “إنشاء إعلان”, “منشور”, “العنوان”, “تاريخ الإنشاء”, “الإجراءات”, etc.
+
+English uses LTR layout: “My Ads”, “Create Ad”, “Published”, “Address”, “Created At”, “Actions”, etc.
+
+Reuse the same language switch logic already used elsewhere in the app.
+
+Empty, loading, and error states
+
+If the user has no ads, show:
+
+A friendly message (in both languages via i18n).
+
+A clear “Create Ad / إنشاء إعلان” button.
+
+Show a loading indicator while data is being fetched.
+
+Handle errors gracefully with the project’s existing pattern (toast, alert, or inline message).
+
+Style and layout
+
+Make the page look and behave close to the attached screenshot:
+
+Title area: “My Ads / إعلاناتي” + short subtitle explaining that the company’s ads appear here.
+
+Create Ad button positioned appropriately for RTL/LTR.
+
+Table/list below.
+
+Follow the existing styling system (CSS modules, Tailwind, design system, etc.) and keep things responsive.
+
+Code quality
+
+Keep the implementation consistent with the project structure.
+
+If the project uses TypeScript, type the props and API responses properly.
+
+Avoid breaking existing routes or components.
+
+Ensure the project builds with no TypeScript or lint errors.

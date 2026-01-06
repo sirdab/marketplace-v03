@@ -94,7 +94,7 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
           </Link>
 
           <div className="md:hidden flex items-center gap-1.5 bg-muted/50 dark:bg-white/5 backdrop-blur-sm rounded-full px-1 py-0.5">
-            <Link href="/list-property">
+            <Link href="/ads/new">
               <Button
                 size="sm"
                 className={`bg-[#089c9f] text-white hover:bg-[#067e81] text-xs px-3 rounded-full shadow-sm flex ${isRTL ? 'flex-row-reverse' : ''}`}
@@ -136,7 +136,7 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
           )}
 
           <nav className="hidden md:flex items-center gap-3">
-            <Link href="/list-property">
+            <Link href="/ads/new">
               <Button
                 className={`bg-[#089c9f] text-white hover:bg-[#067e81] font-medium shadow-md hover:shadow-lg flex ${isRTL ? 'flex-row-reverse' : ''}`}
                 data-testid="button-list-your-space-nav"
@@ -174,6 +174,11 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
                   <DropdownMenuItem asChild>
                     <Link href="/dashboard" className="w-full cursor-pointer">
                       {t('nav.dashboard')}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/my-ads" className="w-full cursor-pointer" data-testid="link-my-ads">
+                      {t('myAds.title')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>

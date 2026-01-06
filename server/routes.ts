@@ -1,12 +1,35 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { requireAuth } from "./auth";
+import { z } from "zod";
 import {
   insertVisitSchema,
   insertBookingSchema,
   insertSavedPropertySchema,
+  insertAdSchema,
   type PropertyFilters,
 } from "@shared/schema";
+
+const updateAdSchema = z.object({
+  published: z.boolean().optional(),
+  title: z.string().optional(),
+  slug: z.string().optional(),
+  description: z.string().optional(),
+  city: z.string().optional(),
+  district: z.string().optional(),
+  address: z.string().optional(),
+  price: z.string().optional(),
+  paymentTerm: z.string().optional(),
+  type: z.string().optional(),
+  areaInM2: z.string().optional(),
+  availableDateFrom: z.string().optional(),
+  availableDateTo: z.string().optional(),
+  phoneNumber: z.string().optional(),
+  phoneCountryCode: z.string().optional(),
+  municipalityLicense: z.boolean().optional(),
+  civilDefenseLicense: z.boolean().optional(),
+});
 
 export async function registerRoutes(
   httpServer: Server,
@@ -60,6 +83,84 @@ export async function registerRoutes(
     }
   });
 
+  // User Ads endpoints (CRUD for user's own ads - all require authentication)
+  app.get("/api/my-ads", requireAuth, async (req, res) => {
+    try {
+      const userId = req.user!.id;
+      const ads = await storage.getAdsByUserId(userId);
+      res.json(ads);
+    } catch (error) {
+      console.error("Error fetching user ads:", error);
+      res.status(500).json({ error: "Failed to fetch ads" });
+    }
+  });
+
+  app.get("/api/ads/:id", requireAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ error: "Invalid ad ID" });
+      }
+      const ad = await storage.getAd(id);
+      if (!ad) {
+        return res.status(404).json({ error: "Ad not found" });
+      }
+      if (ad.userId !== req.user!.id) {
+        return res.status(403).json({ error: "You can only view your own ads" });
+      }
+      res.json(ad);
+    } catch (error) {
+      console.error("Error fetching ad:", error);
+      res.status(500).json({ error: "Failed to fetch ad" });
+    }
+  });
+
+  app.post("/api/ads", requireAuth, async (req, res) => {
+    try {
+      const adData = {
+        ...req.body,
+        userId: req.user!.id,
+        country: req.body.country || 'Saudi Arabia',
+        published: req.body.published ?? true,
+        deleted: false,
+        verified: false,
+      };
+      const parsed = insertAdSchema.safeParse(adData);
+      if (!parsed.success) {
+        return res.status(400).json({ error: parsed.error.errors });
+      }
+      const ad = await storage.createAd(parsed.data);
+      res.status(201).json(ad);
+    } catch (error) {
+      console.error("Error creating ad:", error);
+      res.status(500).json({ error: "Failed to create ad" });
+    }
+  });
+
+  app.patch("/api/ads/:id", requireAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ error: "Invalid ad ID" });
+      }
+      const existingAd = await storage.getAd(id);
+      if (!existingAd) {
+        return res.status(404).json({ error: "Ad not found" });
+      }
+      if (existingAd.userId !== req.user!.id) {
+        return res.status(403).json({ error: "You can only update your own ads" });
+      }
+      const parsed = updateAdSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ error: parsed.error.errors });
+      }
+      const ad = await storage.updateAd(id, parsed.data);
+      res.json(ad);
+    } catch (error) {
+      console.error("Error updating ad:", error);
+      res.status(500).json({ error: "Failed to update ad" });
+    }
+  });
 
   // Visits endpoints
   app.get("/api/visits", async (req, res) => {
