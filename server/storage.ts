@@ -34,6 +34,7 @@ export interface IStorage {
   getAd(id: number): Promise<Ad | undefined>;
   createAd(ad: InsertAd): Promise<Ad>;
   updateAd(id: number, updates: Partial<InsertAd>): Promise<Ad | undefined>;
+  getPublishedAds(): Promise<Ad[]>;
 
   // Visits
   getVisits(): Promise<Visit[]>;
@@ -229,6 +230,20 @@ export class DatabaseStorage implements IStorage {
     } catch (error) {
       console.error("Error updating ad:", error);
       return undefined;
+    }
+  }
+
+  async getPublishedAds(): Promise<Ad[]> {
+    try {
+      const result = await db
+        .select()
+        .from(ads)
+        .where(and(eq(ads.published, true), eq(ads.deleted, false)))
+        .orderBy(desc(ads.createdAt));
+      return result;
+    } catch (error) {
+      console.error("Error fetching published ads:", error);
+      return [];
     }
   }
 

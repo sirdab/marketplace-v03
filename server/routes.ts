@@ -83,6 +83,40 @@ export async function registerRoutes(
     }
   });
 
+  // Public Ads endpoints (for viewing published ads)
+  app.get("/api/public/ads/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ error: "Invalid ad ID" });
+      }
+      const ad = await storage.getAd(id);
+      if (!ad || !ad.published || ad.deleted) {
+        return res.status(404).json({ error: "Ad not found" });
+      }
+      res.json(ad);
+    } catch (error) {
+      console.error("Error fetching public ad:", error);
+      res.status(500).json({ error: "Failed to fetch ad" });
+    }
+  });
+
+  app.get("/api/public/ads/region/:country/:city", async (req, res) => {
+    try {
+      const { city } = req.params;
+      const publishedAds = await storage.getPublishedAds();
+      const cityLower = city.toLowerCase().replace(/-/g, " ");
+      const filteredAds = publishedAds.filter(ad => {
+        const adCity = ad.city?.toLowerCase().replace(/-/g, " ") || "";
+        return adCity.includes(cityLower) || cityLower.includes(adCity.replace(/al /g, "al-"));
+      });
+      res.json(filteredAds);
+    } catch (error) {
+      console.error("Error fetching ads by region:", error);
+      res.status(500).json({ error: "Failed to fetch ads" });
+    }
+  });
+
   // User Ads endpoints (CRUD for user's own ads - all require authentication)
   app.get("/api/my-ads", requireAuth, async (req, res) => {
     try {
@@ -335,6 +369,95 @@ export async function registerRoutes(
       { id: "storefront-short", label: "Short-Term Storefronts", description: "Pop-ups, events & brand activations" },
     ];
     res.json(categories);
+  });
+
+  // SEO Endpoints - robots.txt, sitemaps
+  const REGIONS = [
+    "riyadh",
+    "jeddah",
+    "dammam",
+    "al-khobar",
+    "al-ahsa",
+    "abha",
+    "buraydah",
+  ];
+
+  function getBaseUrl(req: any): string {
+    const protocol = req.headers["x-forwarded-proto"] || req.protocol || "https";
+    const host = req.headers.host || req.hostname;
+    return `${protocol}://${host}`;
+  }
+
+  function escapeXml(unsafe: string): string {
+    return unsafe
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&apos;");
+  }
+
+  app.get("/robots.txt", (req, res) => {
+    const baseUrl = getBaseUrl(req);
+    res.set("Content-Type", "text/plain; charset=utf-8");
+    res.send(`User-agent: *
+Allow: /
+
+Sitemap: ${baseUrl}/sitemap.xml
+Sitemap: ${baseUrl}/sitemap-0.xml
+`);
+  });
+
+  app.get("/sitemap.xml", (req, res) => {
+    const baseUrl = getBaseUrl(req);
+    res.set("Content-Type", "application/xml; charset=utf-8");
+    res.send(`<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>${baseUrl}/sitemap-0.xml</loc>
+  </sitemap>
+</sitemapindex>
+`);
+  });
+
+  app.get("/sitemap-0.xml", async (req, res) => {
+    try {
+      const baseUrl = escapeXml(getBaseUrl(req));
+      const publishedAds = await storage.getPublishedAds();
+      const now = new Date().toISOString();
+      
+      let urlEntries = "";
+      
+      for (const ad of publishedAds) {
+        const lastmod = ad.createdAt ? new Date(ad.createdAt).toISOString() : now;
+        urlEntries += `  <url>
+    <loc>${baseUrl}/ads/${escapeXml(String(ad.id))}</loc>
+    <lastmod>${escapeXml(lastmod)}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+`;
+      }
+      
+      for (const region of REGIONS) {
+        urlEntries += `  <url>
+    <loc>${baseUrl}/ads/region/sa/${escapeXml(region)}</loc>
+    <lastmod>${escapeXml(now)}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+`;
+      }
+      
+      res.set("Content-Type", "application/xml; charset=utf-8");
+      res.send(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urlEntries}</urlset>
+`);
+    } catch (error) {
+      console.error("Error generating sitemap:", error);
+      res.status(500).send("Error generating sitemap");
+    }
   });
 
   return httpServer;

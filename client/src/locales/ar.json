@@ -25,7 +25,20 @@
     "error": "خطأ",
     "properties": "عقارات",
     "reset": "إعادة تعيين",
-    "done": "تم"
+    "done": "تم",
+    "back": "رجوع",
+    "notFound": "غير موجود",
+    "backToProperties": "العودة للعقارات",
+    "contactForPrice": "تواصل للسعر",
+    "description": "الوصف",
+    "features": "المميزات",
+    "pricing": "التسعير",
+    "location": "الموقع",
+    "contact": "تواصل",
+    "availableFrom": "متاح من",
+    "verified": "موثق",
+    "propertiesFound": "عقار متوفر",
+    "viewAllProperties": "عرض جميع العقارات"
   },
   "purpose": {
     "title": "الغرض",
@@ -322,6 +335,18 @@
     "updateSuccess": "تم تحديث الإعلان بنجاح",
     "createError": "فشل في إنشاء الإعلان",
     "updateError": "فشل في تحديث الإعلان"
+  },
+  "features": {
+    "municipalityLicense": "رخصة البلدية",
+    "civilDefenseLicense": "رخصة الدفاع المدني"
+  },
+  "region": {
+    "propertiesIn": "عقارات في {{city}}",
+    "noProperties": "لم يتم العثور على عقارات",
+    "noPropertiesDesc": "لا توجد عقارات مدرجة في هذه المنطقة حتى الآن."
+  },
+  "ads": {
+    "notFoundMessage": "هذا الإعلان غير موجود أو تم إزالته."
   },
   "footer": {
     "description": "الفهرس الموحد عبر الإنترنت للعقارات التجارية في المملكة العربية السعودية. اعثر على المستودعات وورش العمل والتخزين والمحلات.",

@@ -13,6 +13,8 @@ import PropertyDetail from "@/pages/property-detail";
 import Dashboard from "@/pages/dashboard";
 import MyAds from "@/pages/my-ads";
 import AdForm from "@/pages/ad-form";
+import AdDetail from "@/pages/ad-detail";
+import RegionAds from "@/pages/region-ads";
 import AuthPage from "@/pages/auth";
 import NotFound from "@/pages/not-found";
 
@@ -60,7 +62,9 @@ function Router() {
       <Route path="/saved" component={ProtectedDashboard} />
       <Route path="/my-ads" component={ProtectedMyAds} />
       <Route path="/ads/new" component={ProtectedCreateAd} />
+      <Route path="/ads/region/sa/:city" component={RegionAds} />
       <Route path="/ads/:id/edit" component={ProtectedEditAd} />
+      <Route path="/ads/:id" component={AdDetail} />
       <Route path="/auth" component={AuthPage} />
       <Route component={NotFound} />
     </Switch>
