@@ -131,7 +131,7 @@ export type Ad = typeof ads.$inferSelect;
 
 // Blog posts table - matches Supabase blog_posts table
 export const blogPosts = pgTable("blog_posts", {
-  id: uuid("id").primaryKey().default(sql`uuid_generate_v4()`),
+  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
   title: text("title").notNull(),
   content: text("content").notNull(),
   slug: text("slug").notNull(),
