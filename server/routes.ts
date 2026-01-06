@@ -117,6 +117,9 @@ export async function registerRoutes(
 
   app.post("/api/ads", requireAuth, async (req, res) => {
     try {
+      console.log("Creating ad with body:", JSON.stringify(req.body, null, 2));
+      console.log("User ID:", req.user!.id);
+      
       const adData = {
         ...req.body,
         userId: req.user!.id,
@@ -125,14 +128,24 @@ export async function registerRoutes(
         deleted: false,
         verified: false,
       };
+      
+      console.log("Ad data after processing:", JSON.stringify(adData, null, 2));
+      
       const parsed = insertAdSchema.safeParse(adData);
       if (!parsed.success) {
+        console.log("Validation errors:", JSON.stringify(parsed.error.errors, null, 2));
         return res.status(400).json({ error: parsed.error.errors });
       }
+      
+      console.log("Parsed data:", JSON.stringify(parsed.data, null, 2));
+      
       const ad = await storage.createAd(parsed.data);
+      console.log("Created ad:", ad);
       res.status(201).json(ad);
     } catch (error) {
-      console.error("Error creating ad:", error);
+      console.error("Error creating ad - Full error:", error);
+      console.error("Error message:", (error as Error).message);
+      console.error("Error stack:", (error as Error).stack);
       res.status(500).json({ error: "Failed to create ad" });
     }
   });
