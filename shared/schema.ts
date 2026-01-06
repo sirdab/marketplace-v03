@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, bigint, boolean, timestamp, doublePrecision, uuid, date } from "drizzle-orm/pg-core";
+import { pgTable, text, bigint, boolean, timestamp, doublePrecision, uuid, date, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -38,20 +38,20 @@ export const purposeLabels: Record<PropertyPurpose, string> = {
 };
 
 // Property Categories - mapped from Supabase 'type' field
-export type PropertyCategory = "warehouse" | "workshop" | "storage" | "storefront-long";
+export type PropertyCategory = "warehouse" | "workshop" | "storage" | "storefront";
 
 export const categoryLabels: Record<PropertyCategory, string> = {
   "warehouse": "Warehouses",
   "workshop": "Workshops",
   "storage": "Self-Storage",
-  "storefront-long": "Long-Term Storefronts",
+  "storefront": "Storefronts",
 };
 
 export const categoryDescriptions: Record<PropertyCategory, string> = {
   "warehouse": "Dry, cold, cross-dock & industrial storage",
   "workshop": "Auto, manufacturing & light industrial",
   "storage": "SME inventory & personal storage",
-  "storefront-long": "Showrooms, retail & service spaces",
+  "storefront": "Showrooms, retail & service spaces",
 };
 
 // Property sub-types
@@ -59,7 +59,7 @@ export const propertySubTypes: Record<PropertyCategory, string[]> = {
   "warehouse": ["Dry / Ambient", "Cold & Chilled", "Cross-dock", "Industrial Storage"],
   "workshop": ["Auto Workshop", "Light Manufacturing", "Carpentry / Metal", "Small Industrial"],
   "storage": ["SME Inventory", "Personal Storage", "Overflow / Seasonal"],
-  "storefront-long": ["Dark Store", "Showroom", "SME Retail", "Service Business"],
+  "storefront": ["Dark Store", "Showroom", "SME Retail", "Service Business", "Pop-up Space"],
 };
 
 // Ads table - matches Supabase ads table (properties/listings)
@@ -120,6 +120,12 @@ export const ads = pgTable("ads", {
   scrapedId: text("scraped_id"),
   streetWidth: text("street_width"),
   width: text("width"),
+  // Transaction type flags - property can be available for multiple purposes
+  forRent: boolean("for_rent").default(true),
+  forSale: boolean("for_sale").default(false),
+  forDailyRent: boolean("for_daily_rent").default(false),
+  // Type-specific attributes stored as JSONB
+  typeAttributes: jsonb("type_attributes"),
 });
 
 export const insertAdSchema = createInsertSchema(ads).omit({
@@ -129,6 +135,61 @@ export const insertAdSchema = createInsertSchema(ads).omit({
 
 export type InsertAd = z.infer<typeof insertAdSchema>;
 export type Ad = typeof ads.$inferSelect;
+
+// Type-specific attribute schemas for validation
+export const warehouseAttributesSchema = z.object({
+  temperatureSettings: z.enum(["dry", "cold", "frozen", "climate-controlled"]).optional(),
+  hazardLevel: z.enum(["low", "medium", "high"]).optional(),
+  flooring: z.enum(["concrete", "epoxy", "asphalt", "tiles"]).optional(),
+  forkliftAvailability: z.enum(["none", "day", "24/7"]).optional(),
+  rackingSystem: z.string().optional(),
+  ceilingHeight: z.string().optional(),
+  loadingDocks: z.number().optional(),
+  crossDocking: z.boolean().optional(),
+});
+
+export const workshopAttributesSchema = z.object({
+  powerCapacity: z.string().optional(),
+  ventilation: z.enum(["natural", "mechanical", "both"]).optional(),
+  equipmentIncluded: z.boolean().optional(),
+  threePhaseElectric: z.boolean().optional(),
+  pitAvailable: z.boolean().optional(),
+  craneAvailable: z.boolean().optional(),
+});
+
+export const storageAttributesSchema = z.object({
+  unitSize: z.enum(["small", "medium", "large", "extra-large"]).optional(),
+  climateControlled: z.boolean().optional(),
+  accessHours: z.enum(["business", "extended", "24/7"]).optional(),
+  securityLevel: z.enum(["basic", "standard", "premium"]).optional(),
+});
+
+export const storefrontAttributesSchema = z.object({
+  facadeType: z.enum(["glass", "solid", "mixed"]).optional(),
+  displayWindows: z.number().optional(),
+  footTraffic: z.enum(["low", "medium", "high"]).optional(),
+  parkingSpots: z.number().optional(),
+  mallLocation: z.boolean().optional(),
+  streetLevel: z.boolean().optional(),
+});
+
+export type WarehouseAttributes = z.infer<typeof warehouseAttributesSchema>;
+export type WorkshopAttributes = z.infer<typeof workshopAttributesSchema>;
+export type StorageAttributes = z.infer<typeof storageAttributesSchema>;
+export type StorefrontAttributes = z.infer<typeof storefrontAttributesSchema>;
+
+// Union type for all type attributes
+export type TypeAttributes = WarehouseAttributes | WorkshopAttributes | StorageAttributes | StorefrontAttributes;
+
+// Helper to get the right schema based on property category
+export function getTypeAttributesSchema(category: PropertyCategory) {
+  switch (category) {
+    case "warehouse": return warehouseAttributesSchema;
+    case "workshop": return workshopAttributesSchema;
+    case "storage": return storageAttributesSchema;
+    case "storefront": return storefrontAttributesSchema;
+  }
+}
 
 // Blog posts table - matches Supabase blog_posts table
 export const blogPosts = pgTable("blog_posts", {
@@ -157,6 +218,10 @@ export interface Property {
   category: PropertyCategory;
   subType: string;
   purpose: PropertyPurpose;
+  // Transaction type flags
+  forRent: boolean;
+  forSale: boolean;
+  forDailyRent: boolean;
   price: number; // Display price (converted based on payment term)
   priceUnit: string; // Display unit: "year", "month", or "day"
   annualPrice: number; // Raw annual price for filters/sorting
@@ -176,6 +241,7 @@ export interface Property {
   maxDuration?: number | null;
   ownerName?: string | null;
   ownerPhone?: string | null;
+  typeAttributes?: TypeAttributes | null;
 }
 
 export type InsertProperty = Omit<Property, "id">;
@@ -267,7 +333,7 @@ export function adToProperty(ad: Ad): Property {
   } else if (adType.includes("storage") || adType.includes("تخزين")) {
     category = "storage";
   } else if (adType.includes("storefront") || adType.includes("محل") || adType.includes("retail")) {
-    category = "storefront-long";
+    category = "storefront";
   }
 
   // Map payment term to purpose
@@ -310,6 +376,11 @@ export function adToProperty(ad: Ad): Property {
   
   const annualPrice = isNaN(parsedYearlyPrice) ? 0 : parsedYearlyPrice;
   
+  // Get transaction type flags - default to rent for backward compatibility
+  const forRent = ad.forRent ?? true;
+  const forSale = ad.forSale ?? false;
+  const forDailyRent = ad.forDailyRent ?? false;
+
   return {
     id: String(ad.id),
     title: ad.title,
@@ -317,6 +388,9 @@ export function adToProperty(ad: Ad): Property {
     category,
     subType: ad.type || "General",
     purpose,
+    forRent,
+    forSale,
+    forDailyRent,
     price: displayPrice,
     priceUnit,
     annualPrice,
@@ -336,5 +410,6 @@ export function adToProperty(ad: Ad): Property {
     maxDuration: null,
     ownerName: null,
     ownerPhone: ad.phoneNumber && ad.phoneNumber !== "000000000" ? `${ad.phoneCountryCode || ""}${ad.phoneNumber}` : null,
+    typeAttributes: ad.typeAttributes as TypeAttributes | null,
   };
 }

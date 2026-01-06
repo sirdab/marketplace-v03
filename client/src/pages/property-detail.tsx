@@ -48,7 +48,7 @@ export default function PropertyDetail() {
     "warehouse": "warehouse",
     "workshop": "workshop",
     "storage": "storage",
-    "storefront-long": "storefrontLong",
+    "storefront": "storefront",
   };
 
   const { data: property, isLoading } = useQuery<Property>({

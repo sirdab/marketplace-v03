@@ -69,7 +69,7 @@ export function PropertyCard({ property, isSaved = false, onToggleSave }: Proper
             {property.size} {t('common.sqm')}
           </span>
           <span className="text-xs px-2 py-0.5 bg-muted rounded">
-            {t(`categories.${property.category === 'storefront-long' ? 'storefrontLong' : property.category === 'storefront-short' ? 'storefrontShort' : property.category}`)}
+            {t(`categories.${property.category}`)}
           </span>
         </div>
         <h3 className="font-medium text-sm md:text-base line-clamp-1 mb-1" data-testid={`text-title-${property.id}`}>

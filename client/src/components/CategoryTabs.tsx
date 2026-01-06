@@ -7,21 +7,21 @@ const categoryIcons: Record<PropertyCategory, React.ReactNode> = {
   "warehouse": <Warehouse className="h-4 w-4" />,
   "workshop": <Wrench className="h-4 w-4" />,
   "storage": <Package className="h-4 w-4" />,
-  "storefront-long": <Store className="h-4 w-4" />,
+  "storefront": <Store className="h-4 w-4" />,
 };
 
 const categories: PropertyCategory[] = [
   "warehouse",
   "workshop", 
   "storage",
-  "storefront-long",
+  "storefront",
 ];
 
 const categoryTranslationKeys: Record<PropertyCategory, string> = {
   "warehouse": "homeCategoryBar.warehouses",
   "workshop": "homeCategoryBar.workshops",
   "storage": "homeCategoryBar.selfStorage",
-  "storefront-long": "homeCategoryBar.longTermStorefronts",
+  "storefront": "homeCategoryBar.storefronts",
 };
 
 interface CategoryTabsProps {

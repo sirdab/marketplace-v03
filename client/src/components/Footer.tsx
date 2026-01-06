@@ -48,13 +48,8 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/properties?category=storefront-long" className="hover:text-foreground">
-                  {t("footer.longTermStorefronts")}
-                </Link>
-              </li>
-              <li>
-                <Link href="/properties?category=storefront-short" className="hover:text-foreground">
-                  {t("footer.shortTermStorefronts")}
+                <Link href="/properties?category=storefront" className="hover:text-foreground">
+                  {t("footer.storefronts")}
                 </Link>
               </li>
             </ul>

@@ -14,7 +14,7 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { type Property, type PropertyCategory } from "@shared/schema";
 
-type HomeCategoryOption = "warehouse" | "workshop" | "storage" | "storefront-long" | "all";
+type HomeCategoryOption = "warehouse" | "workshop" | "storage" | "storefront" | "all";
 const ITEMS_PER_PAGE = 6;
 
 export default function Home() {
@@ -61,8 +61,8 @@ export default function Home() {
         return t("homeCategoryBar.workshopsPlural");
       case "storage":
         return t("homeCategoryBar.selfStoragePlural");
-      case "storefront-long":
-        return t("homeCategoryBar.longTermStorefrontsPlural");
+      case "storefront":
+        return t("homeCategoryBar.storefrontsPlural");
       case "all":
         return t("homeCategoryBar.allProperties");
     }

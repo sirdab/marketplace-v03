@@ -73,8 +73,7 @@
     "warehouse": "مستودع",
     "workshop": "ورشة عمل",
     "storage": "وحدة تخزين ذاتي",
-    "storefrontLong": "واجهة محل",
-    "storefrontShort": "واجهة محل (قصير الأجل)",
+    "storefront": "واجهة محل",
     "viewAllProperties": "عرض جميع العقارات",
     "propertiesCount": "{{count}} عقار"
   },
@@ -82,8 +81,7 @@
     "warehouse": "مرافق التخزين الصناعية واللوجستية",
     "workshop": "مساحات التصنيع والإنتاج",
     "storage": "وحدات التخزين الذاتي",
-    "storefrontLong": "مساحات تجارية وبيع بالتجزئة طويلة الأجل",
-    "storefrontShort": "محلات مؤقتة وبيع بالتجزئة قصير الأجل"
+    "storefront": "مساحات تجارية ومحلات مؤقتة"
   },
   "featured": {
     "title": "العقارات المميزة",
@@ -106,13 +104,13 @@
     "warehouses": "مستودعات",
     "workshops": "ورش",
     "selfStorage": "وحدات تخزين ذاتي",
-    "longTermStorefronts": "واجهات محلات",
+    "storefronts": "واجهات محلات",
     "all": "الكل",
     "listYourSpace": "شارك عقارك",
     "warehousesPlural": "مستودعات",
     "workshopsPlural": "ورش",
     "selfStoragePlural": "وحدات تخزين ذاتي",
-    "longTermStorefrontsPlural": "واجهات محلات",
+    "storefrontsPlural": "واجهات محلات",
     "allProperties": "عقارات",
     "in": "في"
   },
@@ -354,8 +352,7 @@
     "warehouses": "المستودعات",
     "workshops": "ورش العمل",
     "selfStorage": "التخزين الذاتي",
-    "longTermStorefronts": "واجهات المحلات طويلة الأجل",
-    "shortTermStorefronts": "واجهات المحلات قصيرة الأجل",
+    "storefronts": "واجهات المحلات",
     "company": "الشركة",
     "aboutUs": "عن سرداب",
     "contact": "اتصل بنا",

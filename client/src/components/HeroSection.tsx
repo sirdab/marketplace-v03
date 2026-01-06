@@ -19,7 +19,7 @@ const categories: PropertyCategory[] = [
   "warehouse",
   "workshop",
   "storage",
-  "storefront-long",
+  "storefront",
 ];
 
 export function HeroSection() {
@@ -92,7 +92,7 @@ export function HeroSection() {
                 <SelectItem value="all">{t('hero.allCategories')}</SelectItem>
                 {categories.map((cat) => (
                   <SelectItem key={cat} value={cat}>
-                    {t(`categories.${cat === 'storefront-long' ? 'storefrontLong' : cat}`)}
+                    {t(`categories.${cat}`)}
                   </SelectItem>
                 ))}
               </SelectContent>

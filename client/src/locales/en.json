@@ -73,8 +73,7 @@
     "warehouse": "Warehouse",
     "workshop": "Workshop",
     "storage": "Storage",
-    "storefrontLong": "Storefront (Long-term)",
-    "storefrontShort": "Storefront (Short-term)",
+    "storefront": "Storefront",
     "viewAllProperties": "View All Properties",
     "propertiesCount": "{{count}} properties"
   },
@@ -82,8 +81,7 @@
     "warehouse": "Industrial storage and logistics facilities",
     "workshop": "Manufacturing and production spaces",
     "storage": "Self-storage and inventory units",
-    "storefrontLong": "Long-term retail and commercial spaces",
-    "storefrontShort": "Pop-up shops and temporary retail"
+    "storefront": "Retail, commercial spaces and pop-up shops"
   },
   "featured": {
     "title": "Featured Properties",
@@ -106,13 +104,13 @@
     "warehouses": "Warehouses",
     "workshops": "Workshops",
     "selfStorage": "Self-Storage",
-    "longTermStorefronts": "Long-Term Storefronts",
+    "storefronts": "Storefronts",
     "all": "All",
     "listYourSpace": "List your space",
     "warehousesPlural": "Warehouses",
     "workshopsPlural": "Workshops",
     "selfStoragePlural": "Self-Storage",
-    "longTermStorefrontsPlural": "Long-Term Storefronts",
+    "storefrontsPlural": "Storefronts",
     "allProperties": "Properties",
     "in": "in"
   },
@@ -354,8 +352,7 @@
     "warehouses": "Warehouses",
     "workshops": "Workshops",
     "selfStorage": "Self-Storage",
-    "longTermStorefronts": "Long-Term Storefronts",
-    "shortTermStorefronts": "Short-Term Storefronts",
+    "storefronts": "Storefronts",
     "company": "Company",
     "aboutUs": "About Us",
     "contact": "Contact",

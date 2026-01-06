@@ -365,8 +365,7 @@ export async function registerRoutes(
       { id: "warehouse", label: "Warehouses", description: "Dry, cold, cross-dock & industrial storage" },
       { id: "workshop", label: "Workshops", description: "Auto, manufacturing & light industrial" },
       { id: "storage", label: "Self-Storage", description: "SME inventory & personal storage" },
-      { id: "storefront-long", label: "Long-Term Storefronts", description: "Showrooms, retail & service spaces" },
-      { id: "storefront-short", label: "Short-Term Storefronts", description: "Pop-ups, events & brand activations" },
+      { id: "storefront", label: "Storefronts", description: "Showrooms, retail, pop-ups & service spaces" },
     ];
     res.json(categories);
   });

@@ -5,7 +5,7 @@ import { Warehouse, Wrench, Package, Store, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { type PropertyCategory } from "@shared/schema";
 
-type HomeCategoryOption = "warehouse" | "workshop" | "storage" | "storefront-long" | "all";
+type HomeCategoryOption = "warehouse" | "workshop" | "storage" | "storefront" | "all";
 
 interface HomeCategoryBarProps {
   selectedCategory: HomeCategoryOption;
@@ -16,7 +16,7 @@ const categories: { value: HomeCategoryOption; icon: typeof Warehouse; labelKey:
   { value: "warehouse", icon: Warehouse, labelKey: "homeCategoryBar.warehouses" },
   { value: "workshop", icon: Wrench, labelKey: "homeCategoryBar.workshops" },
   { value: "storage", icon: Package, labelKey: "homeCategoryBar.selfStorage" },
-  { value: "storefront-long", icon: Store, labelKey: "homeCategoryBar.longTermStorefronts" },
+  { value: "storefront", icon: Store, labelKey: "homeCategoryBar.storefronts" },
 ];
 
 export function HomeCategoryBar({ selectedCategory, onCategoryChange }: HomeCategoryBarProps) {
@@ -70,8 +70,8 @@ export function CategoryHeading({ category, city = "riyadh" }: { category: HomeC
         return t("homeCategoryBar.workshopsPlural");
       case "storage":
         return t("homeCategoryBar.selfStoragePlural");
-      case "storefront-long":
-        return t("homeCategoryBar.longTermStorefrontsPlural");
+      case "storefront":
+        return t("homeCategoryBar.storefrontsPlural");
       case "all":
         return t("homeCategoryBar.allProperties");
     }

@@ -34,8 +34,8 @@ const categoryData: {
     count: 156,
   },
   {
-    category: "storefront-long",
-    key: "storefrontLong",
+    category: "storefront",
+    key: "storefront",
     icon: <Store className="h-6 w-6" />,
     image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&q=80",
     count: 67,

@@ -36,7 +36,7 @@ const categories: { category: PropertyCategory; key: string }[] = [
   { category: "warehouse", key: "warehouse" },
   { category: "workshop", key: "workshop" },
   { category: "storage", key: "storage" },
-  { category: "storefront-long", key: "storefrontLong" },
+  { category: "storefront", key: "storefront" },
 ];
 
 function FilterSection({

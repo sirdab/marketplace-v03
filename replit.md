@@ -69,7 +69,11 @@ Core entities defined in shared/schema.ts:
 - **Bookings**: Property reservations with date ranges
 - **SavedProperties**: User favorites/wishlist
 
-Property categories: warehouse, workshop, storage, storefront-long, storefront-short
+Property categories: warehouse, workshop, storage, storefront
+
+Transaction types: for_rent, for_sale, for_daily_rent (boolean flags - properties can have multiple)
+
+Type-specific attributes stored in JSONB column (typeAttributes) with validation schemas per category
 
 ### Build System
 - Development: tsx for TypeScript execution with Vite dev server
