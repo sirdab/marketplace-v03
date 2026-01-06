@@ -56,8 +56,8 @@ export default function AuthPage() {
   }
 
   const onSubmit = async (data: EmailFormData) => {
-    const redirectTo = window.location.origin + returnUrl;
-    const { error } = await sendMagicLink(data.email, redirectTo);
+    // Pass only the path - sendMagicLink will construct the full URL
+    const { error } = await sendMagicLink(data.email, returnUrl);
     
     if (error) {
       toast({

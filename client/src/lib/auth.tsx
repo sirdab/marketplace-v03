@@ -37,10 +37,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let redirectUrl: string;
     try {
       const path = redirectTo || '/dashboard';
-      const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-      redirectUrl = new URL(normalizedPath, window.location.origin).toString();
+      // If already an absolute URL, use it directly
+      if (path.startsWith('http://') || path.startsWith('https://')) {
+        redirectUrl = path;
+      } else {
+        // Otherwise, construct full URL from path
+        const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+        redirectUrl = `${window.location.origin}${normalizedPath}`;
+      }
     } catch {
-      redirectUrl = new URL('/dashboard', window.location.origin).toString();
+      // Fallback to default dashboard URL
+      redirectUrl = `${window.location.origin}/dashboard`;
     }
     
     const { error } = await supabase.auth.signInWithOtp({
