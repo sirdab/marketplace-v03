@@ -224,6 +224,21 @@ export default function PropertyDetail() {
                   {property.subType && (
                     <Badge variant="outline" className="text-xs md:text-sm">{property.subType}</Badge>
                   )}
+                  {property.forRent === true && (
+                    <Badge variant="outline" className="text-xs md:text-sm">
+                      {t('transactionBadge.rent')}
+                    </Badge>
+                  )}
+                  {property.forSale === true && (
+                    <Badge variant="outline" className="text-xs md:text-sm border-green-500 text-green-600 dark:text-green-400">
+                      {t('transactionBadge.sale')}
+                    </Badge>
+                  )}
+                  {property.forDailyRent === true && (
+                    <Badge variant="outline" className="text-xs md:text-sm border-blue-500 text-blue-600 dark:text-blue-400">
+                      {t('transactionBadge.daily')}
+                    </Badge>
+                  )}
                 </div>
               </div>
 

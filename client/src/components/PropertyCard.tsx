@@ -63,7 +63,7 @@ export function PropertyCard({ property, isSaved = false, onToggleSave }: Proper
             <span className="text-muted-foreground font-normal text-sm ms-1">{priceLabel}</span>
           </p>
         </div>
-        <div className="flex items-center gap-3 text-muted-foreground text-sm mb-2">
+        <div className="flex items-center gap-2 flex-wrap text-muted-foreground text-sm mb-2">
           <span className="flex items-center gap-1">
             <Ruler className="h-3.5 w-3.5" />
             {property.size} {t('common.sqm')}
@@ -71,6 +71,21 @@ export function PropertyCard({ property, isSaved = false, onToggleSave }: Proper
           <span className="text-xs px-2 py-0.5 bg-muted rounded">
             {t(`categories.${property.category}`)}
           </span>
+          {property.forRent === true && (
+            <Badge variant="outline" className="text-xs px-1.5 py-0 h-5 font-normal">
+              {t('transactionBadge.rent')}
+            </Badge>
+          )}
+          {property.forSale === true && (
+            <Badge variant="outline" className="text-xs px-1.5 py-0 h-5 font-normal border-green-500 text-green-600 dark:text-green-400">
+              {t('transactionBadge.sale')}
+            </Badge>
+          )}
+          {property.forDailyRent === true && (
+            <Badge variant="outline" className="text-xs px-1.5 py-0 h-5 font-normal border-blue-500 text-blue-600 dark:text-blue-400">
+              {t('transactionBadge.daily')}
+            </Badge>
+          )}
         </div>
         <h3 className="font-medium text-sm md:text-base line-clamp-1 mb-1" data-testid={`text-title-${property.id}`}>
           {property.title}
