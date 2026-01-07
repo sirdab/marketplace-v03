@@ -1,0 +1,116 @@
+Task: Implement robots.txt and sitemap endpoints for SEO, compatible with any domain (no hardcoded host).
+
+Requirements
+
+Do NOT change existing URL structure
+
+Keep these routes working with HTTP 200:
+
+/ads/:adId → individual ad page
+
+/ads/region/sa/:city → region listing page
+
+Base URL (important)
+
+When generating absolute URLs, do not hardcode the domain.
+
+Compute baseUrl from the request:
+
+Protocol: use https by default (or from headers if available).
+
+Host: from the Host header (or framework equivalent).
+
+All sitemap + robots URLs must use: baseUrl + path.
+
+Endpoint: GET /sitemap.xml (sitemap index)
+
+Content-Type: application/xml; charset=utf-8
+
+Return a sitemap index that points to /sitemap-0.xml, for example:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>BASE_URL/sitemap-0.xml</loc>
+  </sitemap>
+</sitemapindex>
+
+
+Replace BASE_URL with the dynamic base URL from the request.
+
+Endpoint: GET /sitemap-0.xml (URL sitemap)
+
+Content-Type: application/xml; charset=utf-8
+
+Compute baseUrl from the request.
+
+Fetch all published ads from the database (use existing ORM/client). Each ad should provide:
+
+id → to build /ads/:id
+
+updated_at (or similar) → for <lastmod>
+
+Generate a valid <urlset> XML:
+
+For each published ad:
+
+<url>
+  <loc>BASE_URL/ads/AD_ID</loc>
+  <lastmod>UPDATED_AT_ISO</lastmod>
+  <changefreq>daily</changefreq>
+  <priority>0.7</priority>
+</url>
+
+
+Also include these region URLs (same changefreq/priority; lastmod optional):
+
+/ads/region/sa/riyadh
+
+/ads/region/sa/jeddah
+
+/ads/region/sa/dammam
+
+/ads/region/sa/al-khobar
+
+/ads/region/sa/al-ahsa
+
+/ads/region/sa/abha
+
+/ads/region/sa/buraydah
+
+Wrap them in:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  ...all <url> entries...
+</urlset>
+
+
+Endpoint: GET /robots.txt
+
+Content-Type: text/plain; charset=utf-8
+
+Compute baseUrl from the request.
+
+Return:
+
+User-agent: *
+Allow: /
+
+Sitemap: BASE_URL/sitemap.xml
+Sitemap: BASE_URL/sitemap-0.xml
+
+
+Validation
+
+All URLs included in the sitemap must respond with HTTP 200.
+
+Show me the final code for:
+
+/sitemap.xml
+
+/sitemap-0.xml
+
+/robots.txt
+
+Also print example responses for each endpoint so I can verify the XML/text.

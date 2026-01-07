@@ -728,7 +728,7 @@ export default function AdForm({ mode }: AdFormProps) {
                             </FormControl>
                             <SelectContent>
                               {citiesList.map((city) => (
-                                <SelectItem key={city.id} value={city.slug}>
+                                <SelectItem key={city.id} value={city.nameEn}>
                                   {isRTL ? city.nameAr : city.nameEn}
                                 </SelectItem>
                               ))}
