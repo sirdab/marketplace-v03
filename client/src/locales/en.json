@@ -271,7 +271,7 @@
     "sendingOtp": "Sending code...",
     "otpSent": "Code sent!",
     "otpSentDesc": "Check your phone for the verification code",
-    "enterOtp": "Enter the 4-digit code sent to",
+    "enterOtp": "Enter the 6-digit code sent to",
     "verifyOtp": "Verify Code",
     "verifying": "Verifying...",
     "tryDifferentPhone": "Try a different number",
