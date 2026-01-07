@@ -11,31 +11,15 @@ async function throwIfResNotOk(res: Response) {
 async function getAuthHeaders(): Promise<Record<string, string>> {
   try {
     // First get the current session
-    const { data: { session: currentSession } } = await supabase.auth.getSession();
+    const { data: { session: currentSession }, error: sessionError } = await supabase.auth.getSession();
     
-    if (!currentSession) {
-      console.log('[Auth] No session found');
+    if (sessionError || !currentSession) {
+      // Session is invalid or expired - user needs to log in again
       return {};
     }
     
-    // Check if token needs refresh (expires within 5 minutes)
-    const expiresAt = currentSession.expires_at;
-    const now = Math.floor(Date.now() / 1000);
-    const needsRefresh = expiresAt && (expiresAt - now < 300);
-    
-    if (needsRefresh) {
-      console.log('[Auth] Token near expiry, refreshing...');
-      const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
-      
-      if (!refreshError && refreshData.session?.access_token) {
-        console.log('[Auth] Token refreshed successfully');
-        return { Authorization: `Bearer ${refreshData.session.access_token}` };
-      } else {
-        console.log('[Auth] Refresh failed:', refreshError?.message);
-      }
-    }
-    
-    // Use current session token
+    // Use the current access token directly
+    // Supabase client handles token refresh automatically via onAuthStateChange
     return { Authorization: `Bearer ${currentSession.access_token}` };
   } catch (error) {
     console.error('[Auth] Error getting auth headers:', error);

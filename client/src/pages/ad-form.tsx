@@ -139,7 +139,7 @@ export default function AdForm({ mode }: AdFormProps) {
       forDailyRent: false,
       typeAttributes: {
         ceilingHeight: '',
-        loadingDocks: '',
+        loadingDocks: 0,
         temperatureControl: '',
         hazardLevel: '',
         flooringType: '',
@@ -255,10 +255,15 @@ export default function AdForm({ mode }: AdFormProps) {
   };
 
   const generateSlug = (title: string) => {
-    return title
+    // Generate a slug with only ASCII characters (database constraint requirement)
+    const latinChars = title
       .toLowerCase()
-      .replace(/[^a-z0-9\u0600-\u06FF]+/g, '-')
+      .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
+    
+    // If title is non-Latin (e.g., Arabic), generate a unique slug
+    const uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
+    return latinChars.length >= 3 ? latinChars : `property-${uniqueId}`;
   };
 
   const isPending = createMutation.isPending || updateMutation.isPending;
