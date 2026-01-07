@@ -46,7 +46,7 @@ const adFormSchema = z.object({
   areaInM2: z.string().optional(),
   availableDateFrom: z.string().optional(),
   availableDateTo: z.string().optional(),
-  phoneNumber: z.string().min(9, 'Phone number is required'),
+  phoneNumber: z.string().optional(),
   phoneCountryCode: z.string().default('+966'),
   municipalityLicense: z.boolean().default(false),
   civilDefenseLicense: z.boolean().default(false),
@@ -982,31 +982,6 @@ export default function AdForm({ mode }: AdFormProps) {
                       )}
                     />
                   </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>{t('adForm.contact')}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <FormField
-                    control={form.control}
-                    name="phoneNumber"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t('adForm.phoneNumber')}</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder={t('adForm.phonePlaceholder')}
-                            data-testid="input-ad-phone"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                 </CardContent>
               </Card>
 
