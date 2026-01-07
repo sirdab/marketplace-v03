@@ -89,15 +89,19 @@ export default function AuthPage() {
 
   const onPhoneSubmit = async (data: PhoneFormData) => {
     const fullPhone = `+966${data.phone.replace(/^0/, '')}`;
+    console.log('[DEBUG] Sending OTP to:', fullPhone);
     const { error } = await sendPhoneOtp(fullPhone);
+    console.log('[DEBUG] OTP response - error:', error);
     
     if (error) {
+      console.error('[DEBUG] OTP send failed:', error.message, error);
       toast({
         variant: 'destructive',
         title: t('common.error'),
         description: error.message,
       });
     } else {
+      console.log('[DEBUG] OTP sent successfully to:', fullPhone);
       setOtpSent(true);
       setSentToPhone(fullPhone);
       toast({
@@ -108,7 +112,7 @@ export default function AuthPage() {
   };
 
   const handleVerifyOtp = async () => {
-    if (otpValue.length !== 4) return;
+    if (otpValue.length !== 6) return;
     
     setIsVerifying(true);
     const { error } = await verifyPhoneOtp(sentToPhone, otpValue);
@@ -195,11 +199,11 @@ export default function AuthPage() {
                       </p>
                       <div className="flex justify-center" dir="ltr">
                         <InputOTP
-                          maxLength={4}
+                          maxLength={6}
                           value={otpValue}
                           onChange={(val) => {
                             setOtpValue(val);
-                            if (val.length === 4) {
+                            if (val.length === 6) {
                               setTimeout(() => {
                                 document.querySelector<HTMLButtonElement>('[data-testid="button-verify-otp"]')?.click();
                               }, 100);
@@ -214,13 +218,15 @@ export default function AuthPage() {
                             <InputOTPSlot index={1} />
                             <InputOTPSlot index={2} />
                             <InputOTPSlot index={3} />
+                            <InputOTPSlot index={4} />
+                            <InputOTPSlot index={5} />
                           </InputOTPGroup>
                         </InputOTP>
                       </div>
                       <Button
                         className="w-full"
                         onClick={handleVerifyOtp}
-                        disabled={otpValue.length !== 4 || isVerifying}
+                        disabled={otpValue.length !== 6 || isVerifying}
                         data-testid="button-verify-otp"
                       >
                         {isVerifying ? (
