@@ -58,6 +58,7 @@ const adFormSchema = z.object({
   forRent: z.boolean().default(true),
   forSale: z.boolean().default(false),
   forDailyRent: z.boolean().default(false),
+  forLeaseTransfer: z.boolean().default(false),
   typeAttributes: z.object({
     ceilingHeight: z.string().optional(),
     loadingDocks: z.number().optional(),
@@ -68,20 +69,13 @@ const adFormSchema = z.object({
     flooringType: z.string().optional(),
     hasLoadingRamps: z.boolean().optional(),
     hasSfdaLicense: z.boolean().optional(),
-    floorStrength: z.string().optional(),
-    powerCapacity: z.string().optional(),
-    hasVentilation: z.boolean().optional(),
-    hasThreePhase: z.boolean().optional(),
     unitSize: z.string().optional(),
     accessHours: z.string().optional(),
     hasClimateControl: z.boolean().optional(),
     hasSecuritySystem: z.boolean().optional(),
     facadeWidth: z.string().optional(),
-    footTraffic: z.string().optional(),
-    hasDisplayWindow: z.boolean().optional(),
-    hasParking: z.boolean().optional(),
   }).default({}),
-}).refine((data) => data.forRent || data.forSale || data.forDailyRent, {
+}).refine((data) => data.forRent || data.forSale || data.forDailyRent || data.forLeaseTransfer, {
   message: 'At least one transaction type must be selected',
   path: ['forRent'],
 });
@@ -137,6 +131,7 @@ export default function AdForm({ mode }: AdFormProps) {
       forRent: true,
       forSale: false,
       forDailyRent: false,
+      forLeaseTransfer: false,
       typeAttributes: {
         ceilingHeight: '',
         loadingDocks: 0,
@@ -147,18 +142,11 @@ export default function AdForm({ mode }: AdFormProps) {
         hasRacking: false,
         hasLoadingRamps: false,
         hasSfdaLicense: false,
-        floorStrength: '',
-        powerCapacity: '',
-        hasVentilation: false,
-        hasThreePhase: false,
         unitSize: '',
         accessHours: '',
         hasClimateControl: false,
         hasSecuritySystem: false,
         facadeWidth: '',
-        footTraffic: '',
-        hasDisplayWindow: false,
-        hasParking: false,
       },
     },
   });
@@ -187,6 +175,7 @@ export default function AdForm({ mode }: AdFormProps) {
         forRent: existingAd.forRent ?? true,
         forSale: existingAd.forSale ?? false,
         forDailyRent: existingAd.forDailyRent ?? false,
+        forLeaseTransfer: ((existingAd.typeAttributes as Record<string, unknown>)?.forLeaseTransfer as boolean) ?? false,
         typeAttributes: (existingAd.typeAttributes as Record<string, unknown>) || {},
       });
     }
@@ -247,6 +236,11 @@ export default function AdForm({ mode }: AdFormProps) {
     const isValidSlug = /^[a-z0-9]+$/.test(validSlug) && validSlug.length === 21;
     if (!isValidSlug) {
       validSlug = generateSlug(data.title);
+    }
+
+    // Store forLeaseTransfer in typeAttributes until the database column is added
+    if (data.forLeaseTransfer) {
+      cleanedTypeAttributes.forLeaseTransfer = true;
     }
 
     const payload = {
@@ -456,6 +450,23 @@ export default function AdForm({ mode }: AdFormProps) {
                         </FormItem>
                       )}
                     />
+
+                    <FormField
+                      control={form.control}
+                      name="forLeaseTransfer"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-center gap-3">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                              data-testid="checkbox-for-lease-transfer"
+                            />
+                          </FormControl>
+                          <FormLabel className="!mt-0">{t('adForm.forLeaseTransfer')}</FormLabel>
+                        </FormItem>
+                      )}
+                    />
                   </div>
                   <FormField
                     control={form.control}
@@ -643,68 +654,7 @@ export default function AdForm({ mode }: AdFormProps) {
                     )}
 
                     {watchedType === 'workshop' && (
-                      <>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField
-                            control={form.control}
-                            name="typeAttributes.floorStrength"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t('adForm.floorStrength')}</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="e.g., Heavy duty" data-testid="input-floor-strength" {...field} />
-                                </FormControl>
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="typeAttributes.powerCapacity"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t('adForm.powerCapacity')}</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="e.g., 100 kVA" data-testid="input-power-capacity" {...field} />
-                                </FormControl>
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        <div className="flex flex-wrap gap-6">
-                          <FormField
-                            control={form.control}
-                            name="typeAttributes.hasVentilation"
-                            render={({ field }) => (
-                              <FormItem className="flex flex-row items-center gap-3">
-                                <FormControl>
-                                  <Checkbox
-                                    checked={field.value ?? false}
-                                    onCheckedChange={field.onChange}
-                                    data-testid="checkbox-has-ventilation"
-                                  />
-                                </FormControl>
-                                <FormLabel className="!mt-0">{t('adForm.hasVentilation')}</FormLabel>
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="typeAttributes.hasThreePhase"
-                            render={({ field }) => (
-                              <FormItem className="flex flex-row items-center gap-3">
-                                <FormControl>
-                                  <Checkbox
-                                    checked={field.value ?? false}
-                                    onCheckedChange={field.onChange}
-                                    data-testid="checkbox-has-three-phase"
-                                  />
-                                </FormControl>
-                                <FormLabel className="!mt-0">{t('adForm.hasThreePhase')}</FormLabel>
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      </>
+                      <p className="text-sm text-muted-foreground">{t('adForm.noTypeSpecificFields')}</p>
                     )}
 
                     {watchedType === 'storage' && (
@@ -792,6 +742,7 @@ export default function AdForm({ mode }: AdFormProps) {
 
                     {watchedType === 'storefront' && (
                       <>
+                        <p className="text-sm text-muted-foreground">{t('adForm.storefrontFieldsOptional')}</p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <FormField
                             control={form.control}
@@ -802,61 +753,6 @@ export default function AdForm({ mode }: AdFormProps) {
                                 <FormControl>
                                   <Input placeholder="e.g., 10m" data-testid="input-facade-width" {...field} />
                                 </FormControl>
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="typeAttributes.footTraffic"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t('adForm.footTraffic')}</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value ?? ''}>
-                                  <FormControl>
-                                    <SelectTrigger data-testid="select-foot-traffic">
-                                      <SelectValue placeholder={t('adForm.selectFootTraffic')} />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    <SelectItem value="low">{t('adForm.trafficLow')}</SelectItem>
-                                    <SelectItem value="medium">{t('adForm.trafficMedium')}</SelectItem>
-                                    <SelectItem value="high">{t('adForm.trafficHigh')}</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        <div className="flex flex-wrap gap-6">
-                          <FormField
-                            control={form.control}
-                            name="typeAttributes.hasDisplayWindow"
-                            render={({ field }) => (
-                              <FormItem className="flex flex-row items-center gap-3">
-                                <FormControl>
-                                  <Checkbox
-                                    checked={field.value ?? false}
-                                    onCheckedChange={field.onChange}
-                                    data-testid="checkbox-has-display-window"
-                                  />
-                                </FormControl>
-                                <FormLabel className="!mt-0">{t('adForm.hasDisplayWindow')}</FormLabel>
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="typeAttributes.hasParking"
-                            render={({ field }) => (
-                              <FormItem className="flex flex-row items-center gap-3">
-                                <FormControl>
-                                  <Checkbox
-                                    checked={field.value ?? false}
-                                    onCheckedChange={field.onChange}
-                                    data-testid="checkbox-has-parking"
-                                  />
-                                </FormControl>
-                                <FormLabel className="!mt-0">{t('adForm.hasParking')}</FormLabel>
                               </FormItem>
                             )}
                           />

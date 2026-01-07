@@ -124,7 +124,7 @@ export const ads = pgTable("ads", {
   forRent: boolean("for_rent").default(true),
   forSale: boolean("for_sale").default(false),
   forDailyRent: boolean("for_daily_rent").default(false),
-  forLeaseTransfer: boolean("for_lease_transfer").default(false),
+  // Note: forLeaseTransfer is handled as a computed property from typeAttributes until the database column is added
   // Type-specific attributes stored as JSONB
   typeAttributes: jsonb("type_attributes"),
 });
@@ -235,6 +235,7 @@ export interface Property {
   forRent: boolean;
   forSale: boolean;
   forDailyRent: boolean;
+  forLeaseTransfer: boolean;
   price: number; // Display price (converted based on payment term)
   priceUnit: string; // Display unit: "year", "month", or "day"
   annualPrice: number; // Raw annual price for filters/sorting
@@ -393,6 +394,9 @@ export function adToProperty(ad: Ad): Property {
   const forRent = ad.forRent ?? true;
   const forSale = ad.forSale ?? false;
   const forDailyRent = ad.forDailyRent ?? false;
+  // forLeaseTransfer is stored in typeAttributes until the database column is added
+  const typeAttrs = ad.typeAttributes as Record<string, unknown> | null;
+  const forLeaseTransfer = (typeAttrs?.forLeaseTransfer as boolean) ?? false;
 
   return {
     id: String(ad.id),
@@ -404,6 +408,7 @@ export function adToProperty(ad: Ad): Property {
     forRent,
     forSale,
     forDailyRent,
+    forLeaseTransfer,
     price: displayPrice,
     priceUnit,
     annualPrice,

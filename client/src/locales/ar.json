@@ -382,6 +382,8 @@
     "hasDisplayWindow": "نافذة عرض",
     "hasParking": "موقف سيارات",
     "warehouseFieldsOptional": "جميع الحقول أدناه اختيارية - قم بملء ما تعرفه",
+    "storefrontFieldsOptional": "جميع الحقول أدناه اختيارية - قم بملء ما تعرفه",
+    "noTypeSpecificFields": "لا توجد حقول إضافية لهذا النوع من العقارات",
     "temperatureControl": "درجة الحرارة",
     "selectTemperature": "اختر نوع الحرارة",
     "tempAmbient": "بدون تبريد",

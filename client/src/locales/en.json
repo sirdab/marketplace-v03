@@ -382,6 +382,8 @@
     "hasDisplayWindow": "Display Window",
     "hasParking": "Parking Available",
     "warehouseFieldsOptional": "All fields below are optional - fill in what you know",
+    "storefrontFieldsOptional": "All fields below are optional - fill in what you know",
+    "noTypeSpecificFields": "No additional fields for this property type",
     "temperatureControl": "Temperature Control",
     "selectTemperature": "Select temperature type",
     "tempAmbient": "Ambient (no cooling)",
