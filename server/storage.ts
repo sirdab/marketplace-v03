@@ -362,6 +362,21 @@ export class DatabaseStorage implements IStorage {
     return false;
   }
 
+  // Fallback cities for when database table doesn't exist
+  private static readonly FALLBACK_CITIES: City[] = [
+    { id: 1, nameEn: 'Riyadh', nameAr: 'الرياض', slug: 'riyadh', region: 'Riyadh', isActive: true },
+    { id: 2, nameEn: 'Jeddah', nameAr: 'جدة', slug: 'jeddah', region: 'Makkah', isActive: true },
+    { id: 3, nameEn: 'Dammam', nameAr: 'الدمام', slug: 'dammam', region: 'Eastern', isActive: true },
+    { id: 4, nameEn: 'Al Khobar', nameAr: 'الخبر', slug: 'al-khobar', region: 'Eastern', isActive: true },
+    { id: 5, nameEn: 'Al Ahsa', nameAr: 'الأحساء', slug: 'al-ahsa', region: 'Eastern', isActive: true },
+    { id: 6, nameEn: 'Abha', nameAr: 'أبها', slug: 'abha', region: 'Asir', isActive: true },
+    { id: 7, nameEn: 'Buraydah', nameAr: 'بريدة', slug: 'buraydah', region: 'Qassim', isActive: true },
+    { id: 8, nameEn: 'Mecca', nameAr: 'مكة المكرمة', slug: 'mecca', region: 'Makkah', isActive: true },
+    { id: 9, nameEn: 'Medina', nameAr: 'المدينة المنورة', slug: 'medina', region: 'Medina', isActive: true },
+    { id: 10, nameEn: 'Tabuk', nameAr: 'تبوك', slug: 'tabuk', region: 'Tabuk', isActive: true },
+    { id: 11, nameEn: 'Khamis Mushait', nameAr: 'خميس مشيط', slug: 'khamis-mushait', region: 'Asir', isActive: true },
+  ];
+
   // Cities methods
   async getCities(): Promise<City[]> {
     try {
@@ -369,10 +384,10 @@ export class DatabaseStorage implements IStorage {
         .select()
         .from(cities)
         .where(eq(cities.isActive, true));
-      return result;
+      return result.length > 0 ? result : DatabaseStorage.FALLBACK_CITIES;
     } catch (error) {
       console.error("Error fetching cities:", error);
-      return [];
+      return DatabaseStorage.FALLBACK_CITIES;
     }
   }
 

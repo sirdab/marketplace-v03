@@ -174,9 +174,14 @@ export async function registerRoutes(
         ...req.body,
         userId: req.user!.id,
         country: req.body.country || 'Saudi Arabia',
+        district: req.body.district || '-',
+        address: req.body.address || '-',
+        phoneNumber: req.body.phoneNumber || '000000000',
+        phoneCountryCode: req.body.phoneCountryCode || '+966',
         published: req.body.published ?? true,
         deleted: false,
         verified: false,
+        typeAttributes: req.body.typeAttributes || {},
       };
       
       console.log("Ad data after processing:", JSON.stringify(adData, null, 2));
