@@ -242,8 +242,16 @@ export default function AdForm({ mode }: AdFormProps) {
       }
     }
 
+    // Ensure slug is always valid ASCII (database constraint requirement)
+    let validSlug = data.slug;
+    const hasOnlyAscii = /^[a-z0-9-]+$/.test(validSlug);
+    if (!validSlug || validSlug.length < 3 || !hasOnlyAscii) {
+      validSlug = generateSlug(data.title);
+    }
+
     const payload = {
       ...data,
+      slug: validSlug,
       typeAttributes: Object.keys(cleanedTypeAttributes).length > 0 ? cleanedTypeAttributes : {},
     };
 
