@@ -224,9 +224,9 @@ export default function AdForm({ mode }: AdFormProps) {
   const onSubmit = (data: AdFormData) => {
     const typeAttributesByCategory: Record<string, string[]> = {
       warehouse: ['ceilingHeight', 'loadingDocks', 'hasForklift', 'hasRacking', 'temperatureControl', 'hazardLevel', 'flooringType', 'hasLoadingRamps', 'hasSfdaLicense'],
-      workshop: ['floorStrength', 'powerCapacity', 'hasVentilation', 'hasThreePhase'],
+      workshop: [],
       storage: ['unitSize', 'accessHours', 'hasClimateControl', 'hasSecuritySystem'],
-      storefront: ['facadeWidth', 'footTraffic', 'hasDisplayWindow', 'hasParking'],
+      storefront: ['facadeWidth'],
     };
 
     const allowedFields = typeAttributesByCategory[data.type || 'warehouse'] || [];

@@ -124,6 +124,7 @@ export const ads = pgTable("ads", {
   forRent: boolean("for_rent").default(true),
   forSale: boolean("for_sale").default(false),
   forDailyRent: boolean("for_daily_rent").default(false),
+  forLeaseTransfer: boolean("for_lease_transfer").default(false),
   // Type-specific attributes stored as JSONB
   typeAttributes: jsonb("type_attributes"),
 });
