@@ -191,6 +191,18 @@ export function getTypeAttributesSchema(category: PropertyCategory) {
   }
 }
 
+// Cities table - matches Supabase cities table
+export const cities = pgTable("cities", {
+  id: bigint("id", { mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+  nameEn: text("name_en").notNull(),
+  nameAr: text("name_ar").notNull(),
+  slug: text("slug").notNull(),
+  region: text("region"),
+  isActive: boolean("is_active").default(true),
+});
+
+export type City = typeof cities.$inferSelect;
+
 // Blog posts table - matches Supabase blog_posts table
 export const blogPosts = pgTable("blog_posts", {
   id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),

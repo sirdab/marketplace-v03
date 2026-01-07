@@ -15,6 +15,7 @@ import MyAds from "@/pages/my-ads";
 import AdForm from "@/pages/ad-form";
 import AdDetail from "@/pages/ad-detail";
 import RegionAds from "@/pages/region-ads";
+import AdminDashboard from "@/pages/admin";
 import AuthPage from "@/pages/auth";
 import NotFound from "@/pages/not-found";
 
@@ -50,6 +51,14 @@ function ProtectedEditAd() {
   );
 }
 
+function ProtectedAdmin() {
+  return (
+    <ProtectedRoute>
+      <AdminDashboard />
+    </ProtectedRoute>
+  );
+}
+
 function Router() {
   return (
     <Switch>
@@ -65,6 +74,7 @@ function Router() {
       <Route path="/ads/region/sa/:city" component={RegionAds} />
       <Route path="/ads/:id/edit" component={ProtectedEditAd} />
       <Route path="/ads/:id" component={AdDetail} />
+      <Route path="/admin" component={ProtectedAdmin} />
       <Route path="/auth" component={AuthPage} />
       <Route component={NotFound} />
     </Switch>

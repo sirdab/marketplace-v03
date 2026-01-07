@@ -31,7 +31,7 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, ArrowLeft, ArrowRight } from 'lucide-react';
-import type { Ad } from '@shared/schema';
+import type { Ad, City } from '@shared/schema';
 
 const adFormSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters'),
@@ -99,6 +99,10 @@ export default function AdForm({ mode }: AdFormProps) {
       return response.json();
     },
     enabled: mode === 'edit' && !!params.id,
+  });
+
+  const { data: citiesList = [] } = useQuery<City[]>({
+    queryKey: ['/api/cities'],
   });
 
   const form = useForm<AdFormData>({
@@ -208,13 +212,13 @@ export default function AdForm({ mode }: AdFormProps) {
 
     const payload = {
       ...data,
-      typeAttributes: Object.keys(cleanedTypeAttributes).length > 0 ? cleanedTypeAttributes : null,
+      typeAttributes: Object.keys(cleanedTypeAttributes).length > 0 ? cleanedTypeAttributes : {},
     };
 
     if (mode === 'create') {
-      createMutation.mutate(payload);
+      createMutation.mutate(payload as AdFormData);
     } else {
-      updateMutation.mutate(payload);
+      updateMutation.mutate(payload as AdFormData);
     }
   };
 
@@ -719,16 +723,15 @@ export default function AdForm({ mode }: AdFormProps) {
                           <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
                               <SelectTrigger data-testid="select-ad-city">
-                                <SelectValue />
+                                <SelectValue placeholder={t('adForm.selectCity')} />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="Riyadh">{t('cities.riyadh')}</SelectItem>
-                              <SelectItem value="Jeddah">{t('cities.jeddah')}</SelectItem>
-                              <SelectItem value="Dammam">{t('cities.dammam')}</SelectItem>
-                              <SelectItem value="Al Khobar">{t('cities.alKhobar')}</SelectItem>
-                              <SelectItem value="Makkah">{t('cities.makkah')}</SelectItem>
-                              <SelectItem value="Abha">{t('cities.abha')}</SelectItem>
+                              {citiesList.map((city) => (
+                                <SelectItem key={city.id} value={city.slug}>
+                                  {isRTL ? city.nameAr : city.nameEn}
+                                </SelectItem>
+                              ))}
                             </SelectContent>
                           </Select>
                           <FormMessage />

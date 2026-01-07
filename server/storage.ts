@@ -11,7 +11,9 @@ import {
   type PropertyFilters,
   type Ad,
   type InsertAd,
+  type City,
   ads,
+  cities,
   adToProperty,
 } from "@shared/schema";
 import { db } from "./db";
@@ -56,6 +58,12 @@ export interface IStorage {
   getSavedProperties(userId: string): Promise<SavedProperty[]>;
   saveProperty(saved: InsertSavedProperty): Promise<SavedProperty>;
   unsaveProperty(userId: string, propertyId: string): Promise<boolean>;
+
+  // Cities
+  getCities(): Promise<City[]>;
+
+  // Admin - all ads
+  getAllAds(): Promise<Ad[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -352,6 +360,35 @@ export class DatabaseStorage implements IStorage {
       return true;
     }
     return false;
+  }
+
+  // Cities methods
+  async getCities(): Promise<City[]> {
+    try {
+      const result = await db
+        .select()
+        .from(cities)
+        .where(eq(cities.isActive, true));
+      return result;
+    } catch (error) {
+      console.error("Error fetching cities:", error);
+      return [];
+    }
+  }
+
+  // Admin methods
+  async getAllAds(): Promise<Ad[]> {
+    try {
+      const result = await db
+        .select()
+        .from(ads)
+        .where(eq(ads.deleted, false))
+        .orderBy(desc(ads.createdAt));
+      return result;
+    } catch (error) {
+      console.error("Error fetching all ads:", error);
+      return [];
+    }
   }
 }
 

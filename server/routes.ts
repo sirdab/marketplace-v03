@@ -359,6 +359,28 @@ export async function registerRoutes(
     }
   });
 
+  // Cities endpoint
+  app.get("/api/cities", async (req, res) => {
+    try {
+      const cities = await storage.getCities();
+      res.json(cities);
+    } catch (error) {
+      console.error("Error fetching cities:", error);
+      res.status(500).json({ error: "Failed to fetch cities" });
+    }
+  });
+
+  // Admin endpoints - all ads (requires auth)
+  app.get("/api/admin/ads", requireAuth, async (req, res) => {
+    try {
+      const allAds = await storage.getAllAds();
+      res.json(allAds);
+    } catch (error) {
+      console.error("Error fetching all ads:", error);
+      res.status(500).json({ error: "Failed to fetch ads" });
+    }
+  });
+
   // Categories metadata endpoint
   app.get("/api/categories", async (req, res) => {
     const categories = [
