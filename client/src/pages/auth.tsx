@@ -9,8 +9,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Mail, CheckCircle } from 'lucide-react';
+import { Loader2, Mail, CheckCircle, Phone } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 
@@ -18,17 +20,27 @@ const emailSchema = z.object({
   email: z.string().email('Valid email is required'),
 });
 
+const phoneSchema = z.object({
+  phone: z.string().min(9, 'Valid phone number is required').max(15),
+});
+
 type EmailFormData = z.infer<typeof emailSchema>;
+type PhoneFormData = z.infer<typeof phoneSchema>;
 
 export default function AuthPage() {
   const { t } = useTranslation();
   const [, navigate] = useLocation();
   const searchString = useSearch();
-  const { sendMagicLink, user, loading: authLoading } = useAuth();
+  const { sendMagicLink, sendPhoneOtp, verifyPhoneOtp, user, loading: authLoading } = useAuth();
   const { toast } = useToast();
   
   const [emailSent, setEmailSent] = useState(false);
   const [sentToEmail, setSentToEmail] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [sentToPhone, setSentToPhone] = useState('');
+  const [otpValue, setOtpValue] = useState('');
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [authMethod, setAuthMethod] = useState<'email' | 'phone'>('phone');
 
   const returnUrl = new URLSearchParams(searchString).get('returnUrl') || '/dashboard';
 
@@ -38,9 +50,14 @@ export default function AuthPage() {
     }
   }, [user, authLoading, navigate, returnUrl]);
 
-  const form = useForm<EmailFormData>({
+  const emailForm = useForm<EmailFormData>({
     resolver: zodResolver(emailSchema),
     defaultValues: { email: '' },
+  });
+
+  const phoneForm = useForm<PhoneFormData>({
+    resolver: zodResolver(phoneSchema),
+    defaultValues: { phone: '' },
   });
 
   if (authLoading) {
@@ -55,8 +72,7 @@ export default function AuthPage() {
     return null;
   }
 
-  const onSubmit = async (data: EmailFormData) => {
-    // Pass only the path - sendMagicLink will construct the full URL
+  const onEmailSubmit = async (data: EmailFormData) => {
     const { error } = await sendMagicLink(data.email, returnUrl);
     
     if (error) {
@@ -71,6 +87,54 @@ export default function AuthPage() {
     }
   };
 
+  const onPhoneSubmit = async (data: PhoneFormData) => {
+    const fullPhone = `+966${data.phone.replace(/^0/, '')}`;
+    const { error } = await sendPhoneOtp(fullPhone);
+    
+    if (error) {
+      toast({
+        variant: 'destructive',
+        title: t('common.error'),
+        description: error.message,
+      });
+    } else {
+      setOtpSent(true);
+      setSentToPhone(fullPhone);
+      toast({
+        title: t('auth.otpSent'),
+        description: t('auth.otpSentDesc'),
+      });
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (otpValue.length !== 6) return;
+    
+    setIsVerifying(true);
+    const { error } = await verifyPhoneOtp(sentToPhone, otpValue);
+    setIsVerifying(false);
+    
+    if (error) {
+      toast({
+        variant: 'destructive',
+        title: t('common.error'),
+        description: error.message,
+      });
+      setOtpValue('');
+    } else {
+      toast({
+        title: t('auth.loginSuccess'),
+      });
+    }
+  };
+
+  const resetPhoneFlow = () => {
+    setOtpSent(false);
+    setSentToPhone('');
+    setOtpValue('');
+    phoneForm.reset();
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -83,7 +147,7 @@ export default function AuthPage() {
             <CardDescription className="text-center">
               {emailSent 
                 ? t('auth.magicLinkSent') 
-                : t('auth.magicLinkDescription')
+                : t('auth.signInDescription')
               }
             </CardDescription>
           </CardHeader>
@@ -103,7 +167,7 @@ export default function AuthPage() {
                   variant="outline"
                   onClick={() => {
                     setEmailSent(false);
-                    form.reset();
+                    emailForm.reset();
                   }}
                   data-testid="button-try-different-email"
                 >
@@ -111,48 +175,158 @@ export default function AuthPage() {
                 </Button>
               </div>
             ) : (
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t('auth.email')}</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input
-                              type="email"
-                              placeholder="you@example.com"
-                              className="pl-10"
-                              data-testid="input-email"
-                              {...field}
-                            />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+              <Tabs value={authMethod} onValueChange={(v) => setAuthMethod(v as 'email' | 'phone')} className="w-full">
+                <TabsList className="grid w-full grid-cols-2 mb-4">
+                  <TabsTrigger value="phone" data-testid="tab-phone">
+                    <Phone className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                    {t('auth.phone')}
+                  </TabsTrigger>
+                  <TabsTrigger value="email" data-testid="tab-email">
+                    <Mail className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                    {t('auth.email')}
+                  </TabsTrigger>
+                </TabsList>
 
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={form.formState.isSubmitting}
-                    data-testid="button-send-magic-link"
-                  >
-                    {form.formState.isSubmitting ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        {t('auth.sendingLink')}
-                      </>
-                    ) : (
-                      t('auth.sendMagicLink')
-                    )}
-                  </Button>
-                </form>
-              </Form>
+                <TabsContent value="phone">
+                  {otpSent ? (
+                    <div className="space-y-4">
+                      <p className="text-center text-muted-foreground text-sm">
+                        {t('auth.enterOtp')} <strong dir="ltr">{sentToPhone}</strong>
+                      </p>
+                      <div className="flex justify-center" dir="ltr">
+                        <InputOTP
+                          maxLength={6}
+                          value={otpValue}
+                          onChange={setOtpValue}
+                          data-testid="input-otp"
+                        >
+                          <InputOTPGroup>
+                            <InputOTPSlot index={0} />
+                            <InputOTPSlot index={1} />
+                            <InputOTPSlot index={2} />
+                            <InputOTPSlot index={3} />
+                            <InputOTPSlot index={4} />
+                            <InputOTPSlot index={5} />
+                          </InputOTPGroup>
+                        </InputOTP>
+                      </div>
+                      <Button
+                        className="w-full"
+                        onClick={handleVerifyOtp}
+                        disabled={otpValue.length !== 6 || isVerifying}
+                        data-testid="button-verify-otp"
+                      >
+                        {isVerifying ? (
+                          <>
+                            <Loader2 className="ltr:mr-2 rtl:ml-2 h-4 w-4 animate-spin" />
+                            {t('auth.verifying')}
+                          </>
+                        ) : (
+                          t('auth.verifyOtp')
+                        )}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        onClick={resetPhoneFlow}
+                        data-testid="button-try-different-phone"
+                      >
+                        {t('auth.tryDifferentPhone')}
+                      </Button>
+                    </div>
+                  ) : (
+                    <Form {...phoneForm}>
+                      <form onSubmit={phoneForm.handleSubmit(onPhoneSubmit)} className="space-y-4">
+                        <FormField
+                          control={phoneForm.control}
+                          name="phone"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{t('auth.phoneNumber')}</FormLabel>
+                              <FormControl>
+                                <div className="relative flex" dir="ltr">
+                                  <span className="inline-flex items-center px-3 rounded-s-md border border-e-0 border-input bg-muted text-muted-foreground text-sm">
+                                    +966
+                                  </span>
+                                  <Input
+                                    type="tel"
+                                    placeholder="5XXXXXXXX"
+                                    className="rounded-s-none"
+                                    data-testid="input-phone"
+                                    {...field}
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <Button
+                          type="submit"
+                          className="w-full"
+                          disabled={phoneForm.formState.isSubmitting}
+                          data-testid="button-send-otp"
+                        >
+                          {phoneForm.formState.isSubmitting ? (
+                            <>
+                              <Loader2 className="ltr:mr-2 rtl:ml-2 h-4 w-4 animate-spin" />
+                              {t('auth.sendingOtp')}
+                            </>
+                          ) : (
+                            t('auth.sendOtp')
+                          )}
+                        </Button>
+                      </form>
+                    </Form>
+                  )}
+                </TabsContent>
+
+                <TabsContent value="email">
+                  <Form {...emailForm}>
+                    <form onSubmit={emailForm.handleSubmit(onEmailSubmit)} className="space-y-4">
+                      <FormField
+                        control={emailForm.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t('auth.email')}</FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                <Input
+                                  type="email"
+                                  placeholder="you@example.com"
+                                  className="pl-10"
+                                  data-testid="input-email"
+                                  {...field}
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <Button
+                        type="submit"
+                        className="w-full"
+                        disabled={emailForm.formState.isSubmitting}
+                        data-testid="button-send-magic-link"
+                      >
+                        {emailForm.formState.isSubmitting ? (
+                          <>
+                            <Loader2 className="ltr:mr-2 rtl:ml-2 h-4 w-4 animate-spin" />
+                            {t('auth.sendingLink')}
+                          </>
+                        ) : (
+                          t('auth.sendMagicLink')
+                        )}
+                      </Button>
+                    </form>
+                  </Form>
+                </TabsContent>
+              </Tabs>
             )}
           </CardContent>
         </Card>

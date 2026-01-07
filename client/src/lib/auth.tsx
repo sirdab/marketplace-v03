@@ -7,6 +7,8 @@ interface AuthContextType {
   session: Session | null;
   loading: boolean;
   sendMagicLink: (email: string, redirectTo?: string) => Promise<{ error: AuthError | null }>;
+  sendPhoneOtp: (phone: string) => Promise<{ error: AuthError | null }>;
+  verifyPhoneOtp: (phone: string, token: string) => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
 }
 
@@ -37,16 +39,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let redirectUrl: string;
     try {
       const path = redirectTo || '/dashboard';
-      // If already an absolute URL, use it directly
       if (path.startsWith('http://') || path.startsWith('https://')) {
         redirectUrl = path;
       } else {
-        // Otherwise, construct full URL from path
         const normalizedPath = path.startsWith('/') ? path : `/${path}`;
         redirectUrl = `${window.location.origin}${normalizedPath}`;
       }
     } catch {
-      // Fallback to default dashboard URL
       redirectUrl = `${window.location.origin}/dashboard`;
     }
     
@@ -59,12 +58,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { error };
   };
 
+  const sendPhoneOtp = async (phone: string) => {
+    const { error } = await supabase.auth.signInWithOtp({
+      phone,
+    });
+    return { error };
+  };
+
+  const verifyPhoneOtp = async (phone: string, token: string) => {
+    const { error } = await supabase.auth.verifyOtp({
+      phone,
+      token,
+      type: 'sms',
+    });
+    return { error };
+  };
+
   const signOut = async () => {
     await supabase.auth.signOut();
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, sendMagicLink, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, sendMagicLink, sendPhoneOtp, verifyPhoneOtp, signOut }}>
       {children}
     </AuthContext.Provider>
   );

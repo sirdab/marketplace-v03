@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
 import { MapPin, Ruler, Heart, CheckCircle, Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,6 +14,7 @@ interface PropertyCardProps {
 
 export function PropertyCard({ property, isSaved = false, onToggleSave }: PropertyCardProps) {
   const { t, i18n } = useTranslation();
+  const [, navigate] = useLocation();
   const isArabic = i18n.language === 'ar';
   
   const formattedPrice = new Intl.NumberFormat(isArabic ? "ar-SA" : "en-SA", {
@@ -101,11 +102,18 @@ export function PropertyCard({ property, isSaved = false, onToggleSave }: Proper
                 {t('common.viewDetails')}
               </Button>
             </div>
-            <Link href={`/property/${property.id}?action=visit`} onClick={(e) => e.stopPropagation()}>
-              <Button size="icon" variant="secondary" data-testid={`button-visit-${property.id}`}>
-                <Calendar className="h-4 w-4" />
-              </Button>
-            </Link>
+            <Button 
+              size="icon" 
+              variant="secondary" 
+              data-testid={`button-visit-${property.id}`}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                navigate(`/property/${property.id}?action=visit`);
+              }}
+            >
+              <Calendar className="h-4 w-4" />
+            </Button>
           </div>
         </CardContent>
       </Card>
