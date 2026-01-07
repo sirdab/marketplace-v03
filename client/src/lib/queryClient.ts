@@ -9,8 +9,27 @@ async function throwIfResNotOk(res: Response) {
 }
 
 async function getAuthHeaders(): Promise<Record<string, string>> {
-  const { data: { session } } = await supabase.auth.getSession();
+  // First try to refresh the session if needed
+  const { data: { session }, error } = await supabase.auth.getSession();
+  
+  if (error) {
+    console.error('Error getting session:', error);
+    return {};
+  }
+  
   if (session?.access_token) {
+    // Check if token is about to expire (within 60 seconds) and refresh
+    const expiresAt = session.expires_at;
+    const now = Math.floor(Date.now() / 1000);
+    
+    if (expiresAt && expiresAt - now < 60) {
+      // Token is about to expire, try to refresh
+      const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
+      if (!refreshError && refreshData.session?.access_token) {
+        return { Authorization: `Bearer ${refreshData.session.access_token}` };
+      }
+    }
+    
     return { Authorization: `Bearer ${session.access_token}` };
   }
   return {};
