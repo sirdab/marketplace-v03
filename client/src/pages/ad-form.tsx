@@ -242,10 +242,10 @@ export default function AdForm({ mode }: AdFormProps) {
       }
     }
 
-    // Ensure slug is always valid ASCII (database constraint requirement)
+    // Ensure slug is exactly 21 ASCII characters (database constraint requirement)
     let validSlug = data.slug;
-    const hasOnlyAscii = /^[a-z0-9-]+$/.test(validSlug);
-    if (!validSlug || validSlug.length < 3 || !hasOnlyAscii) {
+    const isValidSlug = /^[a-z0-9]+$/.test(validSlug) && validSlug.length === 21;
+    if (!isValidSlug) {
       validSlug = generateSlug(data.title);
     }
 
@@ -262,16 +262,14 @@ export default function AdForm({ mode }: AdFormProps) {
     }
   };
 
-  const generateSlug = (title: string) => {
-    // Generate a slug with only ASCII characters (database constraint requirement)
-    const latinChars = title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
-    
-    // If title is non-Latin (e.g., Arabic), generate a unique slug
-    const uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
-    return latinChars.length >= 3 ? latinChars : `property-${uniqueId}`;
+  const generateSlug = (_title: string) => {
+    // Generate a slug with exactly 21 ASCII characters (database constraint requirement)
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    let slug = '';
+    for (let i = 0; i < 21; i++) {
+      slug += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return slug;
   };
 
   const isPending = createMutation.isPending || updateMutation.isPending;

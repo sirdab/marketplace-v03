@@ -170,13 +170,16 @@ export async function registerRoutes(
       console.log("Creating ad with body:", JSON.stringify(req.body, null, 2));
       console.log("User ID:", req.user!.id);
       
-      // Ensure slug is valid ASCII (database constraint requirement)
+      // Ensure slug is exactly 21 ASCII characters (database constraint requirement)
       let slug = req.body.slug || '';
-      const hasOnlyAscii = /^[a-z0-9-]+$/.test(slug);
-      if (!slug || slug.length < 3 || !hasOnlyAscii) {
-        // Generate a unique ASCII-only slug
-        const uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
-        slug = `property-${uniqueId}`;
+      const isValidSlug = /^[a-z0-9]+$/.test(slug) && slug.length === 21;
+      if (!isValidSlug) {
+        // Generate a unique 21-character ASCII slug
+        const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        slug = '';
+        for (let i = 0; i < 21; i++) {
+          slug += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
       }
       
       const adData = {
