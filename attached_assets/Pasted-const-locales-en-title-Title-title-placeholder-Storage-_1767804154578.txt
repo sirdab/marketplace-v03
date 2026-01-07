@@ -1,0 +1,208 @@
+const locales = {
+  en: {
+    "title": "Title *",
+    "title-placeholder": "Storage For Rent",
+    "title-hint": "A short title for your advert",
+
+    "description": "Description *",
+    "description-placeholder": "Size: 65000 m^2",
+    "description-hint": "List some features and notes about your advert.",
+
+    "notice": {
+      "success": {
+        "title": "Advert Published!",
+        "description": "Your advert has been published.",
+      },
+      "error": {
+        "title": "Something went wrong.",
+        "description": "Your advert was not published. Please try again.",
+      },
+    },
+
+    "sections": {
+      "overview": {
+        "title": "Overview",
+        "description": "Tell us about your advert.",
+      },
+      "image": {
+        "title": "Images",
+        "description": "Add some images for your warehouse.",
+      },
+      "location": {
+        "title": "Location",
+        "description": "Tell us where your warehouse is located.",
+        "country": "Country",
+        "city": "City",
+        "district": "District",
+        "address": "Address",
+      },
+      "licenses": {
+        "title": "Licenses",
+        "description": "Tell us about the licenses you have.",
+        "municipalityLicense": "Municipality License",
+        "civilDefenseLicense": "Civil Defense License",
+        "SFDAFoodLicense": "SFDA Food License",
+        "SFDACosmeticsLicense": "SFDA Cosmetics License",
+        "SFDAMedicalEquipmentLicense": "SFDA Medical Equipment License",
+        "SFDAPharmaLicense": "SFDA Pharma License",
+        "SFDAPetFoodLicense": "SFDA Pet Food License",
+        "SFDAPesticidesLicense": "SFDA Pesticides License",
+      },
+      "offer": {
+        "title": "Offer",
+        "description": "Payment and offer details.",
+        "price": "Price *",
+        "price-placeholder": "e.g. 130000",
+        "price-hint": "Price in SAR",
+        "payment-terms": "Payment Terms",
+        "payment-terms-hint": "e.g. 130000 monthly"
+      },
+      "details": {
+        "title": "Details",
+        "description": "Tell us about your warehouse.",
+        "type": "Type",
+        "temperature-settings": "Temperature Settings",
+        "hazard-level": "Hazard Level",
+        "flooring": "Flooring",
+        "forklift-availability": "Forklift Availability",
+        "racking-system": "Racking System",
+        "number-of-streets": "Number of Streets",
+        "number-of-doors": "Number of Doors",
+        "number-of-walls": "Number of Walls",
+        "area-in-m2": "Area in m^2",
+        "available-services": "Available Services",
+        "security-cameras": "Security Cameras",
+        "manual-ramp": "Manual Ramp",
+        "automatic-ramp": "Automatic Ramp",
+      }
+    },
+
+    "publish": "Publish",
+    "publish-edit": "Publish Changes",
+  },
+  ar: {
+    "title": "عنوان الإعلان *",
+    "title-placeholder": "مثال: مخزن للإيجار",
+    "title-hint": "عنوان قصير لإعلانك",
+
+    "description": "الوصف *",
+    "description-placeholder": "المساحة: 65000 م^2",
+    "description-hint": "اذكر بعض الميزات والملاحظات حول إعلانك.",
+
+    "notice": {
+      "success": {
+        "title": "تم نشر الإعلان!",
+        "description": "تم نشر إعلانك.",
+      },
+      "error": {
+        "title": "حدث خطأ ما.",
+        "description": "لم يتم نشر إعلانك. الرجاء المحاولة مرة أخرى.",
+      },
+    },
+
+    "sections": {
+      "overview": {
+        "title": "نظرة عامة",
+        "description": "أخبرنا عن إعلانك.",
+      },
+      "image": {
+        "title": "صور",
+        "description": "أضف بعض الصور للمستودع.",
+      },
+      "location": {
+        "title": "الموقع",
+        "description": "أخبرنا أين يقع المستودع الخاص بك.",
+        "country": "الدولة",
+        "city": "اختر المدينة",
+        "district": "الحي",
+        "address": "العنوان",
+      },
+      "licenses": {
+        "title": "التراخيص",
+        "description": "أخبرنا عن التراخيص المتوفرة لديك.",
+        "municipalityLicense": "رخصة البلدية",
+        "civilDefenseLicense": "رخصة الدفاع المدني",
+        "SFDAFoodLicense": "رخصة الغذاء من SFDA",
+        "SFDACosmeticsLicense": "رخصة التجميل من SFDA",
+        "SFDAMedicalEquipmentLicense": "رخصة المعدات الطبية من SFDA",
+        "SFDAPharmaLicense": "رخصة الأدوية من SFDA",
+        "SFDAPetFoodLicense": "رخصة طعام الحيوانات الأليفة من SFDA",
+        "SFDAPesticidesLicense": "رخصة المبيدات من SFDA",
+      },
+      "offer": {
+        "title": "العرض",
+        "description": "تفاصيل العرض والدفع.",
+        "price": "السعر *",
+        "price-placeholder": "مثال: 130000",
+        "price-hint": "السعر بالريال السعودي",
+        "payment-terms": "مدة الدفع",
+        "payment-terms-hint": "مثال:130000 شهرياً"
+      },
+      "details": {
+        "title": "التفاصيل",
+        "description": "أخبرنا عن مستودعك.",
+        "type": "النوع",
+        "temperature-settings": "إعدادات الحرارة",
+        "hazard-level": "مستوى الخطر",
+        "flooring": "الأرضية",
+        "forklift-availability": "توفر الرافعة الشوكية",
+        "racking-system": "نظام التخزين",
+        "number-of-streets": "عدد الشوارع",
+        "number-of-doors": "عدد الأبواب",
+        "number-of-walls": "عدد الجدران",
+        "area-in-m2": "المساحة بالمتر المربع",
+        "available-services": "الخدمات المتوفرة",
+        "security-cameras": "كاميرات المراقبة",
+        "manual-ramp": "منصة التحميل اليدوية",
+        "automatic-ramp": "منصة التحميل الآلية",
+      }
+    },
+
+    "publish": "نشر",
+    "publish-edit": "نشر التغييرات",
+  }
+}
+
+type AdFormProps = {
+  slug: string,
+  ad?: any
+}
+
+const DEFAULTS = {
+  title: "",
+  description: "",
+  slug: "",
+  images: [],
+  phone_country_code: "966",
+  phone_number: "",
+  country: "sa",
+  city: "",
+  district: "",
+  address: "",
+  // Licenses
+  municipalityLicense: false,
+  civilDefenseLicense: false,
+  SFDAFoodLicense: false,
+  SFDACosmeticsLicense: false,
+  SFDAMedicalEquipmentLicense: false,
+  SFDAPharmaLicense: false,
+  SFDAPetFoodLicense: false,
+  SFDAPesticidesLicense: false,
+  // Offer
+  price: "",
+  payment_term: "monthly",
+  // Details
+  type: null,
+  temperature_settings: null,
+  hazard_level: null,
+  flooring: null,
+  forklift_availability: null,
+  racking_system: null,
+  number_of_streets: "",
+  number_of_doors: "",
+  number_of_walls: "",
+  area_in_m2: "",
+  security_cameras: false,
+  manual_ramp: false,
+  automatic_ramp: false,
+}
