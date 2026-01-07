@@ -9,29 +9,38 @@ async function throwIfResNotOk(res: Response) {
 }
 
 async function getAuthHeaders(): Promise<Record<string, string>> {
-  // First try to refresh the session if needed
-  const { data: { session }, error } = await supabase.auth.getSession();
-  
-  if (error) {
-    console.error('Error getting session:', error);
-    return {};
-  }
-  
-  if (session?.access_token) {
-    // Check if token is about to expire (within 60 seconds) and refresh
-    const expiresAt = session.expires_at;
-    const now = Math.floor(Date.now() / 1000);
+  try {
+    // First get the current session
+    const { data: { session: currentSession } } = await supabase.auth.getSession();
     
-    if (expiresAt && expiresAt - now < 60) {
-      // Token is about to expire, try to refresh
+    if (!currentSession) {
+      console.log('[Auth] No session found');
+      return {};
+    }
+    
+    // Check if token needs refresh (expires within 5 minutes)
+    const expiresAt = currentSession.expires_at;
+    const now = Math.floor(Date.now() / 1000);
+    const needsRefresh = expiresAt && (expiresAt - now < 300);
+    
+    if (needsRefresh) {
+      console.log('[Auth] Token near expiry, refreshing...');
       const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
+      
       if (!refreshError && refreshData.session?.access_token) {
+        console.log('[Auth] Token refreshed successfully');
         return { Authorization: `Bearer ${refreshData.session.access_token}` };
+      } else {
+        console.log('[Auth] Refresh failed:', refreshError?.message);
       }
     }
     
-    return { Authorization: `Bearer ${session.access_token}` };
+    // Use current session token
+    return { Authorization: `Bearer ${currentSession.access_token}` };
+  } catch (error) {
+    console.error('[Auth] Error getting auth headers:', error);
   }
+  
   return {};
 }
 

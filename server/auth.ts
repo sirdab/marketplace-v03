@@ -15,15 +15,30 @@ declare global {
 }
 
 export async function verifyAuth(token: string): Promise<User | null> {
-  if (!token) return null;
-  
-  const { data: { user }, error } = await supabaseServer.auth.getUser(token);
-  
-  if (error || !user) {
+  if (!token) {
+    console.log('[Auth] No token provided');
     return null;
   }
   
-  return user;
+  try {
+    const { data: { user }, error } = await supabaseServer.auth.getUser(token);
+    
+    if (error) {
+      console.log('[Auth] Token verification error:', error.message);
+      return null;
+    }
+    
+    if (!user) {
+      console.log('[Auth] No user found for token');
+      return null;
+    }
+    
+    console.log('[Auth] User verified:', user.email);
+    return user;
+  } catch (err) {
+    console.error('[Auth] Unexpected error verifying token:', err);
+    return null;
+  }
 }
 
 export async function requireAuth(req: Request, res: Response, next: NextFunction) {
