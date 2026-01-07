@@ -339,6 +339,8 @@
     "availability": "التوفر",
     "availableFrom": "متاح من",
     "availableTo": "متاح حتى",
+    "selectDate": "اختر التاريخ",
+    "leaveEmptyIfNotApplicable": "اتركه فارغاً إن لم ينطبق",
     "contact": "معلومات الاتصال",
     "phoneNumber": "رقم الهاتف",
     "phonePlaceholder": "+966 5XX XXX XXXX",

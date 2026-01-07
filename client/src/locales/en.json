@@ -339,6 +339,8 @@
     "availability": "Availability",
     "availableFrom": "Available From",
     "availableTo": "Available To",
+    "selectDate": "Select date",
+    "leaveEmptyIfNotApplicable": "Leave empty if not applicable",
     "contact": "Contact Information",
     "phoneNumber": "Phone Number",
     "phonePlaceholder": "+966 5XX XXX XXXX",

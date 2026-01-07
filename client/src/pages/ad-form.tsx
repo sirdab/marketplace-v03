@@ -29,8 +29,13 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Loader2, ArrowLeft, ArrowRight, Warehouse, Wrench, Package, Store, CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
+import { ar, enUS } from 'date-fns/locale';
+import { cn } from '@/lib/utils';
 import type { Ad, City } from '@shared/schema';
 
 const adFormSchema = z.object({
@@ -324,19 +329,36 @@ export default function AdForm({ mode }: AdFormProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>{t('adForm.type')}</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl>
-                            <SelectTrigger data-testid="select-ad-type">
-                              <SelectValue />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="warehouse">{t('categories.warehouse')}</SelectItem>
-                            <SelectItem value="workshop">{t('categories.workshop')}</SelectItem>
-                            <SelectItem value="storage">{t('categories.storage')}</SelectItem>
-                            <SelectItem value="storefront">{t('categories.storefront')}</SelectItem>
-                          </SelectContent>
-                        </Select>
+                        <FormControl>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            {[
+                              { value: 'warehouse', icon: Warehouse, label: t('categories.warehouse') },
+                              { value: 'workshop', icon: Wrench, label: t('categories.workshop') },
+                              { value: 'storage', icon: Package, label: t('categories.storage') },
+                              { value: 'storefront', icon: Store, label: t('categories.storefront') },
+                            ].map((type) => {
+                              const Icon = type.icon;
+                              const isSelected = field.value === type.value;
+                              return (
+                                <button
+                                  key={type.value}
+                                  type="button"
+                                  onClick={() => field.onChange(type.value)}
+                                  data-testid={`type-${type.value}`}
+                                  className={cn(
+                                    "flex flex-col items-center justify-center gap-2 p-4 rounded-md border-2 transition-all",
+                                    isSelected
+                                      ? "border-primary bg-primary/10 text-primary"
+                                      : "border-border hover-elevate"
+                                  )}
+                                >
+                                  <Icon className="h-8 w-8" />
+                                  <span className="text-sm font-medium">{type.label}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -958,11 +980,52 @@ export default function AdForm({ mode }: AdFormProps) {
                       control={form.control}
                       name="availableDateFrom"
                       render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="flex flex-col">
                           <FormLabel>{t('adForm.availableFrom')}</FormLabel>
-                          <FormControl>
-                            <Input type="date" data-testid="input-ad-available-from" {...field} />
-                          </FormControl>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant="outline"
+                                  data-testid="input-ad-available-from"
+                                  className={cn(
+                                    "w-full justify-start text-start font-normal",
+                                    !field.value && "text-muted-foreground"
+                                  )}
+                                >
+                                  <CalendarIcon className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                                  {field.value ? (
+                                    format(new Date(field.value), "PPP", { locale: i18n.language === 'ar' ? ar : enUS })
+                                  ) : (
+                                    <span>{t('adForm.selectDate')}</span>
+                                  )}
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={field.value ? new Date(field.value) : undefined}
+                                onSelect={(date) => {
+                                  field.onChange(date ? format(date, 'yyyy-MM-dd') : '');
+                                }}
+                                initialFocus
+                              />
+                              {field.value && (
+                                <div className="p-2 border-t">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="w-full"
+                                    onClick={() => field.onChange('')}
+                                  >
+                                    {t('common.clearAll')}
+                                  </Button>
+                                </div>
+                              )}
+                            </PopoverContent>
+                          </Popover>
+                          <p className="text-xs text-muted-foreground">{t('adForm.leaveEmptyIfNotApplicable')}</p>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -972,11 +1035,52 @@ export default function AdForm({ mode }: AdFormProps) {
                       control={form.control}
                       name="availableDateTo"
                       render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="flex flex-col">
                           <FormLabel>{t('adForm.availableTo')}</FormLabel>
-                          <FormControl>
-                            <Input type="date" data-testid="input-ad-available-to" {...field} />
-                          </FormControl>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant="outline"
+                                  data-testid="input-ad-available-to"
+                                  className={cn(
+                                    "w-full justify-start text-start font-normal",
+                                    !field.value && "text-muted-foreground"
+                                  )}
+                                >
+                                  <CalendarIcon className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                                  {field.value ? (
+                                    format(new Date(field.value), "PPP", { locale: i18n.language === 'ar' ? ar : enUS })
+                                  ) : (
+                                    <span>{t('adForm.selectDate')}</span>
+                                  )}
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={field.value ? new Date(field.value) : undefined}
+                                onSelect={(date) => {
+                                  field.onChange(date ? format(date, 'yyyy-MM-dd') : '');
+                                }}
+                                initialFocus
+                              />
+                              {field.value && (
+                                <div className="p-2 border-t">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="w-full"
+                                    onClick={() => field.onChange('')}
+                                  >
+                                    {t('common.clearAll')}
+                                  </Button>
+                                </div>
+                              )}
+                            </PopoverContent>
+                          </Popover>
+                          <p className="text-xs text-muted-foreground">{t('adForm.leaveEmptyIfNotApplicable')}</p>
                           <FormMessage />
                         </FormItem>
                       )}
