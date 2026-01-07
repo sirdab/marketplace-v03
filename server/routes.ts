@@ -101,15 +101,31 @@ export async function registerRoutes(
     }
   });
 
+  function cityToSlug(name: string): string {
+    return name.trim().toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "").replace(/-+/g, "-").replace(/^-|-$/g, "");
+  }
+
   app.get("/api/public/ads/region/:country/:city", async (req, res) => {
     try {
       const { city } = req.params;
-      const publishedAds = await storage.getPublishedAds();
-      const cityLower = city.toLowerCase().replace(/-/g, " ");
+      const [publishedAds, activeCities] = await Promise.all([
+        storage.getPublishedAds(),
+        storage.getCities(),
+      ]);
+      
+      const citySlug = city.toLowerCase();
+      const matchedCity = activeCities.find(c => cityToSlug(c.nameEn) === citySlug);
+      
       const filteredAds = publishedAds.filter(ad => {
-        const adCity = ad.city?.toLowerCase().replace(/-/g, " ") || "";
-        return adCity.includes(cityLower) || cityLower.includes(adCity.replace(/al /g, "al-"));
+        if (!ad.city) return false;
+        const adCity = ad.city.toLowerCase().trim();
+        if (matchedCity) {
+          return adCity === matchedCity.nameEn.toLowerCase().trim();
+        }
+        const cityLower = citySlug.replace(/-/g, " ");
+        return adCity.includes(cityLower) || cityLower.includes(adCity);
       });
+      
       res.json(filteredAds);
     } catch (error) {
       console.error("Error fetching ads by region:", error);
@@ -393,16 +409,6 @@ export async function registerRoutes(
   });
 
   // SEO Endpoints - robots.txt, sitemaps
-  const REGIONS = [
-    "riyadh",
-    "jeddah",
-    "dammam",
-    "al-khobar",
-    "al-ahsa",
-    "abha",
-    "buraydah",
-  ];
-
   function getBaseUrl(req: any): string {
     const protocol = req.headers["x-forwarded-proto"] || req.protocol || "https";
     const host = req.headers.host || req.hostname;
@@ -416,6 +422,10 @@ export async function registerRoutes(
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&apos;");
+  }
+
+  function toSlug(name: string): string {
+    return name.trim().toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "").replace(/-+/g, "-").replace(/^-|-$/g, "");
   }
 
   app.get("/robots.txt", (req, res) => {
@@ -441,10 +451,18 @@ Sitemap: ${baseUrl}/sitemap-0.xml
 `);
   });
 
+  const FALLBACK_CITIES = [
+    "riyadh", "jeddah", "dammam", "al-khobar", "al-ahsa", 
+    "abha", "buraydah", "mecca", "medina", "tabuk", "khamis-mushait"
+  ];
+
   app.get("/sitemap-0.xml", async (req, res) => {
     try {
       const baseUrl = escapeXml(getBaseUrl(req));
-      const publishedAds = await storage.getPublishedAds();
+      const [publishedAds, activeCities] = await Promise.all([
+        storage.getPublishedAds(),
+        storage.getCities(),
+      ]);
       const now = new Date().toISOString();
       
       let urlEntries = "";
@@ -460,9 +478,13 @@ Sitemap: ${baseUrl}/sitemap-0.xml
 `;
       }
       
-      for (const region of REGIONS) {
+      const citySlugs = activeCities.length > 0
+        ? activeCities.map(city => toSlug(city.nameEn))
+        : FALLBACK_CITIES;
+      
+      for (const citySlug of citySlugs) {
         urlEntries += `  <url>
-    <loc>${baseUrl}/ads/region/sa/${escapeXml(region)}</loc>
+    <loc>${baseUrl}/ads/region/sa/${escapeXml(citySlug)}</loc>
     <lastmod>${escapeXml(now)}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>

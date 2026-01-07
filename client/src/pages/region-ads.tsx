@@ -8,25 +8,25 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Ad } from "@shared/schema";
+import type { Ad, City } from "@shared/schema";
 
-const cityNames: Record<string, { en: string; ar: string }> = {
-  "riyadh": { en: "Riyadh", ar: "الرياض" },
-  "jeddah": { en: "Jeddah", ar: "جدة" },
-  "dammam": { en: "Dammam", ar: "الدمام" },
-  "al-khobar": { en: "Al Khobar", ar: "الخبر" },
-  "al-ahsa": { en: "Al Ahsa", ar: "الأحساء" },
-  "abha": { en: "Abha", ar: "أبها" },
-  "buraydah": { en: "Buraydah", ar: "بريدة" },
-};
+function toSlug(name: string): string {
+  return name.trim().toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "").replace(/-+/g, "-").replace(/^-|-$/g, "");
+}
 
 export default function RegionAds() {
   const { t, i18n } = useTranslation();
   const { city } = useParams<{ city: string }>();
   const isRTL = i18n.language === "ar";
 
-  const cityInfo = cityNames[city || ""] || { en: city, ar: city };
-  const cityName = isRTL ? cityInfo.ar : cityInfo.en;
+  const { data: cities } = useQuery<City[]>({
+    queryKey: ["/api/cities"],
+  });
+
+  const matchedCity = cities?.find(c => toSlug(c.nameEn) === city);
+  const cityName = matchedCity 
+    ? (isRTL ? matchedCity.nameAr : matchedCity.nameEn)
+    : city?.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase()) || "";
 
   const { data: ads, isLoading, error } = useQuery<Ad[]>({
     queryKey: ["/api/public/ads/region/sa", city],
