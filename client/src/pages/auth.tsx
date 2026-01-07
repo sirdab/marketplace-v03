@@ -12,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Mail, CheckCircle, Phone } from 'lucide-react';
+import { Loader2, Mail, CheckCircle, Phone, ClipboardPaste } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 
@@ -197,7 +197,7 @@ export default function AuthPage() {
                       <p className="text-center text-muted-foreground text-sm">
                         {t('auth.enterOtp')} <strong dir="ltr">{sentToPhone}</strong>
                       </p>
-                      <div className="flex justify-center" dir="ltr">
+                      <div className="flex flex-col items-center gap-3" dir="ltr">
                         <InputOTP
                           maxLength={4}
                           value={otpValue}
@@ -220,6 +220,34 @@ export default function AuthPage() {
                             <InputOTPSlot index={3} />
                           </InputOTPGroup>
                         </InputOTP>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={async () => {
+                            try {
+                              const text = await navigator.clipboard.readText();
+                              const digits = text.replace(/\D/g, '').slice(0, 4);
+                              if (digits.length > 0) {
+                                setOtpValue(digits);
+                                if (digits.length === 4) {
+                                  setTimeout(() => {
+                                    document.querySelector<HTMLButtonElement>('[data-testid="button-verify-otp"]')?.click();
+                                  }, 100);
+                                }
+                              }
+                            } catch {
+                              toast({
+                                variant: 'destructive',
+                                title: t('auth.pasteError'),
+                              });
+                            }
+                          }}
+                          data-testid="button-paste-otp"
+                        >
+                          <ClipboardPaste className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                          {t('auth.pasteCode')}
+                        </Button>
                       </div>
                       <Button
                         className="w-full"

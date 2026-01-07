@@ -58,6 +58,11 @@ const adFormSchema = z.object({
     loadingDocks: z.number().optional(),
     hasForklift: z.boolean().optional(),
     hasRacking: z.boolean().optional(),
+    temperatureControl: z.string().optional(),
+    hazardLevel: z.string().optional(),
+    flooringType: z.string().optional(),
+    hasLoadingRamps: z.boolean().optional(),
+    hasSfdaLicense: z.boolean().optional(),
     floorStrength: z.string().optional(),
     powerCapacity: z.string().optional(),
     hasVentilation: z.boolean().optional(),
@@ -191,7 +196,7 @@ export default function AdForm({ mode }: AdFormProps) {
 
   const onSubmit = (data: AdFormData) => {
     const typeAttributesByCategory: Record<string, string[]> = {
-      warehouse: ['ceilingHeight', 'loadingDocks', 'hasForklift', 'hasRacking'],
+      warehouse: ['ceilingHeight', 'loadingDocks', 'hasForklift', 'hasRacking', 'temperatureControl', 'hazardLevel', 'flooringType', 'hasLoadingRamps', 'hasSfdaLicense'],
       workshop: ['floorStrength', 'powerCapacity', 'hasVentilation', 'hasThreePhase'],
       storage: ['unitSize', 'accessHours', 'hasClimateControl', 'hasSecuritySystem'],
       storefront: ['facadeWidth', 'footTraffic', 'hasDisplayWindow', 'hasParking'],
@@ -413,6 +418,7 @@ export default function AdForm({ mode }: AdFormProps) {
                   <CardContent className="space-y-4">
                     {watchedType === 'warehouse' && (
                       <>
+                        <p className="text-sm text-muted-foreground">{t('adForm.warehouseFieldsOptional')}</p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <FormField
                             control={form.control}
@@ -442,6 +448,72 @@ export default function AdForm({ mode }: AdFormProps) {
                                     value={field.value ?? ''}
                                   />
                                 </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="typeAttributes.temperatureControl"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>{t('adForm.temperatureControl')}</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value ?? ''}>
+                                  <FormControl>
+                                    <SelectTrigger data-testid="select-temperature-control">
+                                      <SelectValue placeholder={t('adForm.selectTemperature')} />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="ambient">{t('adForm.tempAmbient')}</SelectItem>
+                                    <SelectItem value="cooled">{t('adForm.tempCooled')}</SelectItem>
+                                    <SelectItem value="frozen">{t('adForm.tempFrozen')}</SelectItem>
+                                    <SelectItem value="multi">{t('adForm.tempMulti')}</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="typeAttributes.hazardLevel"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>{t('adForm.hazardLevel')}</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value ?? ''}>
+                                  <FormControl>
+                                    <SelectTrigger data-testid="select-hazard-level">
+                                      <SelectValue placeholder={t('adForm.selectHazardLevel')} />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="none">{t('adForm.hazardNone')}</SelectItem>
+                                    <SelectItem value="low">{t('adForm.hazardLow')}</SelectItem>
+                                    <SelectItem value="medium">{t('adForm.hazardMedium')}</SelectItem>
+                                    <SelectItem value="high">{t('adForm.hazardHigh')}</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="typeAttributes.flooringType"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>{t('adForm.flooringType')}</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value ?? ''}>
+                                  <FormControl>
+                                    <SelectTrigger data-testid="select-flooring-type">
+                                      <SelectValue placeholder={t('adForm.selectFlooringType')} />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="concrete">{t('adForm.floorConcrete')}</SelectItem>
+                                    <SelectItem value="epoxy">{t('adForm.floorEpoxy')}</SelectItem>
+                                    <SelectItem value="polished">{t('adForm.floorPolished')}</SelectItem>
+                                    <SelectItem value="other">{t('adForm.floorOther')}</SelectItem>
+                                  </SelectContent>
+                                </Select>
                               </FormItem>
                             )}
                           />
@@ -476,6 +548,38 @@ export default function AdForm({ mode }: AdFormProps) {
                                   />
                                 </FormControl>
                                 <FormLabel className="!mt-0">{t('adForm.hasRacking')}</FormLabel>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="typeAttributes.hasLoadingRamps"
+                            render={({ field }) => (
+                              <FormItem className="flex flex-row items-center gap-3">
+                                <FormControl>
+                                  <Checkbox
+                                    checked={field.value ?? false}
+                                    onCheckedChange={field.onChange}
+                                    data-testid="checkbox-has-loading-ramps"
+                                  />
+                                </FormControl>
+                                <FormLabel className="!mt-0">{t('adForm.hasLoadingRamps')}</FormLabel>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="typeAttributes.hasSfdaLicense"
+                            render={({ field }) => (
+                              <FormItem className="flex flex-row items-center gap-3">
+                                <FormControl>
+                                  <Checkbox
+                                    checked={field.value ?? false}
+                                    onCheckedChange={field.onChange}
+                                    data-testid="checkbox-has-sfda-license"
+                                  />
+                                </FormControl>
+                                <FormLabel className="!mt-0">{t('adForm.hasSfdaLicense')}</FormLabel>
                               </FormItem>
                             )}
                           />
