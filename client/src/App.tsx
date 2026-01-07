@@ -30,7 +30,7 @@ function ProtectedDashboard() {
 function ProtectedMyAds() {
   return (
     <ProtectedRoute>
-      <MyAds />
+      <Dashboard />
     </ProtectedRoute>
   );
 }

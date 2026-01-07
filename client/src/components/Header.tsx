@@ -172,26 +172,10 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard" className="w-full cursor-pointer">
+                    <Link href="/dashboard" className="w-full cursor-pointer" data-testid="link-dashboard">
                       {t('nav.dashboard')}
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/my-ads" className="w-full cursor-pointer" data-testid="link-my-ads">
-                      {t('myAds.title')}
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/bookings" className="w-full cursor-pointer">
-                      {t('nav.myBookings')}
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/visits" className="w-full cursor-pointer">
-                      {t('nav.scheduledVisits')}
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
                     <Link href="/saved" className="w-full cursor-pointer">
                       {t('nav.savedProperties')}

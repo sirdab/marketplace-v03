@@ -174,15 +174,20 @@
   },
   "dashboard": {
     "title": "لوحة التحكم",
-    "subtitle": "إدارة زياراتك وحجوزاتك والعقارات المحفوظة",
+    "subtitle": "إدارة إعلاناتك وزياراتك وحجوزاتك",
+    "myListings": "إعلاناتي",
+    "myAds": "إعلاناتي",
     "scheduledVisits": "الزيارات المجدولة",
     "activeBookings": "الحجوزات النشطة",
     "totalBookings": "إجمالي الحجوزات",
     "upcomingVisits": "الزيارات القادمة",
-    "noUpcomingVisits": "لا توجد زيارات قادمة",
-    "noActiveBookings": "لا توجد حجوزات نشطة",
+    "noUpcomingVisits": "لم تقم بجدولة أي زيارات بعد. تصفح العقارات واحجز زيارة.",
+    "noActiveBookings": "لم تقم بأي حجوزات بعد. تصفح العقارات واحجز الآن.",
+    "noVisitsTitle": "لا توجد زيارات",
+    "noBookingsTitle": "لا توجد حجوزات",
     "visits": "الزيارات",
-    "bookings": "الحجوزات"
+    "bookings": "الحجوزات",
+    "active": "نشط"
   },
   "visit": {
     "scheduled": "تم جدولة الزيارة",

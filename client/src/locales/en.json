@@ -174,15 +174,20 @@
   },
   "dashboard": {
     "title": "Dashboard",
-    "subtitle": "Manage your visits, bookings, and saved properties",
+    "subtitle": "Manage your listings, visits, and bookings",
+    "myListings": "My Listings",
+    "myAds": "My Ads",
     "scheduledVisits": "Scheduled Visits",
     "activeBookings": "Active Bookings",
     "totalBookings": "Total Bookings",
     "upcomingVisits": "Upcoming Visits",
-    "noUpcomingVisits": "No upcoming visits",
-    "noActiveBookings": "No active bookings",
+    "noUpcomingVisits": "You haven't scheduled any visits yet. Browse properties and book a visit.",
+    "noActiveBookings": "You haven't made any bookings yet. Browse properties and book now.",
+    "noVisitsTitle": "No Visits",
+    "noBookingsTitle": "No Bookings",
     "visits": "Visits",
-    "bookings": "Bookings"
+    "bookings": "Bookings",
+    "active": "active"
   },
   "visit": {
     "scheduled": "Visit Scheduled",
