@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { format, addDays, isBefore, startOfToday } from "date-fns";
-import { Calendar, Clock, User, Mail, Phone, CheckCircle } from "lucide-react";
+import { Calendar, Clock, User, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -34,8 +34,6 @@ import { type Property } from "@shared/schema";
 
 const createVisitSchema = (t: (key: string) => string) => z.object({
   visitorName: z.string().min(2, t("validation.nameRequired")),
-  visitorEmail: z.string().email(t("validation.emailRequired")),
-  visitorPhone: z.string().min(9, t("validation.phoneRequired")),
   visitDate: z.date({ required_error: t("validation.dateRequired") }),
   visitTime: z.string({ required_error: t("validation.timeRequired") }),
   notes: z.string().optional(),
@@ -70,8 +68,6 @@ export function VisitScheduler({ property, onSubmit, isSubmitting }: VisitSchedu
     resolver: zodResolver(visitSchema),
     defaultValues: {
       visitorName: "",
-      visitorEmail: "",
-      visitorPhone: "",
       notes: "",
     },
   });
@@ -134,54 +130,6 @@ export function VisitScheduler({ property, onSubmit, isSubmitting }: VisitSchedu
                 </FormItem>
               )}
             />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="visitorEmail"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("form.email")}</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Mail className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          type="email"
-                          placeholder={t("form.emailPlaceholder")}
-                          className="ps-10"
-                          {...field}
-                          data-testid="input-visitor-email"
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="visitorPhone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("form.phone")}</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Phone className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          type="tel"
-                          placeholder={t("form.phonePlaceholder")}
-                          className="ps-10"
-                          {...field}
-                          data-testid="input-visitor-phone"
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField

@@ -7,8 +7,6 @@ import { format, differenceInDays, isBefore, startOfToday } from "date-fns";
 import {
   Calendar,
   User,
-  Mail,
-  Phone,
   CreditCard,
   CheckCircle,
   ArrowRight,
@@ -37,8 +35,6 @@ import { type Property } from "@shared/schema";
 
 const createBookingSchema = (t: (key: string) => string) => z.object({
   customerName: z.string().min(2, t("validation.nameRequired")),
-  customerEmail: z.string().email(t("validation.emailRequired")),
-  customerPhone: z.string().min(9, t("validation.phoneRequired")),
   startDate: z.date({ required_error: t("validation.startDateRequired") }),
   endDate: z.date({ required_error: t("validation.endDateRequired") }),
   notes: z.string().optional(),
@@ -65,8 +61,6 @@ export function BookingForm({ property, onSubmit, isSubmitting }: BookingFormPro
     resolver: zodResolver(bookingSchema),
     defaultValues: {
       customerName: "",
-      customerEmail: "",
-      customerPhone: "",
       notes: "",
     },
   });
@@ -284,54 +278,6 @@ export function BookingForm({ property, onSubmit, isSubmitting }: BookingFormPro
                   )}
                 />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="customerEmail"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t("form.email")}</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Mail className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input
-                              type="email"
-                              placeholder={t("form.emailPlaceholder")}
-                              className="ps-10"
-                              {...field}
-                              data-testid="input-customer-email"
-                            />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="customerPhone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t("form.phone")}</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Phone className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input
-                              type="tel"
-                              placeholder={t("form.phonePlaceholder")}
-                              className="ps-10"
-                              {...field}
-                              data-testid="input-customer-phone"
-                            />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
                 <FormField
                   control={form.control}
                   name="notes"
@@ -394,12 +340,6 @@ export function BookingForm({ property, onSubmit, isSubmitting }: BookingFormPro
                   <h4 className="font-medium mb-3">{t("form.contactDetails")}</h4>
                   <div className="space-y-1 text-sm">
                     <p>{form.getValues("customerName")}</p>
-                    <p className="text-muted-foreground">
-                      {form.getValues("customerEmail")}
-                    </p>
-                    <p className="text-muted-foreground">
-                      {form.getValues("customerPhone")}
-                    </p>
                   </div>
                 </div>
               </div>
@@ -437,8 +377,6 @@ export function BookingForm({ property, onSubmit, isSubmitting }: BookingFormPro
             onClick={async () => {
               const valid = await form.trigger([
                 "customerName",
-                "customerEmail",
-                "customerPhone",
               ]);
               if (valid) setStep("confirm");
             }}
