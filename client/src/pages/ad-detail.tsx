@@ -36,12 +36,12 @@ export default function AdDetail() {
   });
 
   const nextImage = () => {
-    if (!ad?.images) return;
+    if (!ad?.images || ad.images.length === 0) return;
     setCurrentImageIndex((prev) => (prev + 1) % ad.images.length);
   };
 
   const prevImage = () => {
-    if (!ad?.images) return;
+    if (!ad?.images || ad.images.length === 0) return;
     setCurrentImageIndex((prev) => (prev - 1 + ad.images.length) % ad.images.length);
   };
 
