@@ -214,7 +214,7 @@ export function ImageUpload({ userId, slug, images, onImagesChange, maxImages = 
                   type="button"
                   variant="destructive"
                   size="icon"
-                  className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute top-1 right-1 h-6 w-6 opacity-100 transition-opacity"
                   onClick={() => removeImage(index)}
                   data-testid={`button-remove-image-${index}`}
                 >
