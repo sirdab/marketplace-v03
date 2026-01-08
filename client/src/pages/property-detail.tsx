@@ -15,6 +15,8 @@ import {
   Building2,
   Clock,
   Shield,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -42,6 +44,7 @@ export default function PropertyDetail() {
   
   const [activeTab, setActiveTab] = useState(initialAction);
   const [isSaved, setIsSaved] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { toast } = useToast();
 
   const categoryTranslationKeys: Record<PropertyCategory, string> = {
@@ -160,6 +163,21 @@ export default function PropertyDetail() {
       ? t("common.perMonth") 
       : t("common.perYear");
   const categoryKey = categoryTranslationKeys[property.category as PropertyCategory];
+  
+  const images = (property.images && property.images.length > 0) 
+    ? property.images 
+    : (property.imageUrl ? [property.imageUrl] : []);
+  const hasMultipleImages = images.length > 1;
+  
+  const nextImage = () => {
+    if (!hasMultipleImages) return;
+    setCurrentImageIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prevImage = () => {
+    if (!hasMultipleImages) return;
+    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -173,22 +191,58 @@ export default function PropertyDetail() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
             <div className="lg:col-span-2 space-y-4 md:space-y-6">
-              <div className="relative aspect-[4/3] md:aspect-video rounded-lg overflow-hidden">
+              <div className="relative aspect-[4/3] md:aspect-video rounded-lg overflow-hidden group">
                 <img
-                  src={property.imageUrl}
+                  src={images.length > 0 ? images[currentImageIndex] : property.imageUrl}
                   alt={property.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-500"
+                  data-testid="img-property-main"
                 />
+                
+                {hasMultipleImages && (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/50 hover:bg-background/80 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                      onClick={prevImage}
+                      data-testid="button-prev-image"
+                    >
+                      <ChevronLeft className="h-6 w-6" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/50 hover:bg-background/80 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                      onClick={nextImage}
+                      data-testid="button-next-image"
+                    >
+                      <ChevronRight className="h-6 w-6" />
+                    </Button>
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                      {images.map((_, i) => (
+                        <div
+                          key={i}
+                          className={`h-1.5 rounded-full transition-all cursor-pointer ${
+                            i === currentImageIndex ? "w-4 bg-white" : "w-1.5 bg-white/50"
+                          }`}
+                          onClick={() => setCurrentImageIndex(i)}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+
                 {property.isVerified && (
                   <Badge
                     variant="secondary"
-                    className="absolute top-3 start-3 bg-background/90 backdrop-blur-sm gap-1"
+                    className="absolute top-3 start-3 bg-background/90 backdrop-blur-sm gap-1 z-10"
                   >
                     <CheckCircle className="h-3.5 w-3.5 text-green-600" />
                     {t("property.verified")}
                   </Badge>
                 )}
-                <div className="absolute top-3 end-3 flex gap-2">
+                <div className="absolute top-3 end-3 flex gap-2 z-10">
                   <Button
                     variant="secondary"
                     size="icon"
@@ -200,6 +254,27 @@ export default function PropertyDetail() {
                   </Button>
                 </div>
               </div>
+
+              {hasMultipleImages && (
+                <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                  {images.map((img, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImageIndex(index)}
+                      className={`relative h-16 w-24 md:h-20 md:w-32 flex-shrink-0 rounded-md overflow-hidden transition-all ${
+                        index === currentImageIndex ? "ring-2 ring-primary ring-offset-2" : "opacity-70 hover:opacity-100"
+                      }`}
+                      data-testid={`img-property-thumbnail-${index}`}
+                    >
+                      <img
+                        src={img}
+                        alt={`${property.title} ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
 
               <div>
                 <p className="font-bold text-xl md:text-2xl lg:text-3xl mb-1">
