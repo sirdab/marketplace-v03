@@ -201,9 +201,9 @@ export function ImageUpload({ userId, slug, images, onImagesChange, maxImages = 
         <div className="relative">
           <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
             {images.map((url, index) => (
-              <Card
+              <div
                 key={url}
-                className="relative flex-shrink-0 w-32 h-32 overflow-hidden group"
+                className="relative flex-shrink-0 w-32 h-32 rounded-md overflow-hidden group border bg-card shadow-sm"
               >
                 <img
                   src={url}
@@ -214,18 +214,22 @@ export function ImageUpload({ userId, slug, images, onImagesChange, maxImages = 
                   type="button"
                   variant="destructive"
                   size="icon"
-                  className="absolute top-1 right-1 h-8 w-8 rounded-full bg-destructive/90 hover:bg-destructive text-destructive-foreground opacity-100 shadow-lg z-30 flex items-center justify-center border-2 border-white transition-transform active:scale-90"
-                  onClick={() => removeImage(index)}
+                  className="absolute top-1 right-1 h-7 w-7 rounded-full bg-red-600 hover:bg-red-700 text-white z-50 flex items-center justify-center border-2 border-white shadow-md pointer-events-auto"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    removeImage(index);
+                  }}
                   data-testid={`button-remove-image-${index}`}
                 >
-                  <X className="h-3 w-3" />
+                  <X className="h-4 w-4" />
                 </Button>
                 {index === 0 && (
-                  <div className="absolute bottom-0 left-0 right-0 bg-primary/80 text-primary-foreground text-xs py-0.5 text-center">
+                  <div className="absolute bottom-0 left-0 right-0 bg-primary/80 text-primary-foreground text-[10px] py-0.5 text-center font-medium z-10">
                     {t('imageUpload.mainImage')}
                   </div>
                 )}
-              </Card>
+              </div>
             ))}
           </div>
         </div>
