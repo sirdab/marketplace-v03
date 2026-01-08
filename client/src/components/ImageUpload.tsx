@@ -203,18 +203,25 @@ export function ImageUpload({ userId, slug, images, onImagesChange, maxImages = 
             {images.map((url, index) => (
               <div
                 key={url}
-                className="relative flex-shrink-0 w-32 h-32 rounded-md overflow-hidden group border bg-card shadow-sm"
+                className="flex-shrink-0 space-y-2"
               >
-                <img
-                  src={url}
-                  alt={`${t('imageUpload.image')} ${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
+                <div className="relative w-32 h-32 rounded-md overflow-hidden border bg-card shadow-sm group">
+                  <img
+                    src={url}
+                    alt={`${t('imageUpload.image')} ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                  {index === 0 && (
+                    <div className="absolute bottom-0 left-0 right-0 bg-primary/80 text-primary-foreground text-[10px] py-0.5 text-center font-medium z-10">
+                      {t('imageUpload.mainImage')}
+                    </div>
+                  )}
+                </div>
                 <Button
                   type="button"
-                  variant="destructive"
-                  size="icon"
-                  className="absolute top-1 right-1 h-7 w-7 rounded-full bg-red-600 hover:bg-red-700 text-white z-50 flex items-center justify-center border-2 border-white shadow-md pointer-events-auto"
+                  variant="outline"
+                  size="sm"
+                  className="w-full h-7 text-xs text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/20"
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -222,13 +229,9 @@ export function ImageUpload({ userId, slug, images, onImagesChange, maxImages = 
                   }}
                   data-testid={`button-remove-image-${index}`}
                 >
-                  <X className="h-4 w-4" />
+                  <X className="h-3 w-3 me-1" />
+                  {t('common.delete')}
                 </Button>
-                {index === 0 && (
-                  <div className="absolute bottom-0 left-0 right-0 bg-primary/80 text-primary-foreground text-[10px] py-0.5 text-center font-medium z-10">
-                    {t('imageUpload.mainImage')}
-                  </div>
-                )}
               </div>
             ))}
           </div>
