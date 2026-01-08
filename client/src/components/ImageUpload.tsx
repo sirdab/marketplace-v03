@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { X, Upload, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { X, Upload, Image as ImageIcon, Loader2, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
@@ -219,9 +219,9 @@ export function ImageUpload({ userId, slug, images, onImagesChange, maxImages = 
                 </div>
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="destructive"
                   size="sm"
-                  className="w-full h-7 text-xs text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/20"
+                  className="w-full h-8 text-sm bg-red-500 hover:bg-red-600 text-white font-medium"
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -229,7 +229,7 @@ export function ImageUpload({ userId, slug, images, onImagesChange, maxImages = 
                   }}
                   data-testid={`button-remove-image-${index}`}
                 >
-                  <X className="h-3 w-3 me-1" />
+                  <Trash2 className="h-4 w-4 me-1" />
                   {t('common.delete')}
                 </Button>
               </div>
