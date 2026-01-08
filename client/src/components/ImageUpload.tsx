@@ -214,7 +214,7 @@ export function ImageUpload({ userId, slug, images, onImagesChange, maxImages = 
                   type="button"
                   variant="destructive"
                   size="icon"
-                  className="absolute top-1 right-1 h-8 w-8 rounded-full bg-destructive/90 hover:bg-destructive text-destructive-foreground opacity-100 shadow-sm z-20 flex items-center justify-center border-none transition-transform active:scale-95"
+                  className="absolute top-1 right-1 h-8 w-8 rounded-full bg-destructive/90 hover:bg-destructive text-destructive-foreground opacity-100 shadow-lg z-30 flex items-center justify-center border-2 border-white transition-transform active:scale-90"
                   onClick={() => removeImage(index)}
                   data-testid={`button-remove-image-${index}`}
                 >
