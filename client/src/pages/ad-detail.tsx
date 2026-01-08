@@ -37,12 +37,14 @@ export default function AdDetail() {
 
   const nextImage = () => {
     if (!ad?.images || ad.images.length === 0) return;
-    setCurrentImageIndex((prev) => (prev + 1) % ad.images.length);
+    const imagesArray = ad.images as string[];
+    setCurrentImageIndex((prev) => (prev + 1) % imagesArray.length);
   };
 
   const prevImage = () => {
     if (!ad?.images || ad.images.length === 0) return;
-    setCurrentImageIndex((prev) => (prev - 1 + ad.images.length) % ad.images.length);
+    const imagesArray = ad.images as string[];
+    setCurrentImageIndex((prev) => (prev - 1 + imagesArray.length) % imagesArray.length);
   };
 
   const formatPrice = (price: string | null) => {
