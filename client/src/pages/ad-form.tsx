@@ -261,9 +261,11 @@ export default function AdForm({ mode }: AdFormProps) {
     const payload = {
       ...data,
       slug: validSlug,
-      images: data.images || [],
+      images: Array.isArray(data.images) ? data.images : [],
       typeAttributes: Object.keys(cleanedTypeAttributes).length > 0 ? cleanedTypeAttributes : {},
     };
+
+    console.log('Submitting payload with images:', payload.images);
 
     if (mode === 'create') {
       createMutation.mutate(payload as unknown as AdFormData);

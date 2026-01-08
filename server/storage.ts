@@ -218,7 +218,10 @@ export class DatabaseStorage implements IStorage {
     try {
       const result = await db
         .insert(ads)
-        .values(insertAd as any)
+        .values({
+          ...insertAd,
+          images: insertAd.images || [],
+        } as any)
         .returning();
       return result[0];
     } catch (error) {
@@ -231,7 +234,10 @@ export class DatabaseStorage implements IStorage {
     try {
       const result = await db
         .update(ads)
-        .set(updates)
+        .set({
+          ...updates,
+          images: updates.images || undefined,
+        } as any)
         .where(eq(ads.id, id))
         .returning();
       return result[0];

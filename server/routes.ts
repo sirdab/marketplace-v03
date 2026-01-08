@@ -29,6 +29,8 @@ const updateAdSchema = z.object({
   phoneCountryCode: z.string().optional(),
   municipalityLicense: z.boolean().optional(),
   civilDefenseLicense: z.boolean().optional(),
+  images: z.array(z.string()).optional(),
+  typeAttributes: z.record(z.any()).optional(),
 });
 
 export async function registerRoutes(
