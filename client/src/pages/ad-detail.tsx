@@ -121,33 +121,57 @@ export default function AdDetail() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
-              <div className="aspect-[4/3] md:aspect-video relative rounded-lg overflow-hidden group bg-muted">
-                <img
-                  src={images[currentImageIndex] || "/placeholder-property.jpg"}
-                  alt={ad.title}
-                  className="w-full h-full object-contain md:object-cover transition-transform duration-500"
-                  data-testid="img-ad-main"
-                />
+              <div className="relative rounded-lg overflow-hidden group bg-muted">
+                <div 
+                  className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide aspect-[4/3] md:aspect-video"
+                  onScroll={(e) => {
+                    const target = e.currentTarget;
+                    const index = Math.round(target.scrollLeft / target.offsetWidth);
+                    if (index !== currentImageIndex) setCurrentImageIndex(index);
+                  }}
+                  data-testid="ad-carousel-scroll-container"
+                >
+                  {images.map((img, i) => (
+                    <div key={i} className="flex-none w-full h-full snap-center">
+                      <img
+                        src={img}
+                        alt={`${ad.title} - ${i + 1}`}
+                        className="w-full h-full object-contain md:object-cover"
+                        loading={i === 0 ? "eager" : "lazy"}
+                      />
+                    </div>
+                  ))}
+                </div>
                 
                 {images.length > 1 && (
                   <>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/50 hover:bg-background/80 rounded-full opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10 h-8 w-8 md:h-10 md:w-10"
-                      onClick={prevImage}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/50 hover:bg-background/80 rounded-full hidden md:flex opacity-0 group-hover:opacity-100 transition-opacity z-10 h-10 w-10"
+                      onClick={() => {
+                        const container = document.querySelector('[data-testid="ad-carousel-scroll-container"]');
+                        if (container) {
+                          container.scrollBy({ left: -container.clientWidth, behavior: 'smooth' });
+                        }
+                      }}
                       data-testid="button-prev-image"
                     >
-                      <ChevronLeft className="h-4 w-4 md:h-6 md:w-6" />
+                      <ChevronLeft className="h-6 w-6" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/50 hover:bg-background/80 rounded-full opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10 h-8 w-8 md:h-10 md:w-10"
-                      onClick={nextImage}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/50 hover:bg-background/80 rounded-full hidden md:flex opacity-0 group-hover:opacity-100 transition-opacity z-10 h-10 w-10"
+                      onClick={() => {
+                        const container = document.querySelector('[data-testid="ad-carousel-scroll-container"]');
+                        if (container) {
+                          container.scrollBy({ left: container.clientWidth, behavior: 'smooth' });
+                        }
+                      }}
                       data-testid="button-next-image"
                     >
-                      <ChevronRight className="h-4 w-4 md:h-6 md:w-6" />
+                      <ChevronRight className="h-6 w-6" />
                     </Button>
                     <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
                       {images.map((_, i) => (
