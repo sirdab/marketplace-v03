@@ -121,11 +121,11 @@ export default function AdDetail() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
-              <div className="aspect-video relative rounded-lg overflow-hidden group">
+              <div className="aspect-[4/3] md:aspect-video relative rounded-lg overflow-hidden group bg-muted">
                 <img
                   src={images[currentImageIndex] || "/placeholder-property.jpg"}
                   alt={ad.title}
-                  className="w-full h-full object-cover transition-transform duration-500"
+                  className="w-full h-full object-contain md:object-cover transition-transform duration-500"
                   data-testid="img-ad-main"
                 />
                 
@@ -134,27 +134,27 @@ export default function AdDetail() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/50 hover:bg-background/80 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/50 hover:bg-background/80 rounded-full opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10 h-8 w-8 md:h-10 md:w-10"
                       onClick={prevImage}
                       data-testid="button-prev-image"
                     >
-                      <ChevronLeft className="h-6 w-6" />
+                      <ChevronLeft className="h-4 w-4 md:h-6 md:w-6" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/50 hover:bg-background/80 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/50 hover:bg-background/80 rounded-full opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10 h-8 w-8 md:h-10 md:w-10"
                       onClick={nextImage}
                       data-testid="button-next-image"
                     >
-                      <ChevronRight className="h-6 w-6" />
+                      <ChevronRight className="h-4 w-4 md:h-6 md:w-6" />
                     </Button>
                     <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
                       {images.map((_, i) => (
                         <div
                           key={i}
-                          className={`h-1.5 rounded-full transition-all ${
-                            i === currentImageIndex ? "w-4 bg-white" : "w-1.5 bg-white/50"
+                          className={`h-1 rounded-full transition-all ${
+                            i === currentImageIndex ? "w-3 md:w-4 bg-white" : "w-1 md:w-1.5 bg-white/50"
                           }`}
                         />
                       ))}
