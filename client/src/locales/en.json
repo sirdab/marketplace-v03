@@ -456,6 +456,22 @@
   "ads": {
     "notFoundMessage": "This listing doesn't exist or has been removed."
   },
+  "imageUpload": {
+    "title": "Property Images",
+    "dragAndDrop": "Drag and drop images here",
+    "orClickToSelect": "or click to select files",
+    "uploading": "Uploading...",
+    "uploadSuccess": "Upload successful",
+    "uploadedCount": "{{count}} image(s) uploaded",
+    "invalidType": "Invalid file type",
+    "fileTooLarge": "File too large (max 10MB)",
+    "maxImagesReached": "Maximum images reached",
+    "maxImagesDesc": "You can upload up to {{max}} images",
+    "noImages": "No images uploaded yet",
+    "imageCount": "{{current}} of {{max}} images",
+    "mainImage": "Main",
+    "image": "Image"
+  },
   "footer": {
     "description": "The unified online catalogue for commercial real estate in Saudi Arabia. Find warehouses, workshops, storage, and storefronts.",
     "categories": "Categories",

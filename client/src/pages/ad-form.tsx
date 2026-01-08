@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useParams } from 'wouter';
+import { ImageUpload } from '@/components/ImageUpload';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -38,6 +39,15 @@ import { ar, enUS } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import type { Ad, City } from '@shared/schema';
 
+const generateSlug = () => {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let slug = '';
+  for (let i = 0; i < 21; i++) {
+    slug += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return slug;
+};
+
 const adFormSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters'),
   slug: z.string().min(3, 'Slug is required'),
@@ -59,6 +69,7 @@ const adFormSchema = z.object({
   forSale: z.boolean().default(false),
   forDailyRent: z.boolean().default(false),
   forLeaseTransfer: z.boolean().default(false),
+  images: z.array(z.string()).default([]),
   typeAttributes: z.object({
     ceilingHeight: z.string().optional(),
     loadingDocks: z.number().optional(),
@@ -94,6 +105,8 @@ export default function AdForm({ mode }: AdFormProps) {
   const { toast } = useToast();
   const isRTL = i18n.language === 'ar';
   const BackIcon = isRTL ? ArrowRight : ArrowLeft;
+  
+  const initialSlug = useMemo(() => generateSlug(), []);
 
   const { data: existingAd, isLoading: adLoading } = useQuery<Ad>({
     queryKey: ['/api/ads', params.id],
@@ -113,7 +126,7 @@ export default function AdForm({ mode }: AdFormProps) {
     resolver: zodResolver(adFormSchema),
     defaultValues: {
       title: '',
-      slug: '',
+      slug: initialSlug,
       description: '',
       city: '',
       district: '',
@@ -132,6 +145,7 @@ export default function AdForm({ mode }: AdFormProps) {
       forSale: false,
       forDailyRent: false,
       forLeaseTransfer: false,
+      images: [],
       typeAttributes: {
         ceilingHeight: '',
         loadingDocks: 0,
@@ -176,6 +190,7 @@ export default function AdForm({ mode }: AdFormProps) {
         forSale: existingAd.forSale ?? false,
         forDailyRent: existingAd.forDailyRent ?? false,
         forLeaseTransfer: ((existingAd.typeAttributes as Record<string, unknown>)?.forLeaseTransfer as boolean) ?? false,
+        images: (existingAd.images && Array.isArray(existingAd.images)) ? existingAd.images : [],
         typeAttributes: (existingAd.typeAttributes as Record<string, unknown>) || {},
       });
     }
@@ -235,7 +250,7 @@ export default function AdForm({ mode }: AdFormProps) {
     let validSlug = data.slug;
     const isValidSlug = /^[a-z0-9]+$/.test(validSlug) && validSlug.length === 21;
     if (!isValidSlug) {
-      validSlug = generateSlug(data.title);
+      validSlug = generateSlug();
     }
 
     // Store forLeaseTransfer in typeAttributes until the database column is added
@@ -246,24 +261,15 @@ export default function AdForm({ mode }: AdFormProps) {
     const payload = {
       ...data,
       slug: validSlug,
+      images: data.images || [],
       typeAttributes: Object.keys(cleanedTypeAttributes).length > 0 ? cleanedTypeAttributes : {},
     };
 
     if (mode === 'create') {
-      createMutation.mutate(payload as AdFormData);
+      createMutation.mutate(payload as unknown as AdFormData);
     } else {
-      updateMutation.mutate(payload as AdFormData);
+      updateMutation.mutate(payload as unknown as AdFormData);
     }
-  };
-
-  const generateSlug = (_title: string) => {
-    // Generate a slug with exactly 21 ASCII characters (database constraint requirement)
-    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    let slug = '';
-    for (let i = 0; i < 21; i++) {
-      slug += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return slug;
   };
 
   const isPending = createMutation.isPending || updateMutation.isPending;
@@ -318,12 +324,6 @@ export default function AdForm({ mode }: AdFormProps) {
                             placeholder={t('adForm.titlePlaceholder')}
                             data-testid="input-ad-title"
                             {...field}
-                            onChange={(e) => {
-                              field.onChange(e);
-                              if (mode === 'create') {
-                                form.setValue('slug', generateSlug(e.target.value));
-                              }
-                            }}
                           />
                         </FormControl>
                         <FormMessage />
@@ -389,6 +389,21 @@ export default function AdForm({ mode }: AdFormProps) {
                         <FormMessage />
                       </FormItem>
                     )}
+                  />
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('imageUpload.title')}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ImageUpload
+                    userId={user?.id || ''}
+                    slug={form.watch('slug')}
+                    images={form.watch('images') || []}
+                    onImagesChange={(newImages) => form.setValue('images', newImages)}
+                    maxImages={10}
                   />
                 </CardContent>
               </Card>

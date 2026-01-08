@@ -456,6 +456,22 @@
   "ads": {
     "notFoundMessage": "هذا الإعلان غير موجود أو تم إزالته."
   },
+  "imageUpload": {
+    "title": "صور العقار",
+    "dragAndDrop": "اسحب وأفلت الصور هنا",
+    "orClickToSelect": "أو انقر لاختيار الملفات",
+    "uploading": "جاري الرفع...",
+    "uploadSuccess": "تم الرفع بنجاح",
+    "uploadedCount": "تم رفع {{count}} صورة",
+    "invalidType": "نوع ملف غير صالح",
+    "fileTooLarge": "حجم الملف كبير جداً (الحد الأقصى 10 ميجابايت)",
+    "maxImagesReached": "تم الوصول للحد الأقصى",
+    "maxImagesDesc": "يمكنك رفع حتى {{max}} صورة",
+    "noImages": "لم يتم رفع أي صور بعد",
+    "imageCount": "{{current}} من {{max}} صور",
+    "mainImage": "رئيسية",
+    "image": "صورة"
+  },
   "footer": {
     "description": "الفهرس الموحد عبر الإنترنت للعقارات التجارية في المملكة العربية السعودية. اعثر على المستودعات وورش العمل والتخزين والمحلات.",
     "categories": "الفئات",
