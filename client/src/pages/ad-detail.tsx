@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -10,6 +11,8 @@ import {
   Building2,
   Calendar,
   Shield,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -25,10 +28,22 @@ export default function AdDetail() {
   const { id } = useParams<{ id: string }>();
   const isRTL = i18n.language === "ar";
 
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
   const { data: ad, isLoading, error } = useQuery<Ad>({
     queryKey: ["/api/public/ads", id],
     enabled: !!id,
   });
+
+  const nextImage = () => {
+    if (!ad?.images) return;
+    setCurrentImageIndex((prev) => (prev + 1) % ad.images.length);
+  };
+
+  const prevImage = () => {
+    if (!ad?.images) return;
+    setCurrentImageIndex((prev) => (prev - 1 + ad.images.length) % ad.images.length);
+  };
 
   const formatPrice = (price: string | null) => {
     if (!price) return t("common.contactForPrice");
@@ -104,15 +119,49 @@ export default function AdDetail() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
-              <div className="aspect-video relative rounded-lg overflow-hidden">
+              <div className="aspect-video relative rounded-lg overflow-hidden group">
                 <img
-                  src={mainImage}
+                  src={images[currentImageIndex] || "/placeholder-property.jpg"}
                   alt={ad.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-500"
                   data-testid="img-ad-main"
                 />
+                
+                {images.length > 1 && (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/50 hover:bg-background/80 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                      onClick={prevImage}
+                      data-testid="button-prev-image"
+                    >
+                      <ChevronLeft className="h-6 w-6" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/50 hover:bg-background/80 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                      onClick={nextImage}
+                      data-testid="button-next-image"
+                    >
+                      <ChevronRight className="h-6 w-6" />
+                    </Button>
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                      {images.map((_, i) => (
+                        <div
+                          key={i}
+                          className={`h-1.5 rounded-full transition-all ${
+                            i === currentImageIndex ? "w-4 bg-white" : "w-1.5 bg-white/50"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+
                 {ad.verified && (
-                  <Badge className="absolute top-4 end-4" variant="secondary">
+                  <Badge className="absolute top-4 end-4 z-10" variant="secondary">
                     <CheckCircle className="h-3 w-3 me-1" />
                     {t("common.verified")}
                   </Badge>
@@ -120,15 +169,22 @@ export default function AdDetail() {
               </div>
 
               {images.length > 1 && (
-                <div className="flex gap-2 overflow-x-auto pb-2">
-                  {images.slice(1, 5).map((img, index) => (
-                    <img
+                <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                  {images.map((img, index) => (
+                    <button
                       key={index}
-                      src={img}
-                      alt={`${ad.title} ${index + 2}`}
-                      className="h-20 w-32 object-cover rounded-md flex-shrink-0"
-                      data-testid={`img-ad-thumbnail-${index}`}
-                    />
+                      onClick={() => setCurrentImageIndex(index)}
+                      className={`relative h-20 w-32 flex-shrink-0 rounded-md overflow-hidden transition-all ${
+                        index === currentImageIndex ? "ring-2 ring-primary ring-offset-2" : "opacity-70 hover:opacity-100"
+                      }`}
+                    >
+                      <img
+                        src={img}
+                        alt={`${ad.title} ${index + 1}`}
+                        className="w-full h-full object-cover"
+                        data-testid={`img-ad-thumbnail-${index}`}
+                      />
+                    </button>
                   ))}
                 </div>
               )}
