@@ -1,0 +1,95 @@
+Task: Create a CLAUDE.md file at the root of this repository.
+
+Purpose: This file will be used by Claude Code as persistent project context. It must be concise, accurate, and human-readable, and reflect the actual structure, tooling, and workflows of this project.
+
+Instructions:
+
+Scan the entire repository to understand:
+
+Project purpose and architecture
+
+Tech stack, frameworks, and languages used
+
+Package manager and scripts
+
+Folder structure and key files
+
+Environment variables and configuration
+
+Any non-obvious behaviors, conventions, or constraints
+
+Generate a CLAUDE.md file that includes the following sections only if relevant to the project:
+
+Project Overview
+
+One short paragraph describing what this project does and its role in the broader system.
+
+Tech Stack
+
+Languages, frameworks, runtime, package manager, database, infra, and deployment assumptions.
+
+Key Directories & Files
+
+List important folders and files with 1-line explanations (only what matters).
+
+Common Commands
+
+Frequently used bash commands (dev, build, test, lint, migrate, seed, etc.).
+
+Environment & Setup
+
+Required environment variables
+
+How local development is expected to run
+
+Any tooling assumptions (Node version, Python version, pnpm/yarn/npm, etc.).
+
+Code Style & Conventions
+
+Formatting rules
+
+Import style
+
+Naming conventions
+
+Any patterns that should always be followed or avoided.
+
+Workflow Rules
+
+Branching strategy (e.g. main vs feature branches)
+
+Whether to merge or rebase
+
+Commit expectations
+
+PR expectations (if applicable).
+
+Testing & Quality
+
+How tests are run
+
+What must be checked before merging.
+
+Warnings & Gotchas
+
+Any sharp edges, known issues, or things Claude should be careful about.
+
+Do NOT invent tools, commands, or conventions.
+
+If something is unclear or not present in the repo, either omit it or explicitly note it as “not defined.”
+
+Keep it concise.
+
+This is not documentation for humans — it is memory for an AI.
+
+Prefer bullet points over paragraphs.
+
+Output
+
+Create the file as CLAUDE.md
+
+Populate it fully based on actual repository contents
+
+Do not include explanations outside the file itself.
+
+Goal: After this file exists, Claude should be able to start working in this repository with minimal additional clarification.
