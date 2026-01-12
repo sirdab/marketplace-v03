@@ -18,6 +18,8 @@ import RegionAds from '@/pages/region-ads';
 import AdminDashboard from '@/pages/admin';
 import AuthPage from '@/pages/auth';
 import NotFound from '@/pages/not-found';
+import Privacy from '@/pages/privacy';
+import Terms from '@/pages/terms';
 
 function ProtectedDashboard() {
   return (
@@ -76,6 +78,8 @@ function Router() {
       <Route path="/ads/:id" component={AdDetail} />
       <Route path="/admin" component={ProtectedAdmin} />
       <Route path="/auth" component={AuthPage} />
+      <Route path="/privacy" component={Privacy} />
+      <Route path="/terms" component={Terms} />
       <Route component={NotFound} />
     </Switch>
   );

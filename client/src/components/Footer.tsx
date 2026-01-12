@@ -106,7 +106,9 @@ export function Footer() {
         </div>
 
         <div className="border-t mt-10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-          <p>2024 Sirdab. {t('footer.rights')}</p>
+          <p>
+            {new Date().getFullYear()} Sirdab. {t('footer.rights')}
+          </p>
           <div className="flex flex-wrap gap-4 md:gap-6">
             <Link href="/privacy" className="hover:text-foreground">
               {t('footer.privacy')}
