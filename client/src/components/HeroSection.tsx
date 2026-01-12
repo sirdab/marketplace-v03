@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { PurposeFilter } from "@/components/PurposeFilter";
 import { type PropertyCategory, type PropertyPurpose } from "@shared/schema";
-import coverImage from "@assets/Cover_Page_for_Sirdab_1767187345722.png";
+const coverImage = "/cover.png";
 
 const categories: PropertyCategory[] = [
   "warehouse",

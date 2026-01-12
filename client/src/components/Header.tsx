@@ -9,7 +9,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { PurposeFilter } from "./PurposeFilter";
 import { type PropertyPurpose } from "@shared/schema";
-import logoPath from "@assets/Sirdab_Logo-01_(1)_Cropped_-_Edited_1767185859899.png";
+const logoPath = "/sirdab-logo.png";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import {

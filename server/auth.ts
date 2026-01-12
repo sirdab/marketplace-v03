@@ -1,10 +1,16 @@
 import { createClient, User } from '@supabase/supabase-js';
 import type { Request, Response, NextFunction } from 'express';
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://soxgqyjaeouwdyykoueq.supabase.co';
-const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNveGdxeWphZW91d2R5eWtvdWVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDI4OTA4NDUsImV4cCI6MjAxODQ2Njg0NX0.CbgxIgxRJXFKOJ2ssZ3PpHeG-3KOgsocGh6SMtKyfOw';
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
 
-export const supabaseServer = createClient(supabaseUrl, supabaseAnonKey);
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.warn('[Auth] VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY not set. Auth will be disabled.');
+}
+
+export const supabaseServer = supabaseUrl && supabaseAnonKey
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
 
 declare global {
   namespace Express {
@@ -15,11 +21,16 @@ declare global {
 }
 
 export async function verifyAuth(token: string): Promise<User | null> {
+  if (!supabaseServer) {
+    console.log('[Auth] Supabase not configured');
+    return null;
+  }
+
   if (!token) {
     console.log('[Auth] No token provided');
     return null;
   }
-  
+
   try {
     const { data: { user }, error } = await supabaseServer.auth.getUser(token);
     

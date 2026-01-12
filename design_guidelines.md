@@ -1,4 +1,4 @@
-# Sirdab Marketplace 2.0 - Design Guidelines
+# Sirdab Marketplace 3.0 - Design Guidelines
 
 ## Design Approach
 
