@@ -15,10 +15,10 @@ import {
   ads,
   cities,
   adToProperty,
-} from "@shared/schema";
-import { db } from "./db";
-import { eq, and, like, or, sql, desc } from "drizzle-orm";
-import { randomUUID } from "crypto";
+} from '@shared/schema';
+import { db } from './db';
+import { eq, and, like, or, sql, desc } from 'drizzle-orm';
+import { randomUUID } from 'crypto';
 
 export interface IStorage {
   // Users
@@ -75,15 +75,13 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.email === username
-    );
+    return Array.from(this.users.values()).find((user) => user.email === username);
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = randomUUID();
-    const user: User = { 
-      ...insertUser, 
+    const user: User = {
+      ...insertUser,
       id,
       emailVerified: null,
       createdAt: new Date(),
@@ -105,10 +103,10 @@ export class DatabaseStorage implements IStorage {
         .select()
         .from(ads)
         .where(and(eq(ads.published, true), eq(ads.deleted, false)));
-      
+
       return result.map(adToProperty);
     } catch (error) {
-      console.error("Error fetching properties from database:", error);
+      console.error('Error fetching properties from database:', error);
       return [];
     }
   }
@@ -117,17 +115,13 @@ export class DatabaseStorage implements IStorage {
     try {
       const adId = parseInt(id);
       if (isNaN(adId)) return undefined;
-      
-      const result = await db
-        .select()
-        .from(ads)
-        .where(eq(ads.id, adId))
-        .limit(1);
-      
+
+      const result = await db.select().from(ads).where(eq(ads.id, adId)).limit(1);
+
       if (result.length === 0) return undefined;
       return adToProperty(result[0]);
     } catch (error) {
-      console.error("Error fetching property from database:", error);
+      console.error('Error fetching property from database:', error);
       return undefined;
     }
   }
@@ -146,7 +140,9 @@ export class DatabaseStorage implements IStorage {
         results = results.filter((p) => p.city.toLowerCase() === filters.city!.toLowerCase());
       }
       if (filters.district) {
-        results = results.filter((p) => p.district.toLowerCase() === filters.district!.toLowerCase());
+        results = results.filter(
+          (p) => p.district.toLowerCase() === filters.district!.toLowerCase()
+        );
       }
       if (filters.minPrice !== undefined) {
         results = results.filter((p) => p.annualPrice >= filters.minPrice!);
@@ -180,7 +176,7 @@ export class DatabaseStorage implements IStorage {
 
       return results;
     } catch (error) {
-      console.error("Error searching properties:", error);
+      console.error('Error searching properties:', error);
       return [];
     }
   }
@@ -195,21 +191,17 @@ export class DatabaseStorage implements IStorage {
         .orderBy(desc(ads.createdAt));
       return result;
     } catch (error) {
-      console.error("Error fetching user ads:", error);
+      console.error('Error fetching user ads:', error);
       return [];
     }
   }
 
   async getAd(id: number): Promise<Ad | undefined> {
     try {
-      const result = await db
-        .select()
-        .from(ads)
-        .where(eq(ads.id, id))
-        .limit(1);
+      const result = await db.select().from(ads).where(eq(ads.id, id)).limit(1);
       return result[0];
     } catch (error) {
-      console.error("Error fetching ad:", error);
+      console.error('Error fetching ad:', error);
       return undefined;
     }
   }
@@ -225,7 +217,7 @@ export class DatabaseStorage implements IStorage {
         .returning();
       return result[0];
     } catch (error) {
-      console.error("Error creating ad:", error);
+      console.error('Error creating ad:', error);
       throw error;
     }
   }
@@ -242,7 +234,7 @@ export class DatabaseStorage implements IStorage {
         .returning();
       return result[0];
     } catch (error) {
-      console.error("Error updating ad:", error);
+      console.error('Error updating ad:', error);
       return undefined;
     }
   }
@@ -256,7 +248,7 @@ export class DatabaseStorage implements IStorage {
         .orderBy(desc(ads.createdAt));
       return result;
     } catch (error) {
-      console.error("Error fetching published ads:", error);
+      console.error('Error fetching published ads:', error);
       return [];
     }
   }
@@ -273,9 +265,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getVisitsByProperty(propertyId: string): Promise<Visit[]> {
-    return Array.from(this.visits.values()).filter(
-      (v) => v.propertyId === propertyId
-    );
+    return Array.from(this.visits.values()).filter((v) => v.propertyId === propertyId);
   }
 
   async getVisitsByUser(userId: string): Promise<Visit[]> {
@@ -289,10 +279,7 @@ export class DatabaseStorage implements IStorage {
     return visit;
   }
 
-  async updateVisit(
-    id: string,
-    updates: Partial<InsertVisit>
-  ): Promise<Visit | undefined> {
+  async updateVisit(id: string, updates: Partial<InsertVisit>): Promise<Visit | undefined> {
     const visit = this.visits.get(id);
     if (!visit) return undefined;
     const updated = { ...visit, ...updates };
@@ -312,15 +299,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getBookingsByProperty(propertyId: string): Promise<Booking[]> {
-    return Array.from(this.bookings.values()).filter(
-      (b) => b.propertyId === propertyId
-    );
+    return Array.from(this.bookings.values()).filter((b) => b.propertyId === propertyId);
   }
 
   async getBookingsByUser(userId: string): Promise<Booking[]> {
-    return Array.from(this.bookings.values()).filter(
-      (b) => b.userId === userId
-    );
+    return Array.from(this.bookings.values()).filter((b) => b.userId === userId);
   }
 
   async createBooking(insertBooking: InsertBooking): Promise<Booking> {
@@ -330,10 +313,7 @@ export class DatabaseStorage implements IStorage {
     return booking;
   }
 
-  async updateBooking(
-    id: string,
-    updates: Partial<InsertBooking>
-  ): Promise<Booking | undefined> {
+  async updateBooking(id: string, updates: Partial<InsertBooking>): Promise<Booking | undefined> {
     const booking = this.bookings.get(id);
     if (!booking) return undefined;
     const updated = { ...booking, ...updates };
@@ -345,9 +325,7 @@ export class DatabaseStorage implements IStorage {
   private savedProperties: Map<string, SavedProperty> = new Map();
 
   async getSavedProperties(userId: string): Promise<SavedProperty[]> {
-    return Array.from(this.savedProperties.values()).filter(
-      (s) => s.userId === userId
-    );
+    return Array.from(this.savedProperties.values()).filter((s) => s.userId === userId);
   }
 
   async saveProperty(insertSaved: InsertSavedProperty): Promise<SavedProperty> {
@@ -370,29 +348,114 @@ export class DatabaseStorage implements IStorage {
 
   // Fallback cities for when database table doesn't exist
   private static readonly FALLBACK_CITIES: City[] = [
-    { id: 1, nameEn: 'Riyadh', nameAr: 'الرياض', latitude: '24.7136', longitude: '46.6753', isActive: true, countryId: 1 },
-    { id: 2, nameEn: 'Jeddah', nameAr: 'جدة', latitude: '21.4858', longitude: '39.1925', isActive: true, countryId: 1 },
-    { id: 3, nameEn: 'Dammam', nameAr: 'الدمام', latitude: '26.4207', longitude: '50.0888', isActive: true, countryId: 1 },
-    { id: 4, nameEn: 'Al Khobar', nameAr: 'الخبر', latitude: '26.2172', longitude: '50.1971', isActive: true, countryId: 1 },
-    { id: 5, nameEn: 'Al Ahsa', nameAr: 'الأحساء', latitude: '25.3648', longitude: '49.5855', isActive: true, countryId: 1 },
-    { id: 6, nameEn: 'Abha', nameAr: 'أبها', latitude: '18.2164', longitude: '42.5053', isActive: true, countryId: 1 },
-    { id: 7, nameEn: 'Buraydah', nameAr: 'بريدة', latitude: '26.3260', longitude: '43.9750', isActive: true, countryId: 1 },
-    { id: 8, nameEn: 'Mecca', nameAr: 'مكة المكرمة', latitude: '21.3891', longitude: '39.8579', isActive: true, countryId: 1 },
-    { id: 9, nameEn: 'Medina', nameAr: 'المدينة المنورة', latitude: '24.5247', longitude: '39.5692', isActive: true, countryId: 1 },
-    { id: 10, nameEn: 'Tabuk', nameAr: 'تبوك', latitude: '28.3838', longitude: '36.5550', isActive: true, countryId: 1 },
-    { id: 11, nameEn: 'Khamis Mushait', nameAr: 'خميس مشيط', latitude: '18.3093', longitude: '42.7453', isActive: true, countryId: 1 },
+    {
+      id: 1,
+      nameEn: 'Riyadh',
+      nameAr: 'الرياض',
+      latitude: '24.7136',
+      longitude: '46.6753',
+      isActive: true,
+      countryId: 1,
+    },
+    {
+      id: 2,
+      nameEn: 'Jeddah',
+      nameAr: 'جدة',
+      latitude: '21.4858',
+      longitude: '39.1925',
+      isActive: true,
+      countryId: 1,
+    },
+    {
+      id: 3,
+      nameEn: 'Dammam',
+      nameAr: 'الدمام',
+      latitude: '26.4207',
+      longitude: '50.0888',
+      isActive: true,
+      countryId: 1,
+    },
+    {
+      id: 4,
+      nameEn: 'Al Khobar',
+      nameAr: 'الخبر',
+      latitude: '26.2172',
+      longitude: '50.1971',
+      isActive: true,
+      countryId: 1,
+    },
+    {
+      id: 5,
+      nameEn: 'Al Ahsa',
+      nameAr: 'الأحساء',
+      latitude: '25.3648',
+      longitude: '49.5855',
+      isActive: true,
+      countryId: 1,
+    },
+    {
+      id: 6,
+      nameEn: 'Abha',
+      nameAr: 'أبها',
+      latitude: '18.2164',
+      longitude: '42.5053',
+      isActive: true,
+      countryId: 1,
+    },
+    {
+      id: 7,
+      nameEn: 'Buraydah',
+      nameAr: 'بريدة',
+      latitude: '26.3260',
+      longitude: '43.9750',
+      isActive: true,
+      countryId: 1,
+    },
+    {
+      id: 8,
+      nameEn: 'Mecca',
+      nameAr: 'مكة المكرمة',
+      latitude: '21.3891',
+      longitude: '39.8579',
+      isActive: true,
+      countryId: 1,
+    },
+    {
+      id: 9,
+      nameEn: 'Medina',
+      nameAr: 'المدينة المنورة',
+      latitude: '24.5247',
+      longitude: '39.5692',
+      isActive: true,
+      countryId: 1,
+    },
+    {
+      id: 10,
+      nameEn: 'Tabuk',
+      nameAr: 'تبوك',
+      latitude: '28.3838',
+      longitude: '36.5550',
+      isActive: true,
+      countryId: 1,
+    },
+    {
+      id: 11,
+      nameEn: 'Khamis Mushait',
+      nameAr: 'خميس مشيط',
+      latitude: '18.3093',
+      longitude: '42.7453',
+      isActive: true,
+      countryId: 1,
+    },
   ];
 
   // Cities methods
   async getCities(): Promise<City[]> {
     try {
-      const result = await db
-        .select()
-        .from(cities)
-        .where(eq(cities.isActive, true));
+      const result = await db.select().from(cities).where(eq(cities.isActive, true));
       return result.length > 0 ? result : DatabaseStorage.FALLBACK_CITIES;
     } catch (error) {
-      console.error("Error fetching cities:", error);
+      console.error('Error fetching cities:', error);
       return DatabaseStorage.FALLBACK_CITIES;
     }
   }
@@ -407,7 +470,7 @@ export class DatabaseStorage implements IStorage {
         .orderBy(desc(ads.createdAt));
       return result;
     } catch (error) {
-      console.error("Error fetching all ads:", error);
+      console.error('Error fetching all ads:', error);
       return [];
     }
   }

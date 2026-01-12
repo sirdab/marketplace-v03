@@ -1,24 +1,24 @@
-import { useState, useEffect } from "react";
-import { Link, useLocation, useSearch } from "wouter";
-import { useTranslation } from "react-i18next";
-import { Search, Menu, X, Heart, User, LogOut, Building2 } from "lucide-react";
-import { useDirection } from "@/hooks/use-direction";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ThemeToggle } from "./ThemeToggle";
-import { LanguageSwitcher } from "./LanguageSwitcher";
-import { PurposeFilter } from "./PurposeFilter";
-import { type PropertyPurpose } from "@shared/schema";
-const logoPath = "/sirdab-logo.png";
-import { useAuth } from "@/lib/auth";
-import { useToast } from "@/hooks/use-toast";
+import { useState, useEffect } from 'react';
+import { Link, useLocation, useSearch } from 'wouter';
+import { useTranslation } from 'react-i18next';
+import { Search, Menu, X, Heart, User, LogOut, Building2 } from 'lucide-react';
+import { useDirection } from '@/hooks/use-direction';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { ThemeToggle } from './ThemeToggle';
+import { LanguageSwitcher } from './LanguageSwitcher';
+import { PurposeFilter } from './PurposeFilter';
+import { type PropertyPurpose } from '@shared/schema';
+const logoPath = '/sirdab-logo.png';
+import { useAuth } from '@/lib/auth';
+import { useToast } from '@/hooks/use-toast';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 
 interface HeaderProps {
   onSearch?: (query: string) => void;
@@ -27,7 +27,7 @@ interface HeaderProps {
   onPurposeChange?: (purpose: PropertyPurpose | undefined) => void;
 }
 
-export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }: HeaderProps) {
+export function Header({ onSearch, searchQuery = '', purpose, onPurposeChange }: HeaderProps) {
   const { t } = useTranslation();
   const dir = useDirection();
   const isRTL = dir === 'rtl';
@@ -59,9 +59,9 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
       onSearch(localSearch);
     } else {
       const params = new URLSearchParams();
-      if (localSearch) params.set("q", localSearch);
-      if (localPurpose) params.set("purpose", localPurpose);
-      setLocation(`/properties${params.toString() ? `?${params.toString()}` : ""}`);
+      if (localSearch) params.set('q', localSearch);
+      if (localPurpose) params.set('purpose', localPurpose);
+      setLocation(`/properties${params.toString() ? `?${params.toString()}` : ''}`);
     }
   };
 
@@ -72,7 +72,7 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
     }
   };
 
-  const isHome = location === "/";
+  const isHome = location === '/';
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/30 dark:border-white/10 bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80">
@@ -101,11 +101,18 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
                 data-testid="button-list-property-mobile"
               >
                 <Building2 className="h-3.5 w-3.5 shrink-0" />
-                <span className={isRTL ? 'ms-1' : 'me-1'}>{t("homeCategoryBar.listYourSpace")}</span>
+                <span className={isRTL ? 'ms-1' : 'me-1'}>
+                  {t('homeCategoryBar.listYourSpace')}
+                </span>
               </Button>
             </Link>
             <Link href="/saved">
-              <Button variant="ghost" size="icon" className="rounded-full" data-testid="link-saved-mobile">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full"
+                data-testid="link-saved-mobile"
+              >
                 <Heart className="h-5 w-5" />
               </Button>
             </Link>
@@ -116,11 +123,7 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
               onSubmit={handleSearchSubmit}
               className="hidden md:flex flex-1 max-w-xl mx-4 gap-2"
             >
-              <PurposeFilter
-                value={localPurpose}
-                onChange={handlePurposeChange}
-                variant="header"
-              />
+              <PurposeFilter value={localPurpose} onChange={handlePurposeChange} variant="header" />
               <div className="relative flex-1">
                 <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -142,13 +145,15 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
                 data-testid="button-list-your-space-nav"
               >
                 <Building2 className="h-4 w-4 shrink-0" />
-                <span className={isRTL ? 'ms-2' : 'me-2'}>{t("homeCategoryBar.listYourSpace")}</span>
+                <span className={isRTL ? 'ms-2' : 'me-2'}>
+                  {t('homeCategoryBar.listYourSpace')}
+                </span>
               </Button>
             </Link>
             <div className="w-px h-6 bg-border/40 mx-1" />
             <Link href="/properties">
               <Button
-                variant={location.startsWith("/properties") ? "secondary" : "ghost"}
+                variant={location.startsWith('/properties') ? 'secondary' : 'ghost'}
                 data-testid="link-browse"
               >
                 {t('nav.browse')}
@@ -172,7 +177,11 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard" className="w-full cursor-pointer" data-testid="link-dashboard">
+                    <Link
+                      href="/dashboard"
+                      className="w-full cursor-pointer"
+                      data-testid="link-dashboard"
+                    >
                       {t('nav.dashboard')}
                     </Link>
                   </DropdownMenuItem>
@@ -206,16 +215,9 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
         </div>
 
         {!isHome && (
-          <form
-            onSubmit={handleSearchSubmit}
-            className="md:hidden pb-3"
-          >
+          <form onSubmit={handleSearchSubmit} className="md:hidden pb-3">
             <div className="flex gap-2 items-center">
-              <PurposeFilter
-                value={localPurpose}
-                onChange={handlePurposeChange}
-                variant="mobile"
-              />
+              <PurposeFilter value={localPurpose} onChange={handlePurposeChange} variant="mobile" />
               <div className="relative flex-1">
                 <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -288,8 +290,11 @@ export function Header({ onSearch, searchQuery = "", purpose, onPurposeChange }:
                 </Link>
               )}
               <Link href="/list-property" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="outline" className="w-full justify-start mt-2 bg-[#089c9f] text-[#ffffff] hover:bg-[#067e81] hover:text-[#ffffff] border-none">
-                  {t("homeCategoryBar.listYourSpace")}
+                <Button
+                  variant="outline"
+                  className="w-full justify-start mt-2 bg-[#089c9f] text-[#ffffff] hover:bg-[#067e81] hover:text-[#ffffff] border-none"
+                >
+                  {t('homeCategoryBar.listYourSpace')}
                 </Button>
               </Link>
               <div className="flex items-center justify-between pt-2 border-t mt-2">

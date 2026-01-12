@@ -53,9 +53,15 @@ const menuItems = [
   { icon: Settings, labelKey: 'admin.settings', path: '/admin/settings', id: 'settings' },
 ];
 
-function AdminSidebar({ activeTab, onTabChange }: { activeTab: string; onTabChange: (tab: string) => void }) {
+function AdminSidebar({
+  activeTab,
+  onTabChange,
+}: {
+  activeTab: string;
+  onTabChange: (tab: string) => void;
+}) {
   const { t } = useTranslation();
-  
+
   return (
     <Sidebar>
       <SidebarHeader className="p-4 border-b">
@@ -97,9 +103,9 @@ function OverviewTab() {
     },
   });
 
-  const publishedCount = ads.filter(ad => ad.published && !ad.deleted).length;
-  const draftCount = ads.filter(ad => !ad.published && !ad.deleted).length;
-  const verifiedCount = ads.filter(ad => ad.verified).length;
+  const publishedCount = ads.filter((ad) => ad.published && !ad.deleted).length;
+  const draftCount = ads.filter((ad) => !ad.published && !ad.deleted).length;
+  const verifiedCount = ads.filter((ad) => ad.verified).length;
 
   const stats = [
     { label: t('admin.totalListings'), value: ads.length, icon: Building2 },
@@ -111,7 +117,7 @@ function OverviewTab() {
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-semibold">{t('admin.overview')}</h2>
-      
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, i) => (
           <Card key={i}>
@@ -119,9 +125,7 @@ function OverviewTab() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">{stat.label}</p>
-                  <p className="text-3xl font-semibold mt-1">
-                    {isLoading ? '-' : stat.value}
-                  </p>
+                  <p className="text-3xl font-semibold mt-1">{isLoading ? '-' : stat.value}</p>
                 </div>
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                   <stat.icon className="h-5 w-5" />
@@ -139,7 +143,7 @@ function ListingsTab() {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
   const [searchQuery, setSearchQuery] = useState('');
-  
+
   const { data: ads = [], isLoading } = useQuery<Ad[]>({
     queryKey: ['/api/admin/ads'],
     queryFn: async () => {
@@ -149,7 +153,7 @@ function ListingsTab() {
     },
   });
 
-  const filteredAds = ads.filter(ad => {
+  const filteredAds = ads.filter((ad) => {
     if (!searchQuery) return true;
     const query = searchQuery.toLowerCase();
     return (
@@ -217,7 +221,9 @@ function ListingsTab() {
                       <TableRow key={ad.id} data-testid={`admin-listing-${ad.id}`}>
                         <TableCell>
                           <div className="font-medium truncate max-w-[200px]">{ad.title}</div>
-                          <div className="text-sm text-muted-foreground">{ad.type || 'Warehouse'}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {ad.type || 'Warehouse'}
+                          </div>
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1">
@@ -250,12 +256,20 @@ function ListingsTab() {
                         <TableCell>
                           <div className="flex justify-end gap-2">
                             <Link href={`/ads/${ad.id}`}>
-                              <Button size="icon" variant="ghost" data-testid={`button-view-${ad.id}`}>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                data-testid={`button-view-${ad.id}`}
+                              >
                                 <Eye className="h-4 w-4" />
                               </Button>
                             </Link>
                             <Link href={`/ads/${ad.id}/edit`}>
-                              <Button size="icon" variant="ghost" data-testid={`button-edit-${ad.id}`}>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                data-testid={`button-edit-${ad.id}`}
+                              >
                                 <Edit className="h-4 w-4" />
                               </Button>
                             </Link>
@@ -276,7 +290,7 @@ function ListingsTab() {
 
 function UsersTab() {
   const { t } = useTranslation();
-  
+
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-semibold">{t('admin.users')}</h2>
@@ -292,7 +306,7 @@ function UsersTab() {
 
 function SettingsTab() {
   const { t } = useTranslation();
-  
+
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-semibold">{t('admin.settings')}</h2>
@@ -349,9 +363,7 @@ export default function AdminDashboard() {
               <ThemeToggle />
             </div>
           </header>
-          <main className="flex-1 overflow-auto p-6 bg-muted/30">
-            {renderContent()}
-          </main>
+          <main className="flex-1 overflow-auto p-6 bg-muted/30">{renderContent()}</main>
         </div>
       </div>
     </SidebarProvider>

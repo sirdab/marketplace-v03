@@ -1,36 +1,32 @@
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { type PropertyPurpose } from "@shared/schema";
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ChevronDown } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { type PropertyPurpose } from '@shared/schema';
 
-const purposes: PropertyPurpose[] = ["buy", "rent", "daily_rent"];
+const purposes: PropertyPurpose[] = ['buy', 'rent', 'daily_rent'];
 
 interface PurposeFilterProps {
   value: PropertyPurpose | undefined;
   onChange: (value: PropertyPurpose | undefined) => void;
-  variant?: "hero" | "header" | "default" | "mobile";
+  variant?: 'hero' | 'header' | 'default' | 'mobile';
 }
 
-export function PurposeFilter({ value, onChange, variant = "default" }: PurposeFilterProps) {
+export function PurposeFilter({ value, onChange, variant = 'default' }: PurposeFilterProps) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   const getPurposeLabel = (purpose: PropertyPurpose | undefined) => {
-    if (!purpose) return t("purpose.rent");
+    if (!purpose) return t('purpose.rent');
     switch (purpose) {
-      case "buy":
-        return t("purpose.buy");
-      case "rent":
-        return t("purpose.rent");
-      case "daily_rent":
-        return t("purpose.dailyRental");
+      case 'buy':
+        return t('purpose.buy');
+      case 'rent':
+        return t('purpose.rent');
+      case 'daily_rent':
+        return t('purpose.dailyRental');
     }
   };
 
@@ -39,7 +35,7 @@ export function PurposeFilter({ value, onChange, variant = "default" }: PurposeF
     setOpen(false);
   };
 
-  if (variant === "hero") {
+  if (variant === 'hero') {
     return (
       <div className="inline-flex bg-white/10 backdrop-blur-md p-1 rounded-full border border-white/20 mb-6">
         {purposes.map((purpose) => (
@@ -48,10 +44,10 @@ export function PurposeFilter({ value, onChange, variant = "default" }: PurposeF
             type="button"
             onClick={() => onChange(purpose)}
             className={cn(
-              "px-6 py-2 rounded-full text-sm font-medium transition-all",
-              (value === purpose || (!value && purpose === "rent"))
-                ? "bg-white text-primary shadow-sm"
-                : "text-white hover:bg-white/10"
+              'px-6 py-2 rounded-full text-sm font-medium transition-all',
+              value === purpose || (!value && purpose === 'rent')
+                ? 'bg-white text-primary shadow-sm'
+                : 'text-white hover:bg-white/10'
             )}
           >
             {getPurposeLabel(purpose)}
@@ -61,20 +57,17 @@ export function PurposeFilter({ value, onChange, variant = "default" }: PurposeF
     );
   }
 
-  const buttonClassName = variant === "header"
-    ? "h-9 gap-2"
-    : variant === "mobile"
-    ? "h-10 gap-1 rounded-full px-4 shrink-0"
-    : "h-10 gap-2";
+  const buttonClassName =
+    variant === 'header'
+      ? 'h-9 gap-2'
+      : variant === 'mobile'
+        ? 'h-10 gap-1 rounded-full px-4 shrink-0'
+        : 'h-10 gap-2';
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className={buttonClassName}
-          data-testid="button-purpose-filter"
-        >
+        <Button variant="outline" className={buttonClassName} data-testid="button-purpose-filter">
           {getPurposeLabel(value)}
           <ChevronDown className="h-4 w-4 opacity-70" />
         </Button>
@@ -82,12 +75,12 @@ export function PurposeFilter({ value, onChange, variant = "default" }: PurposeF
       <PopoverContent className="w-48 p-2" align="start">
         <div className="space-y-1">
           <p className="text-xs font-medium text-muted-foreground px-2 py-1">
-            {t("purpose.title")}
+            {t('purpose.title')}
           </p>
           {purposes.map((purpose) => (
             <Button
               key={purpose}
-              variant={value === purpose ? "secondary" : "ghost"}
+              variant={value === purpose ? 'secondary' : 'ghost'}
               className="w-full justify-start"
               onClick={() => handleSelect(purpose)}
               data-testid={`button-purpose-${purpose}`}
@@ -106,7 +99,7 @@ export function PurposeFilter({ value, onChange, variant = "default" }: PurposeF
               }}
               data-testid="button-purpose-reset"
             >
-              {t("common.reset")}
+              {t('common.reset')}
             </Button>
             <Button
               size="sm"
@@ -114,7 +107,7 @@ export function PurposeFilter({ value, onChange, variant = "default" }: PurposeF
               onClick={() => setOpen(false)}
               data-testid="button-purpose-done"
             >
-              {t("common.done")}
+              {t('common.done')}
             </Button>
           </div>
         </div>

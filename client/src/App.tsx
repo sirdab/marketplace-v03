@@ -1,23 +1,23 @@
-import { Switch, Route } from "wouter";
-import { queryClient } from "./lib/queryClient";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { ThemeProvider } from "@/lib/theme";
-import { AuthProvider } from "@/lib/auth";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
-import { useDirection } from "@/hooks/use-direction";
-import Home from "@/pages/home";
-import Properties from "@/pages/properties";
-import PropertyDetail from "@/pages/property-detail";
-import Dashboard from "@/pages/dashboard";
-import MyAds from "@/pages/my-ads";
-import AdForm from "@/pages/ad-form";
-import AdDetail from "@/pages/ad-detail";
-import RegionAds from "@/pages/region-ads";
-import AdminDashboard from "@/pages/admin";
-import AuthPage from "@/pages/auth";
-import NotFound from "@/pages/not-found";
+import { Switch, Route } from 'wouter';
+import { queryClient } from './lib/queryClient';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from '@/components/ui/toaster';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { ThemeProvider } from '@/lib/theme';
+import { AuthProvider } from '@/lib/auth';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { useDirection } from '@/hooks/use-direction';
+import Home from '@/pages/home';
+import Properties from '@/pages/properties';
+import PropertyDetail from '@/pages/property-detail';
+import Dashboard from '@/pages/dashboard';
+import MyAds from '@/pages/my-ads';
+import AdForm from '@/pages/ad-form';
+import AdDetail from '@/pages/ad-detail';
+import RegionAds from '@/pages/region-ads';
+import AdminDashboard from '@/pages/admin';
+import AuthPage from '@/pages/auth';
+import NotFound from '@/pages/not-found';
 
 function ProtectedDashboard() {
   return (

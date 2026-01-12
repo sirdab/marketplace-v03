@@ -26,7 +26,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
@@ -48,7 +50,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch {
       redirectUrl = `${window.location.origin}/dashboard`;
     }
-    
+
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
@@ -75,11 +77,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    // Try Supabase signOut, but don't fail if session is already invalid
+    try {
+      await supabase.auth.signOut({ scope: 'local' });
+    } catch {
+      // Ignore errors - session might already be invalid on server
+    }
+
+    // Force clear Supabase's local storage (in case signOut failed to do it)
+    const storageKey = `sb-${new URL(import.meta.env.VITE_SUPABASE_URL || 'https://soxgqyjaeouwdyykoueq.supabase.co').hostname.split('.')[0]}-auth-token`;
+    localStorage.removeItem(storageKey);
+
+    // Clear React state
+    setUser(null);
+    setSession(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, sendMagicLink, sendPhoneOtp, verifyPhoneOtp, signOut }}>
+    <AuthContext.Provider
+      value={{ user, session, loading, sendMagicLink, sendPhoneOtp, verifyPhoneOtp, signOut }}
+    >
       {children}
     </AuthContext.Provider>
   );

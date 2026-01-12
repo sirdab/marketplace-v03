@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import { PropertyCard } from "./PropertyCard";
-import { type Property } from "@shared/schema";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useState, useEffect } from 'react';
+import { PropertyCard } from './PropertyCard';
+import { type Property } from '@shared/schema';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface PropertyGridProps {
   properties: Property[];
@@ -83,7 +83,10 @@ export function PropertyGrid({
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6" data-testid="property-grid">
+    <div
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6"
+      data-testid="property-grid"
+    >
       {displayProperties.map((property) => (
         <PropertyCard
           key={property.id}

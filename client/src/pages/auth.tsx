@@ -8,9 +8,15 @@ import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Mail, CheckCircle, Phone, ClipboardPaste } from 'lucide-react';
 import { Header } from '@/components/Header';
@@ -33,7 +39,7 @@ export default function AuthPage() {
   const searchString = useSearch();
   const { sendMagicLink, sendPhoneOtp, verifyPhoneOtp, user, loading: authLoading } = useAuth();
   const { toast } = useToast();
-  
+
   const [emailSent, setEmailSent] = useState(false);
   const [sentToEmail, setSentToEmail] = useState('');
   const [otpSent, setOtpSent] = useState(false);
@@ -85,7 +91,7 @@ export default function AuthPage() {
 
   const onEmailSubmit = async (data: EmailFormData) => {
     const { error } = await sendMagicLink(data.email, returnUrl);
-    
+
     if (error) {
       toast({
         variant: 'destructive',
@@ -100,19 +106,15 @@ export default function AuthPage() {
 
   const onPhoneSubmit = async (data: PhoneFormData) => {
     const fullPhone = `+966${data.phone.replace(/^0/, '')}`;
-    console.log('[DEBUG] Sending OTP to:', fullPhone);
     const { error } = await sendPhoneOtp(fullPhone);
-    console.log('[DEBUG] OTP response - error:', error);
-    
+
     if (error) {
-      console.error('[DEBUG] OTP send failed:', error.message, error);
       toast({
         variant: 'destructive',
         title: t('common.error'),
         description: error.message,
       });
     } else {
-      console.log('[DEBUG] OTP sent successfully to:', fullPhone);
       setOtpSent(true);
       setSentToPhone(fullPhone);
       toast({
@@ -124,11 +126,11 @@ export default function AuthPage() {
 
   const handleVerifyOtp = async () => {
     if (otpValue.length !== 4) return;
-    
+
     setIsVerifying(true);
     const { error } = await verifyPhoneOtp(sentToPhone, otpValue);
     setIsVerifying(false);
-    
+
     if (error) {
       toast({
         variant: 'destructive',
@@ -160,10 +162,7 @@ export default function AuthPage() {
               {emailSent ? t('auth.checkEmail') : t('auth.signInTitle')}
             </CardTitle>
             <CardDescription className="text-center">
-              {emailSent 
-                ? t('auth.magicLinkSent') 
-                : t('auth.signInDescription')
-              }
+              {emailSent ? t('auth.magicLinkSent') : t('auth.signInDescription')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -175,9 +174,7 @@ export default function AuthPage() {
                 <p className="text-muted-foreground">
                   {t('auth.linkSentTo')} <strong>{sentToEmail}</strong>
                 </p>
-                <p className="text-sm text-muted-foreground">
-                  {t('auth.checkSpam')}
-                </p>
+                <p className="text-sm text-muted-foreground">{t('auth.checkSpam')}</p>
                 <Button
                   variant="outline"
                   onClick={() => {
@@ -190,7 +187,11 @@ export default function AuthPage() {
                 </Button>
               </div>
             ) : (
-              <Tabs value={authMethod} onValueChange={(v) => setAuthMethod(v as 'email' | 'phone')} className="w-full">
+              <Tabs
+                value={authMethod}
+                onValueChange={(v) => setAuthMethod(v as 'email' | 'phone')}
+                className="w-full"
+              >
                 <TabsList className="grid w-full grid-cols-2 mb-4">
                   <TabsTrigger value="phone" data-testid="tab-phone">
                     <Phone className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
@@ -209,31 +210,31 @@ export default function AuthPage() {
                         {t('auth.enterOtp')} <strong dir="ltr">{sentToPhone}</strong>
                       </p>
                       <div className="flex flex-col items-center gap-3" dir="ltr">
-                        <InputOTP
+                        <Input
                           ref={otpInputRef}
+                          type="text"
+                          inputMode="numeric"
+                          autoComplete="one-time-code"
+                          name="one-time-code"
                           maxLength={4}
                           value={otpValue}
-                          onChange={(val) => {
+                          onChange={(e) => {
+                            const val = e.target.value.replace(/\D/g, '').slice(0, 4);
                             setOtpValue(val);
+                            if (val.length === 4) {
+                              setTimeout(() => {
+                                document
+                                  .querySelector<HTMLButtonElement>(
+                                    '[data-testid="button-verify-otp"]'
+                                  )
+                                  ?.click();
+                              }, 50);
+                            }
                           }}
-                          onComplete={(code) => {
-                            setOtpValue(code);
-                            setTimeout(() => {
-                              document.querySelector<HTMLButtonElement>('[data-testid="button-verify-otp"]')?.click();
-                            }, 50);
-                          }}
-                          autoComplete="one-time-code"
-                          inputMode="numeric"
-                          name="one-time-code"
+                          className="w-32 text-center text-2xl tracking-[0.5em] font-mono"
+                          placeholder="••••"
                           data-testid="input-otp"
-                        >
-                          <InputOTPGroup>
-                            <InputOTPSlot index={0} />
-                            <InputOTPSlot index={1} />
-                            <InputOTPSlot index={2} />
-                            <InputOTPSlot index={3} />
-                          </InputOTPGroup>
-                        </InputOTP>
+                        />
                         <Button
                           type="button"
                           variant="ghost"
@@ -246,7 +247,11 @@ export default function AuthPage() {
                                 setOtpValue(digits);
                                 if (digits.length === 4) {
                                   setTimeout(() => {
-                                    document.querySelector<HTMLButtonElement>('[data-testid="button-verify-otp"]')?.click();
+                                    document
+                                      .querySelector<HTMLButtonElement>(
+                                        '[data-testid="button-verify-otp"]'
+                                      )
+                                      ?.click();
                                   }, 100);
                                 }
                               }

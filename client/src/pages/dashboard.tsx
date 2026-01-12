@@ -1,8 +1,8 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { Link } from "wouter";
-import { useTranslation } from "react-i18next";
-import { format } from "date-fns";
-import { ar, enUS } from "date-fns/locale";
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { Link } from 'wouter';
+import { useTranslation } from 'react-i18next';
+import { format } from 'date-fns';
+import { ar, enUS } from 'date-fns/locale';
 import {
   Calendar,
   CreditCard,
@@ -17,29 +17,32 @@ import {
   LayoutDashboard,
   Megaphone,
   Eye,
-} from "lucide-react";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Switch } from "@/components/ui/switch";
-import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/lib/auth";
-import { queryClient, apiRequest, fetchWithAuth } from "@/lib/queryClient";
-import { type Visit, type Booking, type Property, type Ad } from "@shared/schema";
+} from 'lucide-react';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Switch } from '@/components/ui/switch';
+import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/lib/auth';
+import { queryClient, apiRequest, fetchWithAuth } from '@/lib/queryClient';
+import { type Visit, type Booking, type Property, type Ad } from '@shared/schema';
 
 function StatusBadge({ status }: { status: string }) {
   const { t } = useTranslation();
-  
-  const variants: Record<string, { variant: "default" | "secondary" | "outline" | "destructive"; icon: React.ReactNode }> = {
-    pending: { variant: "secondary", icon: <Clock className="h-3 w-3" /> },
-    confirmed: { variant: "default", icon: <CheckCircle className="h-3 w-3" /> },
-    completed: { variant: "outline", icon: <CheckCircle className="h-3 w-3" /> },
-    cancelled: { variant: "destructive", icon: <AlertCircle className="h-3 w-3" /> },
-    active: { variant: "default", icon: <CheckCircle className="h-3 w-3" /> },
+
+  const variants: Record<
+    string,
+    { variant: 'default' | 'secondary' | 'outline' | 'destructive'; icon: React.ReactNode }
+  > = {
+    pending: { variant: 'secondary', icon: <Clock className="h-3 w-3" /> },
+    confirmed: { variant: 'default', icon: <CheckCircle className="h-3 w-3" /> },
+    completed: { variant: 'outline', icon: <CheckCircle className="h-3 w-3" /> },
+    cancelled: { variant: 'destructive', icon: <AlertCircle className="h-3 w-3" /> },
+    active: { variant: 'default', icon: <CheckCircle className="h-3 w-3" /> },
   };
 
   const config = variants[status] || variants.pending;
@@ -56,28 +59,28 @@ export default function Dashboard() {
   const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const { toast } = useToast();
-  const isRTL = i18n.language === "ar";
+  const isRTL = i18n.language === 'ar';
   const dateLocale = isRTL ? ar : enUS;
-  
+
   const { data: visits = [], isLoading: visitsLoading } = useQuery<Visit[]>({
-    queryKey: ["/api/visits"],
+    queryKey: ['/api/visits'],
   });
 
   const { data: bookings = [], isLoading: bookingsLoading } = useQuery<Booking[]>({
-    queryKey: ["/api/bookings"],
+    queryKey: ['/api/bookings'],
   });
 
   const { data: properties = [] } = useQuery<Property[]>({
-    queryKey: ["/api/properties"],
+    queryKey: ['/api/properties'],
   });
 
   const { data: ads = [], isLoading: adsLoading } = useQuery<Ad[]>({
-    queryKey: ["/api/my-ads"],
+    queryKey: ['/api/my-ads'],
     queryFn: async () => {
-      const response = await fetchWithAuth("/api/my-ads");
+      const response = await fetchWithAuth('/api/my-ads');
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(errorText || "Failed to fetch ads");
+        throw new Error(errorText || 'Failed to fetch ads');
       }
       return response.json();
     },
@@ -86,66 +89,61 @@ export default function Dashboard() {
 
   const updateAdMutation = useMutation({
     mutationFn: async ({ id, published }: { id: number; published: boolean }) => {
-      return apiRequest("PATCH", `/api/ads/${id}`, { published });
+      return apiRequest('PATCH', `/api/ads/${id}`, { published });
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/my-ads"] });
+      queryClient.invalidateQueries({ queryKey: ['/api/my-ads'] });
       toast({
-        title: variables.published ? t("myAds.publishSuccess") : t("myAds.unpublishSuccess"),
+        title: variables.published ? t('myAds.publishSuccess') : t('myAds.unpublishSuccess'),
       });
     },
     onError: () => {
       toast({
-        variant: "destructive",
-        title: t("myAds.updateError"),
+        variant: 'destructive',
+        title: t('myAds.updateError'),
       });
     },
   });
 
-  const getProperty = (propertyId: string) =>
-    properties.find((p) => p.id === propertyId);
+  const getProperty = (propertyId: string) => properties.find((p) => p.id === propertyId);
 
   const formatDate = (dateString: string | Date | null) => {
-    if (!dateString) return "-";
+    if (!dateString) return '-';
     try {
-      const date = typeof dateString === "string" ? new Date(dateString) : dateString;
-      return format(date, "dd MMM yyyy", { locale: dateLocale });
+      const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
+      return format(date, 'dd MMM yyyy', { locale: dateLocale });
     } catch {
-      return "-";
+      return '-';
     }
   };
 
-  const upcomingVisits = visits.filter(
-    (v) => v.status === "pending" || v.status === "confirmed"
-  );
+  const upcomingVisits = visits.filter((v) => v.status === 'pending' || v.status === 'confirmed');
 
-  const activeBookings = bookings.filter(
-    (b) => b.status === "active" || b.status === "confirmed"
-  );
+  const activeBookings = bookings.filter((b) => b.status === 'active' || b.status === 'confirmed');
 
   const publishedAds = ads.filter((a) => a.published);
 
   const stats = [
     {
-      labelKey: "myListings",
+      labelKey: 'myListings',
       value: ads.length,
       activeValue: publishedAds.length,
       icon: <Megaphone className="h-5 w-5" />,
-      color: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
+      color: 'bg-blue-500/10 text-blue-600 dark:text-blue-400',
     },
     {
-      labelKey: "scheduledVisits",
+      labelKey: 'scheduledVisits',
       value: visits.length,
       activeValue: upcomingVisits.length,
       icon: <Eye className="h-5 w-5" />,
-      color: "bg-green-500/10 text-green-600 dark:text-green-400",
+      color: 'bg-green-500/10 text-green-600 dark:text-green-400',
     },
     {
-      labelKey: "totalBookings",
+      labelKey: 'totalBookings',
       value: bookings.length,
       activeValue: activeBookings.length,
       icon: <CreditCard className="h-5 w-5" />,
-      color: "bg-purple-500/10 text-purple-600 dark:text-purple-400",
+      color: 'bg-purple-500/10 text-purple-600 dark:text-purple-400',
     },
   ];
 
@@ -164,14 +162,14 @@ export default function Dashboard() {
                 <LayoutDashboard className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h1 className="text-2xl md:text-3xl font-semibold">{t("dashboard.title")}</h1>
-                <p className="text-muted-foreground text-sm">{t("dashboard.subtitle")}</p>
+                <h1 className="text-2xl md:text-3xl font-semibold">{t('dashboard.title')}</h1>
+                <p className="text-muted-foreground text-sm">{t('dashboard.subtitle')}</p>
               </div>
             </div>
             <Link href="/ads/new">
               <Button data-testid="button-create-ad">
                 <Plus className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
-                {t("myAds.createAd")}
+                {t('myAds.createAd')}
               </Button>
             </Link>
           </div>
@@ -182,17 +180,21 @@ export default function Dashboard() {
                 <CardContent className="p-5">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
-                      <p className="text-sm text-muted-foreground mb-1">{t(`dashboard.${stat.labelKey}`)}</p>
+                      <p className="text-sm text-muted-foreground mb-1">
+                        {t(`dashboard.${stat.labelKey}`)}
+                      </p>
                       <div className="flex items-baseline gap-2">
                         <p className="text-3xl font-bold">{stat.value}</p>
                         {stat.activeValue > 0 && stat.activeValue !== stat.value && (
                           <span className="text-sm text-muted-foreground">
-                            ({stat.activeValue} {t("dashboard.active")})
+                            ({stat.activeValue} {t('dashboard.active')})
                           </span>
                         )}
                       </div>
                     </div>
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${stat.color}`}>
+                    <div
+                      className={`w-12 h-12 rounded-xl flex items-center justify-center ${stat.color}`}
+                    >
                       {stat.icon}
                     </div>
                   </div>
@@ -205,26 +207,26 @@ export default function Dashboard() {
             <TabsList className="w-full md:w-auto grid grid-cols-3 md:flex">
               <TabsTrigger value="ads" className="gap-2" data-testid="tab-ads">
                 <Megaphone className="h-4 w-4" />
-                <span className="hidden sm:inline">{t("dashboard.myAds")}</span>
+                <span className="hidden sm:inline">{t('dashboard.myAds')}</span>
               </TabsTrigger>
               <TabsTrigger value="visits" className="gap-2" data-testid="tab-visits">
                 <Calendar className="h-4 w-4" />
-                <span className="hidden sm:inline">{t("dashboard.visits")}</span>
+                <span className="hidden sm:inline">{t('dashboard.visits')}</span>
               </TabsTrigger>
               <TabsTrigger value="bookings" className="gap-2" data-testid="tab-bookings">
                 <CreditCard className="h-4 w-4" />
-                <span className="hidden sm:inline">{t("dashboard.bookings")}</span>
+                <span className="hidden sm:inline">{t('dashboard.bookings')}</span>
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="ads">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between gap-4 pb-4">
-                  <CardTitle className="text-lg">{t("myAds.title")}</CardTitle>
+                  <CardTitle className="text-lg">{t('myAds.title')}</CardTitle>
                   <Link href="/ads/new">
                     <Button variant="outline" size="sm" className="gap-2">
                       <Plus className="h-4 w-4" />
-                      {t("myAds.createAd")}
+                      {t('myAds.createAd')}
                     </Button>
                   </Link>
                 </CardHeader>
@@ -238,14 +240,14 @@ export default function Dashboard() {
                   ) : ads.length === 0 ? (
                     <div className="text-center py-12">
                       <Building2 className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                      <h3 className="text-lg font-medium mb-2">{t("myAds.noAds")}</h3>
+                      <h3 className="text-lg font-medium mb-2">{t('myAds.noAds')}</h3>
                       <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
-                        {t("myAds.noAdsDesc")}
+                        {t('myAds.noAdsDesc')}
                       </p>
                       <Link href="/ads/new">
                         <Button data-testid="button-create-first-ad">
                           <Plus className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
-                          {t("myAds.createAd")}
+                          {t('myAds.createAd')}
                         </Button>
                       </Link>
                     </div>
@@ -267,9 +269,9 @@ export default function Dashboard() {
                               </Link>
                             </div>
                             <p className="text-sm text-muted-foreground">
-                              {ad.district !== "-" ? `${ad.district}, ` : ""}
-                              {ad.city !== "-" ? ad.city : "-"}
-                              {" - "}
+                              {ad.district !== '-' ? `${ad.district}, ` : ''}
+                              {ad.city !== '-' ? ad.city : '-'}
+                              {' - '}
                               {formatDate(ad.createdAt)}
                             </p>
                           </div>
@@ -282,16 +284,20 @@ export default function Dashboard() {
                                 data-testid={`switch-published-${ad.id}`}
                               />
                               <Badge
-                                variant={ad.published ? "default" : "secondary"}
+                                variant={ad.published ? 'default' : 'secondary'}
                                 className="text-xs shrink-0"
                               >
-                                {ad.published ? t("myAds.active") : t("myAds.inactive")}
+                                {ad.published ? t('myAds.active') : t('myAds.inactive')}
                               </Badge>
                             </div>
                             <Link href={`/ads/${ad.id}/edit`}>
-                              <Button size="sm" variant="outline" data-testid={`button-edit-ad-${ad.id}`}>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                data-testid={`button-edit-ad-${ad.id}`}
+                              >
                                 <Pencil className="h-3 w-3 ltr:mr-1 rtl:ml-1" />
-                                {t("myAds.edit")}
+                                {t('myAds.edit')}
                               </Button>
                             </Link>
                           </div>
@@ -306,7 +312,7 @@ export default function Dashboard() {
             <TabsContent value="visits">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between gap-4 pb-4">
-                  <CardTitle className="text-lg">{t("dashboard.upcomingVisits")}</CardTitle>
+                  <CardTitle className="text-lg">{t('dashboard.upcomingVisits')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   {visitsLoading ? (
@@ -318,10 +324,12 @@ export default function Dashboard() {
                   ) : visits.length === 0 ? (
                     <div className="text-center py-12">
                       <Calendar className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                      <h3 className="text-lg font-medium mb-2">{t("dashboard.noVisitsTitle")}</h3>
-                      <p className="text-muted-foreground mb-6 max-w-sm mx-auto">{t("dashboard.noUpcomingVisits")}</p>
+                      <h3 className="text-lg font-medium mb-2">{t('dashboard.noVisitsTitle')}</h3>
+                      <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
+                        {t('dashboard.noUpcomingVisits')}
+                      </p>
                       <Link href="/properties">
-                        <Button>{t("nav.browseProperties")}</Button>
+                        <Button>{t('nav.browseProperties')}</Button>
                       </Link>
                     </div>
                   ) : (
@@ -343,10 +351,10 @@ export default function Dashboard() {
                             )}
                             <div className="flex-1 min-w-0">
                               <p className="font-medium truncate">
-                                {property?.title || "Property"}
+                                {property?.title || 'Property'}
                               </p>
                               <p className="text-sm text-muted-foreground">
-                                {visit.visitDate} {t("common.at")} {visit.visitTime}
+                                {visit.visitDate} {t('common.at')} {visit.visitTime}
                               </p>
                             </div>
                             <StatusBadge status={visit.status} />
@@ -362,7 +370,7 @@ export default function Dashboard() {
             <TabsContent value="bookings">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between gap-4 pb-4">
-                  <CardTitle className="text-lg">{t("dashboard.activeBookings")}</CardTitle>
+                  <CardTitle className="text-lg">{t('dashboard.activeBookings')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   {bookingsLoading ? (
@@ -374,21 +382,26 @@ export default function Dashboard() {
                   ) : bookings.length === 0 ? (
                     <div className="text-center py-12">
                       <CreditCard className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                      <h3 className="text-lg font-medium mb-2">{t("dashboard.noBookingsTitle")}</h3>
-                      <p className="text-muted-foreground mb-6 max-w-sm mx-auto">{t("dashboard.noActiveBookings")}</p>
+                      <h3 className="text-lg font-medium mb-2">{t('dashboard.noBookingsTitle')}</h3>
+                      <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
+                        {t('dashboard.noActiveBookings')}
+                      </p>
                       <Link href="/properties">
-                        <Button>{t("nav.browseProperties")}</Button>
+                        <Button>{t('nav.browseProperties')}</Button>
                       </Link>
                     </div>
                   ) : (
                     <div className="space-y-3">
                       {bookings.map((booking) => {
                         const property = getProperty(booking.propertyId);
-                        const formattedTotal = new Intl.NumberFormat(i18n.language === "ar" ? "ar-SA" : "en-SA", {
-                          style: "currency",
-                          currency: "SAR",
-                          maximumFractionDigits: 0,
-                        }).format(booking.totalPrice);
+                        const formattedTotal = new Intl.NumberFormat(
+                          i18n.language === 'ar' ? 'ar-SA' : 'en-SA',
+                          {
+                            style: 'currency',
+                            currency: 'SAR',
+                            maximumFractionDigits: 0,
+                          }
+                        ).format(booking.totalPrice);
 
                         return (
                           <div
@@ -405,7 +418,7 @@ export default function Dashboard() {
                             )}
                             <div className="flex-1 min-w-0">
                               <p className="font-medium truncate">
-                                {property?.title || "Property"}
+                                {property?.title || 'Property'}
                               </p>
                               <p className="text-sm text-muted-foreground">
                                 {booking.startDate} - {booking.endDate}

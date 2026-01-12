@@ -22,7 +22,12 @@ export default function MyAds() {
   const isRTL = i18n.language === 'ar';
   const dateLocale = isRTL ? ar : enUS;
 
-  const { data: ads = [], isLoading, isError, error } = useQuery<Ad[]>({
+  const {
+    data: ads = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery<Ad[]>({
     queryKey: ['/api/my-ads'],
     queryFn: async () => {
       const response = await fetchWithAuth('/api/my-ads');
@@ -202,9 +207,7 @@ export default function MyAds() {
                         <td className="p-4 text-muted-foreground">
                           {formatAvailability(ad.availableDateFrom, ad.availableDateTo)}
                         </td>
-                        <td className="p-4 text-muted-foreground">
-                          {formatDate(ad.createdAt)}
-                        </td>
+                        <td className="p-4 text-muted-foreground">{formatDate(ad.createdAt)}</td>
                         <td className="p-4">
                           <div className="flex items-center gap-2">
                             <Switch

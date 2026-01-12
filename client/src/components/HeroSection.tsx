@@ -1,41 +1,36 @@
-import { useState } from "react";
-import { useLocation } from "wouter";
-import { useTranslation } from "react-i18next";
-import { Search, MapPin } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState } from 'react';
+import { useLocation } from 'wouter';
+import { useTranslation } from 'react-i18next';
+import { Search, MapPin } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { PurposeFilter } from "@/components/PurposeFilter";
-import { type PropertyCategory, type PropertyPurpose } from "@shared/schema";
-const coverImage = "/cover.png";
+} from '@/components/ui/select';
+import { PurposeFilter } from '@/components/PurposeFilter';
+import { type PropertyCategory, type PropertyPurpose } from '@shared/schema';
+const coverImage = '/cover.png';
 
-const categories: PropertyCategory[] = [
-  "warehouse",
-  "workshop",
-  "storage",
-  "storefront",
-];
+const categories: PropertyCategory[] = ['warehouse', 'workshop', 'storage', 'storefront'];
 
 export function HeroSection() {
   const { t } = useTranslation();
   const [, setLocation] = useLocation();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [selectedPurpose, setSelectedPurpose] = useState<PropertyPurpose | undefined>("rent");
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedPurpose, setSelectedPurpose] = useState<PropertyPurpose | undefined>('rent');
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
-    if (searchQuery) params.set("q", searchQuery);
-    if (selectedCategory && selectedCategory !== "all") params.set("category", selectedCategory);
-    if (selectedPurpose) params.set("purpose", selectedPurpose);
-    setLocation(`/properties${params.toString() ? `?${params.toString()}` : ""}`);
+    if (searchQuery) params.set('q', searchQuery);
+    if (selectedCategory && selectedCategory !== 'all') params.set('category', selectedCategory);
+    if (selectedPurpose) params.set('purpose', selectedPurpose);
+    setLocation(`/properties${params.toString() ? `?${params.toString()}` : ''}`);
   };
 
   return (
@@ -47,7 +42,7 @@ export function HeroSection() {
         }}
       />
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50" />
-      
+
       <div className="relative z-10 max-w-5xl mx-auto px-3 md:px-6 lg:px-8 text-center py-8">
         <h1 className="text-2xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-3 md:mb-6">
           {t('hero.title')}
@@ -57,11 +52,7 @@ export function HeroSection() {
         </p>
 
         <div className="max-w-4xl mx-auto">
-          <PurposeFilter
-            value={selectedPurpose}
-            onChange={setSelectedPurpose}
-            variant="hero"
-          />
+          <PurposeFilter value={selectedPurpose} onChange={setSelectedPurpose} variant="hero" />
 
           <form
             onSubmit={handleSearch}

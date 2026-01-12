@@ -33,7 +33,16 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, ArrowLeft, ArrowRight, Warehouse, Wrench, Package, Store, CalendarIcon } from 'lucide-react';
+import {
+  Loader2,
+  ArrowLeft,
+  ArrowRight,
+  Warehouse,
+  Wrench,
+  Package,
+  Store,
+  CalendarIcon,
+} from 'lucide-react';
 import { format } from 'date-fns';
 import { ar, enUS } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
@@ -48,48 +57,52 @@ const generateSlug = () => {
   return slug;
 };
 
-const adFormSchema = z.object({
-  title: z.string().min(3, 'Title must be at least 3 characters'),
-  slug: z.string().min(3, 'Slug is required'),
-  description: z.string().min(10, 'Description must be at least 10 characters'),
-  city: z.string().min(1, 'City is required'),
-  district: z.string().optional(),
-  address: z.string().optional(),
-  price: z.string().min(1, 'Price is required'),
-  paymentTerm: z.string().default('yearly'),
-  type: z.string().optional(),
-  areaInM2: z.string().optional(),
-  availableDateFrom: z.string().optional(),
-  availableDateTo: z.string().optional(),
-  phoneNumber: z.string().optional(),
-  phoneCountryCode: z.string().default('+966'),
-  municipalityLicense: z.boolean().default(false),
-  civilDefenseLicense: z.boolean().default(false),
-  forRent: z.boolean().default(true),
-  forSale: z.boolean().default(false),
-  forDailyRent: z.boolean().default(false),
-  forLeaseTransfer: z.boolean().default(false),
-  images: z.array(z.string()).default([]),
-  typeAttributes: z.object({
-    ceilingHeight: z.string().optional(),
-    loadingDocks: z.number().optional(),
-    hasForklift: z.boolean().optional(),
-    hasRacking: z.boolean().optional(),
-    temperatureControl: z.string().optional(),
-    hazardLevel: z.string().optional(),
-    flooringType: z.string().optional(),
-    hasLoadingRamps: z.boolean().optional(),
-    hasSfdaLicense: z.boolean().optional(),
-    unitSize: z.string().optional(),
-    accessHours: z.string().optional(),
-    hasClimateControl: z.boolean().optional(),
-    hasSecuritySystem: z.boolean().optional(),
-    facadeWidth: z.string().optional(),
-  }).default({}),
-}).refine((data) => data.forRent || data.forSale || data.forDailyRent || data.forLeaseTransfer, {
-  message: 'At least one transaction type must be selected',
-  path: ['forRent'],
-});
+const adFormSchema = z
+  .object({
+    title: z.string().min(3, 'Title must be at least 3 characters'),
+    slug: z.string().min(3, 'Slug is required'),
+    description: z.string().min(10, 'Description must be at least 10 characters'),
+    city: z.string().min(1, 'City is required'),
+    district: z.string().optional(),
+    address: z.string().optional(),
+    price: z.string().min(1, 'Price is required'),
+    paymentTerm: z.string().default('yearly'),
+    type: z.string().optional(),
+    areaInM2: z.string().optional(),
+    availableDateFrom: z.string().optional(),
+    availableDateTo: z.string().optional(),
+    phoneNumber: z.string().optional(),
+    phoneCountryCode: z.string().default('+966'),
+    municipalityLicense: z.boolean().default(false),
+    civilDefenseLicense: z.boolean().default(false),
+    forRent: z.boolean().default(true),
+    forSale: z.boolean().default(false),
+    forDailyRent: z.boolean().default(false),
+    forLeaseTransfer: z.boolean().default(false),
+    images: z.array(z.string()).default([]),
+    typeAttributes: z
+      .object({
+        ceilingHeight: z.string().optional(),
+        loadingDocks: z.number().optional(),
+        hasForklift: z.boolean().optional(),
+        hasRacking: z.boolean().optional(),
+        temperatureControl: z.string().optional(),
+        hazardLevel: z.string().optional(),
+        flooringType: z.string().optional(),
+        hasLoadingRamps: z.boolean().optional(),
+        hasSfdaLicense: z.boolean().optional(),
+        unitSize: z.string().optional(),
+        accessHours: z.string().optional(),
+        hasClimateControl: z.boolean().optional(),
+        hasSecuritySystem: z.boolean().optional(),
+        facadeWidth: z.string().optional(),
+      })
+      .default({}),
+  })
+  .refine((data) => data.forRent || data.forSale || data.forDailyRent || data.forLeaseTransfer, {
+    message: 'At least one transaction type must be selected',
+    path: ['forRent'],
+  });
 
 type AdFormData = z.infer<typeof adFormSchema>;
 
@@ -105,7 +118,7 @@ export default function AdForm({ mode }: AdFormProps) {
   const { toast } = useToast();
   const isRTL = i18n.language === 'ar';
   const BackIcon = isRTL ? ArrowRight : ArrowLeft;
-  
+
   const initialSlug = useMemo(() => generateSlug(), []);
 
   const { data: existingAd, isLoading: adLoading } = useQuery<Ad>({
@@ -189,8 +202,10 @@ export default function AdForm({ mode }: AdFormProps) {
         forRent: existingAd.forRent ?? true,
         forSale: existingAd.forSale ?? false,
         forDailyRent: existingAd.forDailyRent ?? false,
-        forLeaseTransfer: ((existingAd.typeAttributes as Record<string, unknown>)?.forLeaseTransfer as boolean) ?? false,
-        images: (existingAd.images && Array.isArray(existingAd.images)) ? existingAd.images : [],
+        forLeaseTransfer:
+          ((existingAd.typeAttributes as Record<string, unknown>)?.forLeaseTransfer as boolean) ??
+          false,
+        images: existingAd.images && Array.isArray(existingAd.images) ? existingAd.images : [],
         typeAttributes: (existingAd.typeAttributes as Record<string, unknown>) || {},
       });
     }
@@ -227,7 +242,17 @@ export default function AdForm({ mode }: AdFormProps) {
 
   const onSubmit = (data: AdFormData) => {
     const typeAttributesByCategory: Record<string, string[]> = {
-      warehouse: ['ceilingHeight', 'loadingDocks', 'hasForklift', 'hasRacking', 'temperatureControl', 'hazardLevel', 'flooringType', 'hasLoadingRamps', 'hasSfdaLicense'],
+      warehouse: [
+        'ceilingHeight',
+        'loadingDocks',
+        'hasForklift',
+        'hasRacking',
+        'temperatureControl',
+        'hazardLevel',
+        'flooringType',
+        'hasLoadingRamps',
+        'hasSfdaLicense',
+      ],
       workshop: [],
       storage: ['unitSize', 'accessHours', 'hasClimateControl', 'hasSecuritySystem'],
       storefront: ['facadeWidth'],
@@ -235,7 +260,7 @@ export default function AdForm({ mode }: AdFormProps) {
 
     const allowedFields = typeAttributesByCategory[data.type || 'warehouse'] || [];
     const cleanedTypeAttributes: Record<string, unknown> = {};
-    
+
     for (const [key, value] of Object.entries(data.typeAttributes || {})) {
       if (allowedFields.includes(key) && value !== undefined && value !== '') {
         if (typeof value === 'boolean') {
@@ -264,8 +289,6 @@ export default function AdForm({ mode }: AdFormProps) {
       images: Array.isArray(data.images) ? data.images : [],
       typeAttributes: Object.keys(cleanedTypeAttributes).length > 0 ? cleanedTypeAttributes : {},
     };
-
-    console.log('Submitting payload with images:', payload.images);
 
     if (mode === 'create') {
       createMutation.mutate(payload as unknown as AdFormData);
@@ -361,10 +384,18 @@ export default function AdForm({ mode }: AdFormProps) {
                         <FormControl>
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                             {[
-                              { value: 'warehouse', icon: Warehouse, label: t('categories.warehouse') },
+                              {
+                                value: 'warehouse',
+                                icon: Warehouse,
+                                label: t('categories.warehouse'),
+                              },
                               { value: 'workshop', icon: Wrench, label: t('categories.workshop') },
                               { value: 'storage', icon: Package, label: t('categories.storage') },
-                              { value: 'storefront', icon: Store, label: t('categories.storefront') },
+                              {
+                                value: 'storefront',
+                                icon: Store,
+                                label: t('categories.storefront'),
+                              },
                             ].map((type) => {
                               const Icon = type.icon;
                               const isSelected = field.value === type.value;
@@ -375,10 +406,10 @@ export default function AdForm({ mode }: AdFormProps) {
                                   onClick={() => field.onChange(type.value)}
                                   data-testid={`type-${type.value}`}
                                   className={cn(
-                                    "flex flex-col items-center justify-center gap-2 p-4 rounded-md border-2 transition-all",
+                                    'flex flex-col items-center justify-center gap-2 p-4 rounded-md border-2 transition-all',
                                     isSelected
-                                      ? "border-primary bg-primary/10 text-primary"
-                                      : "border-border hover-elevate"
+                                      ? 'border-primary bg-primary/10 text-primary'
+                                      : 'border-border hover-elevate'
                                   )}
                                 >
                                   <Icon className="h-8 w-8" />
@@ -485,11 +516,7 @@ export default function AdForm({ mode }: AdFormProps) {
                       )}
                     />
                   </div>
-                  <FormField
-                    control={form.control}
-                    name="forRent"
-                    render={() => <FormMessage />}
-                  />
+                  <FormField control={form.control} name="forRent" render={() => <FormMessage />} />
                 </CardContent>
               </Card>
 
@@ -501,7 +528,9 @@ export default function AdForm({ mode }: AdFormProps) {
                   <CardContent className="space-y-4">
                     {watchedType === 'warehouse' && (
                       <>
-                        <p className="text-sm text-muted-foreground">{t('adForm.warehouseFieldsOptional')}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {t('adForm.warehouseFieldsOptional')}
+                        </p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <FormField
                             control={form.control}
@@ -510,7 +539,11 @@ export default function AdForm({ mode }: AdFormProps) {
                               <FormItem>
                                 <FormLabel>{t('adForm.ceilingHeight')}</FormLabel>
                                 <FormControl>
-                                  <Input placeholder="e.g., 8m" data-testid="input-ceiling-height" {...field} />
+                                  <Input
+                                    placeholder="e.g., 8m"
+                                    data-testid="input-ceiling-height"
+                                    {...field}
+                                  />
                                 </FormControl>
                               </FormItem>
                             )}
@@ -522,12 +555,16 @@ export default function AdForm({ mode }: AdFormProps) {
                               <FormItem>
                                 <FormLabel>{t('adForm.loadingDocks')}</FormLabel>
                                 <FormControl>
-                                  <Input 
-                                    type="number" 
-                                    placeholder="0" 
-                                    data-testid="input-loading-docks" 
+                                  <Input
+                                    type="number"
+                                    placeholder="0"
+                                    data-testid="input-loading-docks"
                                     {...field}
-                                    onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
+                                    onChange={(e) =>
+                                      field.onChange(
+                                        e.target.value ? parseInt(e.target.value) : undefined
+                                      )
+                                    }
                                     value={field.value ?? ''}
                                   />
                                 </FormControl>
@@ -547,7 +584,9 @@ export default function AdForm({ mode }: AdFormProps) {
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
-                                    <SelectItem value="ambient">{t('adForm.tempAmbient')}</SelectItem>
+                                    <SelectItem value="ambient">
+                                      {t('adForm.tempAmbient')}
+                                    </SelectItem>
                                     <SelectItem value="cooled">{t('adForm.tempCooled')}</SelectItem>
                                     <SelectItem value="frozen">{t('adForm.tempFrozen')}</SelectItem>
                                     <SelectItem value="multi">{t('adForm.tempMulti')}</SelectItem>
@@ -571,7 +610,9 @@ export default function AdForm({ mode }: AdFormProps) {
                                   <SelectContent>
                                     <SelectItem value="none">{t('adForm.hazardNone')}</SelectItem>
                                     <SelectItem value="low">{t('adForm.hazardLow')}</SelectItem>
-                                    <SelectItem value="medium">{t('adForm.hazardMedium')}</SelectItem>
+                                    <SelectItem value="medium">
+                                      {t('adForm.hazardMedium')}
+                                    </SelectItem>
                                     <SelectItem value="high">{t('adForm.hazardHigh')}</SelectItem>
                                   </SelectContent>
                                 </Select>
@@ -591,9 +632,13 @@ export default function AdForm({ mode }: AdFormProps) {
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
-                                    <SelectItem value="concrete">{t('adForm.floorConcrete')}</SelectItem>
+                                    <SelectItem value="concrete">
+                                      {t('adForm.floorConcrete')}
+                                    </SelectItem>
                                     <SelectItem value="epoxy">{t('adForm.floorEpoxy')}</SelectItem>
-                                    <SelectItem value="polished">{t('adForm.floorPolished')}</SelectItem>
+                                    <SelectItem value="polished">
+                                      {t('adForm.floorPolished')}
+                                    </SelectItem>
                                     <SelectItem value="other">{t('adForm.floorOther')}</SelectItem>
                                   </SelectContent>
                                 </Select>
@@ -646,7 +691,9 @@ export default function AdForm({ mode }: AdFormProps) {
                                     data-testid="checkbox-has-loading-ramps"
                                   />
                                 </FormControl>
-                                <FormLabel className="!mt-0">{t('adForm.hasLoadingRamps')}</FormLabel>
+                                <FormLabel className="!mt-0">
+                                  {t('adForm.hasLoadingRamps')}
+                                </FormLabel>
                               </FormItem>
                             )}
                           />
@@ -662,7 +709,9 @@ export default function AdForm({ mode }: AdFormProps) {
                                     data-testid="checkbox-has-sfda-license"
                                   />
                                 </FormControl>
-                                <FormLabel className="!mt-0">{t('adForm.hasSfdaLicense')}</FormLabel>
+                                <FormLabel className="!mt-0">
+                                  {t('adForm.hasSfdaLicense')}
+                                </FormLabel>
                               </FormItem>
                             )}
                           />
@@ -671,7 +720,9 @@ export default function AdForm({ mode }: AdFormProps) {
                     )}
 
                     {watchedType === 'workshop' && (
-                      <p className="text-sm text-muted-foreground">{t('adForm.noTypeSpecificFields')}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {t('adForm.noTypeSpecificFields')}
+                      </p>
                     )}
 
                     {watchedType === 'storage' && (
@@ -711,8 +762,12 @@ export default function AdForm({ mode }: AdFormProps) {
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
-                                    <SelectItem value="business">{t('adForm.businessHours')}</SelectItem>
-                                    <SelectItem value="extended">{t('adForm.extendedHours')}</SelectItem>
+                                    <SelectItem value="business">
+                                      {t('adForm.businessHours')}
+                                    </SelectItem>
+                                    <SelectItem value="extended">
+                                      {t('adForm.extendedHours')}
+                                    </SelectItem>
                                     <SelectItem value="24/7">{t('adForm.allDay')}</SelectItem>
                                   </SelectContent>
                                 </Select>
@@ -733,7 +788,9 @@ export default function AdForm({ mode }: AdFormProps) {
                                     data-testid="checkbox-has-climate-control"
                                   />
                                 </FormControl>
-                                <FormLabel className="!mt-0">{t('adForm.hasClimateControl')}</FormLabel>
+                                <FormLabel className="!mt-0">
+                                  {t('adForm.hasClimateControl')}
+                                </FormLabel>
                               </FormItem>
                             )}
                           />
@@ -749,7 +806,9 @@ export default function AdForm({ mode }: AdFormProps) {
                                     data-testid="checkbox-has-security"
                                   />
                                 </FormControl>
-                                <FormLabel className="!mt-0">{t('adForm.hasSecuritySystem')}</FormLabel>
+                                <FormLabel className="!mt-0">
+                                  {t('adForm.hasSecuritySystem')}
+                                </FormLabel>
                               </FormItem>
                             )}
                           />
@@ -759,7 +818,9 @@ export default function AdForm({ mode }: AdFormProps) {
 
                     {watchedType === 'storefront' && (
                       <>
-                        <p className="text-sm text-muted-foreground">{t('adForm.storefrontFieldsOptional')}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {t('adForm.storefrontFieldsOptional')}
+                        </p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <FormField
                             control={form.control}
@@ -768,7 +829,11 @@ export default function AdForm({ mode }: AdFormProps) {
                               <FormItem>
                                 <FormLabel>{t('adForm.facadeWidth')}</FormLabel>
                                 <FormControl>
-                                  <Input placeholder="e.g., 10m" data-testid="input-facade-width" {...field} />
+                                  <Input
+                                    placeholder="e.g., 10m"
+                                    data-testid="input-facade-width"
+                                    {...field}
+                                  />
                                 </FormControl>
                               </FormItem>
                             )}
@@ -935,13 +1000,15 @@ export default function AdForm({ mode }: AdFormProps) {
                                   variant="outline"
                                   data-testid="input-ad-available-from"
                                   className={cn(
-                                    "w-full justify-start text-start font-normal",
-                                    !field.value && "text-muted-foreground"
+                                    'w-full justify-start text-start font-normal',
+                                    !field.value && 'text-muted-foreground'
                                   )}
                                 >
                                   <CalendarIcon className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
                                   {field.value ? (
-                                    format(new Date(field.value), "PPP", { locale: i18n.language === 'ar' ? ar : enUS })
+                                    format(new Date(field.value), 'PPP', {
+                                      locale: i18n.language === 'ar' ? ar : enUS,
+                                    })
                                   ) : (
                                     <span>{t('adForm.selectDate')}</span>
                                   )}
@@ -971,7 +1038,9 @@ export default function AdForm({ mode }: AdFormProps) {
                               )}
                             </PopoverContent>
                           </Popover>
-                          <p className="text-xs text-muted-foreground">{t('adForm.leaveEmptyIfNotApplicable')}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {t('adForm.leaveEmptyIfNotApplicable')}
+                          </p>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -990,13 +1059,15 @@ export default function AdForm({ mode }: AdFormProps) {
                                   variant="outline"
                                   data-testid="input-ad-available-to"
                                   className={cn(
-                                    "w-full justify-start text-start font-normal",
-                                    !field.value && "text-muted-foreground"
+                                    'w-full justify-start text-start font-normal',
+                                    !field.value && 'text-muted-foreground'
                                   )}
                                 >
                                   <CalendarIcon className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
                                   {field.value ? (
-                                    format(new Date(field.value), "PPP", { locale: i18n.language === 'ar' ? ar : enUS })
+                                    format(new Date(field.value), 'PPP', {
+                                      locale: i18n.language === 'ar' ? ar : enUS,
+                                    })
                                   ) : (
                                     <span>{t('adForm.selectDate')}</span>
                                   )}
@@ -1026,7 +1097,9 @@ export default function AdForm({ mode }: AdFormProps) {
                               )}
                             </PopoverContent>
                           </Popover>
-                          <p className="text-xs text-muted-foreground">{t('adForm.leaveEmptyIfNotApplicable')}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {t('adForm.leaveEmptyIfNotApplicable')}
+                          </p>
                           <FormMessage />
                         </FormItem>
                       )}

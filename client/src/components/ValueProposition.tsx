@@ -1,5 +1,5 @@
-import { useTranslation } from "react-i18next";
-import { CheckCircle, Clock, Shield, CreditCard } from "lucide-react";
+import { useTranslation } from 'react-i18next';
+import { CheckCircle, Clock, Shield, CreditCard } from 'lucide-react';
 
 export function ValueProposition() {
   const { t } = useTranslation();
@@ -7,23 +7,23 @@ export function ValueProposition() {
   const features = [
     {
       icon: <CheckCircle className="h-6 w-6" />,
-      titleKey: "verifiedTitle",
-      descKey: "verifiedDesc",
+      titleKey: 'verifiedTitle',
+      descKey: 'verifiedDesc',
     },
     {
       icon: <Clock className="h-6 w-6" />,
-      titleKey: "instantTitle",
-      descKey: "instantDesc",
+      titleKey: 'instantTitle',
+      descKey: 'instantDesc',
     },
     {
       icon: <Shield className="h-6 w-6" />,
-      titleKey: "secureTitle",
-      descKey: "secureDesc",
+      titleKey: 'secureTitle',
+      descKey: 'secureDesc',
     },
     {
       icon: <CreditCard className="h-6 w-6" />,
-      titleKey: "transparentTitle",
-      descKey: "transparentDesc",
+      titleKey: 'transparentTitle',
+      descKey: 'transparentDesc',
     },
   ];
 
@@ -32,20 +32,14 @@ export function ValueProposition() {
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
         <div className="text-center mb-12 md:mb-16">
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold mb-4">
-            {t("value.title")}
+            {t('value.title')}
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto text-base">
-            {t("value.subtitle")}
-          </p>
+          <p className="text-muted-foreground max-w-2xl mx-auto text-base">{t('value.subtitle')}</p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8 lg:gap-10">
           {features.map((feature, index) => (
-            <div
-              key={index}
-              className="text-center group"
-              data-testid={`value-prop-${index}`}
-            >
+            <div key={index} className="text-center group" data-testid={`value-prop-${index}`}>
               <div className="inline-flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-lg md:rounded-xl bg-primary/15 text-primary mb-3 md:mb-5 shadow-sm transition-transform duration-200 group-hover:-translate-y-1">
                 {feature.icon}
               </div>

@@ -1,14 +1,14 @@
-import { useState, useMemo } from "react";
-import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { format, addDays, isBefore, startOfToday } from "date-fns";
-import { Calendar, Clock, User, CheckCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { useState, useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { format, addDays, isBefore, startOfToday } from 'date-fns';
+import { Calendar, Clock, User, CheckCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import {
   Form,
   FormControl,
@@ -16,41 +16,29 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+} from '@/components/ui/form';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { type Property } from "@shared/schema";
+} from '@/components/ui/select';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { type Property } from '@shared/schema';
 
-const createVisitSchema = (t: (key: string) => string) => z.object({
-  visitorName: z.string().min(2, t("validation.nameRequired")),
-  visitDate: z.date({ required_error: t("validation.dateRequired") }),
-  visitTime: z.string({ required_error: t("validation.timeRequired") }),
-  notes: z.string().optional(),
-});
+const createVisitSchema = (t: (key: string) => string) =>
+  z.object({
+    visitorName: z.string().min(2, t('validation.nameRequired')),
+    visitDate: z.date({ required_error: t('validation.dateRequired') }),
+    visitTime: z.string({ required_error: t('validation.timeRequired') }),
+    notes: z.string().optional(),
+  });
 
 type VisitFormData = z.infer<ReturnType<typeof createVisitSchema>>;
 
-const timeSlots = [
-  "09:00",
-  "10:00",
-  "11:00",
-  "12:00",
-  "14:00",
-  "15:00",
-  "16:00",
-  "17:00",
-];
+const timeSlots = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00'];
 
 interface VisitSchedulerProps {
   property: Property;
@@ -61,14 +49,14 @@ interface VisitSchedulerProps {
 export function VisitScheduler({ property, onSubmit, isSubmitting }: VisitSchedulerProps) {
   const { t } = useTranslation();
   const [isSuccess, setIsSuccess] = useState(false);
-  
+
   const visitSchema = useMemo(() => createVisitSchema(t), [t]);
 
   const form = useForm<VisitFormData>({
     resolver: zodResolver(visitSchema),
     defaultValues: {
-      visitorName: "",
-      notes: "",
+      visitorName: '',
+      notes: '',
     },
   });
 
@@ -85,12 +73,10 @@ export function VisitScheduler({ property, onSubmit, isSubmitting }: VisitSchedu
             <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-4">
               <CheckCircle className="h-8 w-8 text-green-600" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">{t("form.visitScheduled")}</h3>
-            <p className="text-muted-foreground mb-4">
-              {t("form.visitScheduledDesc")}
-            </p>
+            <h3 className="text-xl font-semibold mb-2">{t('form.visitScheduled')}</h3>
+            <p className="text-muted-foreground mb-4">{t('form.visitScheduledDesc')}</p>
             <Button variant="outline" onClick={() => setIsSuccess(false)}>
-              {t("form.scheduleAnother")}
+              {t('form.scheduleAnother')}
             </Button>
           </div>
         </CardContent>
@@ -103,7 +89,7 @@ export function VisitScheduler({ property, onSubmit, isSubmitting }: VisitSchedu
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Calendar className="h-5 w-5" />
-          {t("property.scheduleVisit")}
+          {t('property.scheduleVisit')}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -114,12 +100,12 @@ export function VisitScheduler({ property, onSubmit, isSubmitting }: VisitSchedu
               name="visitorName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("form.fullName")}</FormLabel>
+                  <FormLabel>{t('form.fullName')}</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <User className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
-                        placeholder={t("form.yourName")}
+                        placeholder={t('form.yourName')}
                         className="ps-10"
                         {...field}
                         data-testid="input-visitor-name"
@@ -137,7 +123,7 @@ export function VisitScheduler({ property, onSubmit, isSubmitting }: VisitSchedu
                 name="visitDate"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("form.preferredDate")}</FormLabel>
+                    <FormLabel>{t('form.preferredDate')}</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -147,9 +133,7 @@ export function VisitScheduler({ property, onSubmit, isSubmitting }: VisitSchedu
                             data-testid="button-visit-date"
                           >
                             <Calendar className="me-2 h-4 w-4" />
-                            {field.value
-                              ? format(field.value, "PPP")
-                              : t("form.selectDate")}
+                            {field.value ? format(field.value, 'PPP') : t('form.selectDate')}
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
@@ -176,12 +160,12 @@ export function VisitScheduler({ property, onSubmit, isSubmitting }: VisitSchedu
                 name="visitTime"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("form.preferredTime")}</FormLabel>
+                    <FormLabel>{t('form.preferredTime')}</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger data-testid="select-visit-time">
                           <Clock className="me-2 h-4 w-4" />
-                          <SelectValue placeholder={t("form.selectTime")} />
+                          <SelectValue placeholder={t('form.selectTime')} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -203,10 +187,10 @@ export function VisitScheduler({ property, onSubmit, isSubmitting }: VisitSchedu
               name="notes"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("form.additionalNotes")}</FormLabel>
+                  <FormLabel>{t('form.additionalNotes')}</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder={t("form.notesPlaceholder")}
+                      placeholder={t('form.notesPlaceholder')}
                       className="resize-none"
                       {...field}
                       data-testid="textarea-visit-notes"
@@ -223,7 +207,7 @@ export function VisitScheduler({ property, onSubmit, isSubmitting }: VisitSchedu
               disabled={isSubmitting}
               data-testid="button-submit-visit"
             >
-              {isSubmitting ? t("form.scheduling") : t("form.scheduleVisit")}
+              {isSubmitting ? t('form.scheduling') : t('form.scheduleVisit')}
             </Button>
           </form>
         </Form>

@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { useParams, Link } from "wouter";
-import { useQuery } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
+import { useState } from 'react';
+import { useParams, Link } from 'wouter';
+import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import {
   MapPin,
   Ruler,
@@ -13,25 +13,29 @@ import {
   Shield,
   ChevronLeft,
   ChevronRight,
-} from "lucide-react";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
-import type { Ad } from "@shared/schema";
+} from 'lucide-react';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+import type { Ad } from '@shared/schema';
 
 export default function AdDetail() {
   const { t, i18n } = useTranslation();
   const { id } = useParams<{ id: string }>();
-  const isRTL = i18n.language === "ar";
+  const isRTL = i18n.language === 'ar';
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const { data: ad, isLoading, error } = useQuery<Ad>({
-    queryKey: ["/api/public/ads", id],
+  const {
+    data: ad,
+    isLoading,
+    error,
+  } = useQuery<Ad>({
+    queryKey: ['/api/public/ads', id],
     enabled: !!id,
   });
 
@@ -48,12 +52,12 @@ export default function AdDetail() {
   };
 
   const formatPrice = (price: string | null) => {
-    if (!price) return t("common.contactForPrice");
+    if (!price) return t('common.contactForPrice');
     const numPrice = parseFloat(price);
     if (isNaN(numPrice)) return price;
-    return new Intl.NumberFormat(isRTL ? "ar-SA" : "en-SA", {
-      style: "currency",
-      currency: "SAR",
+    return new Intl.NumberFormat(isRTL ? 'ar-SA' : 'en-SA', {
+      style: 'currency',
+      currency: 'SAR',
       maximumFractionDigits: 0,
     }).format(numPrice);
   };
@@ -89,12 +93,12 @@ export default function AdDetail() {
         <Header />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-2xl font-semibold mb-4">{t("common.notFound")}</h1>
-            <p className="text-muted-foreground mb-6">{t("ads.notFoundMessage")}</p>
+            <h1 className="text-2xl font-semibold mb-4">{t('common.notFound')}</h1>
+            <p className="text-muted-foreground mb-6">{t('ads.notFoundMessage')}</p>
             <Link href="/properties">
               <Button data-testid="button-back-to-properties">
                 <ArrowLeft className="h-4 w-4 me-2" />
-                {t("common.backToProperties")}
+                {t('common.backToProperties')}
               </Button>
             </Link>
           </div>
@@ -105,7 +109,7 @@ export default function AdDetail() {
   }
 
   const images = ad.images || [];
-  const mainImage = images[0] || "/placeholder-property.jpg";
+  const mainImage = images[0] || '/placeholder-property.jpg';
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -115,14 +119,14 @@ export default function AdDetail() {
           <Link href="/properties">
             <Button variant="ghost" className="mb-6" data-testid="button-back">
               <ArrowLeft className="h-4 w-4 me-2" />
-              {t("common.back")}
+              {t('common.back')}
             </Button>
           </Link>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
               <div className="relative rounded-lg overflow-hidden group bg-muted">
-                <div 
+                <div
                   className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide aspect-[4/3] md:aspect-video"
                   onScroll={(e) => {
                     const target = e.currentTarget;
@@ -137,12 +141,12 @@ export default function AdDetail() {
                         src={img}
                         alt={`${ad.title} - ${i + 1}`}
                         className="w-full h-full object-contain md:object-cover"
-                        loading={i === 0 ? "eager" : "lazy"}
+                        loading={i === 0 ? 'eager' : 'lazy'}
                       />
                     </div>
                   ))}
                 </div>
-                
+
                 {images.length > 1 && (
                   <>
                     <Button
@@ -150,7 +154,9 @@ export default function AdDetail() {
                       size="icon"
                       className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/50 hover:bg-background/80 rounded-full hidden md:flex opacity-0 group-hover:opacity-100 transition-opacity z-10 h-10 w-10"
                       onClick={() => {
-                        const container = document.querySelector('[data-testid="ad-carousel-scroll-container"]');
+                        const container = document.querySelector(
+                          '[data-testid="ad-carousel-scroll-container"]'
+                        );
                         if (container) {
                           container.scrollBy({ left: -container.clientWidth, behavior: 'smooth' });
                         }
@@ -164,7 +170,9 @@ export default function AdDetail() {
                       size="icon"
                       className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/50 hover:bg-background/80 rounded-full hidden md:flex opacity-0 group-hover:opacity-100 transition-opacity z-10 h-10 w-10"
                       onClick={() => {
-                        const container = document.querySelector('[data-testid="ad-carousel-scroll-container"]');
+                        const container = document.querySelector(
+                          '[data-testid="ad-carousel-scroll-container"]'
+                        );
                         if (container) {
                           container.scrollBy({ left: container.clientWidth, behavior: 'smooth' });
                         }
@@ -178,7 +186,9 @@ export default function AdDetail() {
                         <div
                           key={i}
                           className={`h-1 rounded-full transition-all ${
-                            i === currentImageIndex ? "w-3 md:w-4 bg-white" : "w-1 md:w-1.5 bg-white/50"
+                            i === currentImageIndex
+                              ? 'w-3 md:w-4 bg-white'
+                              : 'w-1 md:w-1.5 bg-white/50'
                           }`}
                         />
                       ))}
@@ -189,7 +199,7 @@ export default function AdDetail() {
                 {ad.verified && (
                   <Badge className="absolute top-4 end-4 z-10" variant="secondary">
                     <CheckCircle className="h-3 w-3 me-1" />
-                    {t("common.verified")}
+                    {t('common.verified')}
                   </Badge>
                 )}
               </div>
@@ -201,7 +211,9 @@ export default function AdDetail() {
                       key={index}
                       onClick={() => setCurrentImageIndex(index)}
                       className={`relative h-20 w-32 flex-shrink-0 rounded-md overflow-hidden transition-all ${
-                        index === currentImageIndex ? "ring-2 ring-primary ring-offset-2" : "opacity-70 hover:opacity-100"
+                        index === currentImageIndex
+                          ? 'ring-2 ring-primary ring-offset-2'
+                          : 'opacity-70 hover:opacity-100'
                       }`}
                     >
                       <img
@@ -226,15 +238,18 @@ export default function AdDetail() {
                   </span>
                 </div>
                 <Badge variant="outline" data-testid="badge-ad-type">
-                  {ad.type || t("categories.warehouse")}
+                  {ad.type || t('categories.warehouse')}
                 </Badge>
               </div>
 
               <Separator />
 
               <div>
-                <h2 className="text-lg font-semibold mb-3">{t("common.description")}</h2>
-                <p className="text-muted-foreground whitespace-pre-wrap" data-testid="text-ad-description">
+                <h2 className="text-lg font-semibold mb-3">{t('common.description')}</h2>
+                <p
+                  className="text-muted-foreground whitespace-pre-wrap"
+                  data-testid="text-ad-description"
+                >
                   {ad.description}
                 </p>
               </div>
@@ -242,7 +257,7 @@ export default function AdDetail() {
               <Separator />
 
               <div>
-                <h2 className="text-lg font-semibold mb-4">{t("common.features")}</h2>
+                <h2 className="text-lg font-semibold mb-4">{t('common.features')}</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {ad.areaInM2 && (
                     <div className="flex items-center gap-2">
@@ -253,19 +268,21 @@ export default function AdDetail() {
                   {ad.municipalityLicense && (
                     <div className="flex items-center gap-2">
                       <Shield className="h-4 w-4 text-green-600" />
-                      <span>{t("features.municipalityLicense")}</span>
+                      <span>{t('features.municipalityLicense')}</span>
                     </div>
                   )}
                   {ad.civilDefenseLicense && (
                     <div className="flex items-center gap-2">
                       <Shield className="h-4 w-4 text-green-600" />
-                      <span>{t("features.civilDefenseLicense")}</span>
+                      <span>{t('features.civilDefenseLicense')}</span>
                     </div>
                   )}
                   {ad.availableDateFrom && (
                     <div className="flex items-center gap-2">
                       <Calendar className="h-4 w-4 text-muted-foreground" />
-                      <span>{t("common.availableFrom")}: {ad.availableDateFrom}</span>
+                      <span>
+                        {t('common.availableFrom')}: {ad.availableDateFrom}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -277,7 +294,7 @@ export default function AdDetail() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 flex-wrap">
                     <Building2 className="h-5 w-5" />
-                    {t("common.pricing")}
+                    {t('common.pricing')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -286,14 +303,14 @@ export default function AdDetail() {
                       {formatPrice(ad.price)}
                     </p>
                     <p className="text-muted-foreground text-sm">
-                      {ad.paymentTerm === "monthly" ? t("common.perMonth") : t("common.perYear")}
+                      {ad.paymentTerm === 'monthly' ? t('common.perMonth') : t('common.perYear')}
                     </p>
                   </div>
                   <Separator />
                   {ad.phoneNumber && (
                     <Button className="w-full" size="lg" data-testid="button-contact">
                       <Phone className="h-4 w-4 me-2" />
-                      {t("common.contact")}
+                      {t('common.contact')}
                     </Button>
                   )}
                 </CardContent>
@@ -304,7 +321,7 @@ export default function AdDetail() {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 flex-wrap">
                       <MapPin className="h-5 w-5" />
-                      {t("common.location")}
+                      {t('common.location')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>

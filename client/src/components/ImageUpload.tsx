@@ -15,7 +15,13 @@ interface ImageUploadProps {
   maxImages?: number;
 }
 
-export function ImageUpload({ userId, slug, images, onImagesChange, maxImages = 10 }: ImageUploadProps) {
+export function ImageUpload({
+  userId,
+  slug,
+  images,
+  onImagesChange,
+  maxImages = 10,
+}: ImageUploadProps) {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [isUploading, setIsUploading] = useState(false);
@@ -28,21 +34,17 @@ export function ImageUpload({ userId, slug, images, onImagesChange, maxImages = 
       const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg';
       const filePath = `${userId}/${slug}/images/${imageId}.${fileExt}`;
 
-      const { error } = await supabase.storage
-        .from('ads')
-        .upload(filePath, file, {
-          cacheControl: '3600',
-          upsert: false,
-        });
+      const { error } = await supabase.storage.from('ads').upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false,
+      });
 
       if (error) {
         console.error('Upload error:', error);
         throw error;
       }
 
-      const { data } = supabase.storage
-        .from('ads')
-        .getPublicUrl(filePath);
+      const { data } = supabase.storage.from('ads').getPublicUrl(filePath);
 
       return data.publicUrl;
     } catch (error) {
@@ -51,63 +53,66 @@ export function ImageUpload({ userId, slug, images, onImagesChange, maxImages = 
     }
   };
 
-  const handleFiles = useCallback(async (files: FileList | File[]) => {
-    const fileArray = Array.from(files);
-    const validFiles = fileArray.filter(file => {
-      if (!file.type.startsWith('image/')) {
+  const handleFiles = useCallback(
+    async (files: FileList | File[]) => {
+      const fileArray = Array.from(files);
+      const validFiles = fileArray.filter((file) => {
+        if (!file.type.startsWith('image/')) {
+          toast({
+            variant: 'destructive',
+            title: t('imageUpload.invalidType'),
+            description: file.name,
+          });
+          return false;
+        }
+        if (file.size > 10 * 1024 * 1024) {
+          toast({
+            variant: 'destructive',
+            title: t('imageUpload.fileTooLarge'),
+            description: file.name,
+          });
+          return false;
+        }
+        return true;
+      });
+
+      const remainingSlots = maxImages - images.length;
+      if (validFiles.length > remainingSlots) {
         toast({
           variant: 'destructive',
-          title: t('imageUpload.invalidType'),
-          description: file.name,
+          title: t('imageUpload.maxImagesReached'),
+          description: t('imageUpload.maxImagesDesc', { max: maxImages }),
         });
-        return false;
+        validFiles.splice(remainingSlots);
       }
-      if (file.size > 10 * 1024 * 1024) {
+
+      if (validFiles.length === 0) return;
+
+      setIsUploading(true);
+      setUploadProgress(0);
+
+      const newUrls: string[] = [];
+      for (let i = 0; i < validFiles.length; i++) {
+        const url = await uploadImage(validFiles[i]);
+        if (url) {
+          newUrls.push(url);
+        }
+        setUploadProgress(((i + 1) / validFiles.length) * 100);
+      }
+
+      if (newUrls.length > 0) {
+        onImagesChange([...images, ...newUrls]);
         toast({
-          variant: 'destructive',
-          title: t('imageUpload.fileTooLarge'),
-          description: file.name,
+          title: t('imageUpload.uploadSuccess'),
+          description: t('imageUpload.uploadedCount', { count: newUrls.length }),
         });
-        return false;
       }
-      return true;
-    });
 
-    const remainingSlots = maxImages - images.length;
-    if (validFiles.length > remainingSlots) {
-      toast({
-        variant: 'destructive',
-        title: t('imageUpload.maxImagesReached'),
-        description: t('imageUpload.maxImagesDesc', { max: maxImages }),
-      });
-      validFiles.splice(remainingSlots);
-    }
-
-    if (validFiles.length === 0) return;
-
-    setIsUploading(true);
-    setUploadProgress(0);
-
-    const newUrls: string[] = [];
-    for (let i = 0; i < validFiles.length; i++) {
-      const url = await uploadImage(validFiles[i]);
-      if (url) {
-        newUrls.push(url);
-      }
-      setUploadProgress(((i + 1) / validFiles.length) * 100);
-    }
-
-    if (newUrls.length > 0) {
-      onImagesChange([...images, ...newUrls]);
-      toast({
-        title: t('imageUpload.uploadSuccess'),
-        description: t('imageUpload.uploadedCount', { count: newUrls.length }),
-      });
-    }
-
-    setIsUploading(false);
-    setUploadProgress(0);
-  }, [images, maxImages, onImagesChange, toast, t, userId, slug]);
+      setIsUploading(false);
+      setUploadProgress(0);
+    },
+    [images, maxImages, onImagesChange, toast, t, userId, slug]
+  );
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -119,33 +124,37 @@ export function ImageUpload({ userId, slug, images, onImagesChange, maxImages = 
     }
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleFiles(e.dataTransfer.files);
-    }
-  }, [handleFiles]);
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setDragActive(false);
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        handleFiles(e.dataTransfer.files);
+      }
+    },
+    [handleFiles]
+  );
 
-  const handleFileInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      handleFiles(e.target.files);
-    }
-  }, [handleFiles]);
+  const handleFileInput = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files && e.target.files.length > 0) {
+        handleFiles(e.target.files);
+      }
+    },
+    [handleFiles]
+  );
 
   const removeImage = async (indexToRemove: number) => {
     const imageUrl = images[indexToRemove];
-    
+
     try {
       const urlParts = imageUrl.split('/ads/');
       if (urlParts.length > 1) {
         const filePath = urlParts[1];
         await supabase.storage.from('ads').remove([filePath]);
       }
-    } catch (error) {
-      console.error('Error deleting image from storage:', error);
-    }
+    } catch (error) {}
 
     const newImages = images.filter((_, index) => index !== indexToRemove);
     onImagesChange(newImages);
@@ -175,12 +184,8 @@ export function ImageUpload({ userId, slug, images, onImagesChange, maxImages = 
           ) : (
             <>
               <Upload className="h-8 w-8 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">
-                {t('imageUpload.dragAndDrop')}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {t('imageUpload.orClickToSelect')}
-              </p>
+              <p className="text-sm text-muted-foreground">{t('imageUpload.dragAndDrop')}</p>
+              <p className="text-xs text-muted-foreground">{t('imageUpload.orClickToSelect')}</p>
             </>
           )}
         </div>
@@ -201,10 +206,7 @@ export function ImageUpload({ userId, slug, images, onImagesChange, maxImages = 
         <div className="relative">
           <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
             {images.map((url, index) => (
-              <div
-                key={url}
-                className="flex-shrink-0 space-y-2"
-              >
+              <div key={url} className="flex-shrink-0 space-y-2">
                 <div className="relative w-32 h-32 rounded-md overflow-hidden border bg-card shadow-sm group">
                   <img
                     src={url}

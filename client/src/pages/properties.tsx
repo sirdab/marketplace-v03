@@ -1,45 +1,45 @@
-import { useState, useMemo, useEffect } from "react";
-import { useSearch } from "wouter";
-import { useQuery } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
-import { Header } from "@/components/Header";
-import { CategoryTabs } from "@/components/CategoryTabs";
-import { FilterSidebar, MobileFilterTrigger } from "@/components/FilterSidebar";
-import { PropertyGrid } from "@/components/PropertyGrid";
-import { PropertyMap } from "@/components/PropertyMap";
-import { Footer } from "@/components/Footer";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import { useState, useMemo, useEffect } from 'react';
+import { useSearch } from 'wouter';
+import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
+import { Header } from '@/components/Header';
+import { CategoryTabs } from '@/components/CategoryTabs';
+import { FilterSidebar, MobileFilterTrigger } from '@/components/FilterSidebar';
+import { PropertyGrid } from '@/components/PropertyGrid';
+import { PropertyMap } from '@/components/PropertyMap';
+import { Footer } from '@/components/Footer';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+} from '@/components/ui/select';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import {
   type Property,
   type PropertyCategory,
   type PropertyFilters,
   type PropertyPurpose,
-} from "@shared/schema";
-import { PurposeFilter } from "@/components/PurposeFilter";
+} from '@shared/schema';
+import { PurposeFilter } from '@/components/PurposeFilter';
 
-type SortOption = "newest" | "price-low" | "price-high" | "size";
+type SortOption = 'newest' | 'price-low' | 'price-high' | 'size';
 const ITEMS_PER_PAGE = 12;
 
 export default function Properties() {
   const { t } = useTranslation();
   const searchString = useSearch();
   const params = new URLSearchParams(searchString);
-  
-  const initialCategory = params.get("category") as PropertyCategory | null;
-  const initialQuery = params.get("q") || "";
-  const initialVerified = params.get("verified") === "true";
-  const initialPurpose = params.get("purpose") as PropertyPurpose | null;
+
+  const initialCategory = params.get('category') as PropertyCategory | null;
+  const initialQuery = params.get('q') || '';
+  const initialVerified = params.get('verified') === 'true';
+  const initialPurpose = params.get('purpose') as PropertyPurpose | null;
 
   const [filters, setFilters] = useState<PropertyFilters>({
     category: initialCategory || undefined,
@@ -47,12 +47,12 @@ export default function Properties() {
     isVerified: initialVerified || undefined,
     purpose: initialPurpose || undefined,
   });
-  const [sortBy, setSortBy] = useState<SortOption>("newest");
+  const [sortBy, setSortBy] = useState<SortOption>('newest');
   const [showMap, setShowMap] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data: properties = [], isLoading } = useQuery<Property[]>({
-    queryKey: ["/api/properties"],
+    queryKey: ['/api/properties'],
   });
 
   const cities = useMemo(() => {
@@ -103,13 +103,13 @@ export default function Properties() {
     }
 
     switch (sortBy) {
-      case "price-low":
+      case 'price-low':
         result.sort((a, b) => a.price - b.price);
         break;
-      case "price-high":
+      case 'price-high':
         result.sort((a, b) => b.price - a.price);
         break;
-      case "size":
+      case 'size':
         result.sort((a, b) => b.size - a.size);
         break;
       default:
@@ -125,14 +125,14 @@ export default function Properties() {
   }, [filters, sortBy]);
 
   const totalPages = Math.ceil(filteredProperties.length / ITEMS_PER_PAGE);
-  
+
   const paginatedProperties = useMemo(() => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     return filteredProperties.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   }, [filteredProperties, currentPage]);
 
   const activeFilterCount = Object.values(filters).filter(
-    (v) => v !== undefined && v !== null && v !== ""
+    (v) => v !== undefined && v !== null && v !== ''
   ).length;
 
   const handleSearch = (query: string) => {
@@ -161,13 +161,13 @@ export default function Properties() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header 
-        onSearch={handleSearch} 
-        searchQuery={filters.searchQuery} 
+      <Header
+        onSearch={handleSearch}
+        searchQuery={filters.searchQuery}
         purpose={filters.purpose}
         onPurposeChange={handlePurposeChange}
       />
-      
+
       <div className="border-b bg-background">
         <CategoryTabs
           selectedCategory={filters.category || null}
@@ -181,38 +181,38 @@ export default function Properties() {
             <div className="flex items-center justify-between gap-2">
               <div>
                 <h1 className="text-lg md:text-2xl lg:text-3xl font-semibold">
-                  {filters.category
-                    ? t(`categories.${filters.category}`)
-                    : t("properties.title")}
+                  {filters.category ? t(`categories.${filters.category}`) : t('properties.title')}
                 </h1>
                 <p className="text-muted-foreground text-sm md:text-base">
-                  {filteredProperties.length} {t("properties.available")}
+                  {filteredProperties.length} {t('properties.available')}
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
-                  <SelectTrigger className="w-28 md:w-40 text-xs md:text-sm" data-testid="select-sort">
-                    <SelectValue placeholder={t("properties.sortBy")} />
+                  <SelectTrigger
+                    className="w-28 md:w-40 text-xs md:text-sm"
+                    data-testid="select-sort"
+                  >
+                    <SelectValue placeholder={t('properties.sortBy')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="newest">{t("properties.newest")}</SelectItem>
-                    <SelectItem value="price-low">{t("properties.priceLowToHigh")}</SelectItem>
-                    <SelectItem value="price-high">{t("properties.priceHighToLow")}</SelectItem>
-                    <SelectItem value="size">{t("properties.size")}</SelectItem>
+                    <SelectItem value="newest">{t('properties.newest')}</SelectItem>
+                    <SelectItem value="price-low">{t('properties.priceLowToHigh')}</SelectItem>
+                    <SelectItem value="price-high">{t('properties.priceHighToLow')}</SelectItem>
+                    <SelectItem value="size">{t('properties.size')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-2 flex-wrap">
-              <MobileFilterTrigger
-                filters={filters}
-                onFiltersChange={setFilters}
-                cities={cities}
-              />
+              <MobileFilterTrigger filters={filters} onFiltersChange={setFilters} cities={cities} />
               <div className="hidden md:flex items-center gap-2 ms-auto">
-                <Label htmlFor="show-map" className="text-sm text-muted-foreground whitespace-nowrap">
-                  {t("properties.showMap")}
+                <Label
+                  htmlFor="show-map"
+                  className="text-sm text-muted-foreground whitespace-nowrap"
+                >
+                  {t('properties.showMap')}
                 </Label>
                 <Switch
                   id="show-map"
@@ -230,7 +230,7 @@ export default function Properties() {
                 <Badge
                   variant="secondary"
                   className="gap-1 cursor-pointer"
-                  onClick={() => clearFilter("category")}
+                  onClick={() => clearFilter('category')}
                 >
                   {filters.category}
                   <X className="h-3 w-3" />
@@ -240,7 +240,7 @@ export default function Properties() {
                 <Badge
                   variant="secondary"
                   className="gap-1 cursor-pointer"
-                  onClick={() => clearFilter("city")}
+                  onClick={() => clearFilter('city')}
                 >
                   {filters.city}
                   <X className="h-3 w-3" />
@@ -250,9 +250,9 @@ export default function Properties() {
                 <Badge
                   variant="secondary"
                   className="gap-1 cursor-pointer"
-                  onClick={() => clearFilter("isVerified")}
+                  onClick={() => clearFilter('isVerified')}
                 >
-                  {t("filters.verifiedOnly")}
+                  {t('filters.verifiedOnly')}
                   <X className="h-3 w-3" />
                 </Badge>
               )}
@@ -260,10 +260,14 @@ export default function Properties() {
                 <Badge
                   variant="secondary"
                   className="gap-1 cursor-pointer"
-                  onClick={() => clearFilter("purpose")}
+                  onClick={() => clearFilter('purpose')}
                   data-testid="badge-purpose-filter"
                 >
-                  {filters.purpose === "buy" ? t("purpose.buy") : filters.purpose === "rent" ? t("purpose.rent") : t("purpose.dailyRental")}
+                  {filters.purpose === 'buy'
+                    ? t('purpose.buy')
+                    : filters.purpose === 'rent'
+                      ? t('purpose.rent')
+                      : t('purpose.dailyRental')}
                   <X className="h-3 w-3" />
                 </Badge>
               )}
@@ -271,7 +275,7 @@ export default function Properties() {
                 <Badge
                   variant="secondary"
                   className="gap-1 cursor-pointer"
-                  onClick={() => clearFilter("searchQuery")}
+                  onClick={() => clearFilter('searchQuery')}
                 >
                   "{filters.searchQuery}"
                   <X className="h-3 w-3" />
@@ -282,11 +286,12 @@ export default function Properties() {
                   variant="secondary"
                   className="gap-1 cursor-pointer"
                   onClick={() => {
-                    clearFilter("minPrice");
-                    clearFilter("maxPrice");
+                    clearFilter('minPrice');
+                    clearFilter('maxPrice');
                   }}
                 >
-                  {t("property.price")}: {filters.minPrice || 0} - {filters.maxPrice || t("common.any")}
+                  {t('property.price')}: {filters.minPrice || 0} -{' '}
+                  {filters.maxPrice || t('common.any')}
                   <X className="h-3 w-3" />
                 </Badge>
               )}
@@ -294,12 +299,8 @@ export default function Properties() {
           )}
 
           <div className="flex gap-4 md:gap-6">
-            <FilterSidebar
-              filters={filters}
-              onFiltersChange={setFilters}
-              cities={cities}
-            />
-            
+            <FilterSidebar filters={filters} onFiltersChange={setFilters} cities={cities} />
+
             <div className="flex-1 min-w-0">
               {showMap ? (
                 <div className="h-[400px] md:h-[600px]">
@@ -308,7 +309,7 @@ export default function Properties() {
               ) : (
                 <>
                   <PropertyGrid properties={paginatedProperties} isLoading={isLoading} />
-                  
+
                   {totalPages > 1 && (
                     <div className="flex items-center justify-center gap-2 mt-6 md:mt-8">
                       <Button
@@ -320,7 +321,7 @@ export default function Properties() {
                       >
                         <ChevronLeft className="h-4 w-4" />
                       </Button>
-                      
+
                       <div className="flex items-center gap-1">
                         {Array.from({ length: totalPages }, (_, i) => i + 1)
                           .filter((page) => {
@@ -333,9 +334,11 @@ export default function Properties() {
                             const showEllipsis = index > 0 && page - arr[index - 1] > 1;
                             return (
                               <span key={page} className="flex items-center gap-1">
-                                {showEllipsis && <span className="px-1 text-muted-foreground">...</span>}
+                                {showEllipsis && (
+                                  <span className="px-1 text-muted-foreground">...</span>
+                                )}
                                 <Button
-                                  variant={currentPage === page ? "default" : "outline"}
+                                  variant={currentPage === page ? 'default' : 'outline'}
                                   size="sm"
                                   onClick={() => setCurrentPage(page)}
                                   className="min-w-[2rem]"
@@ -347,7 +350,7 @@ export default function Properties() {
                             );
                           })}
                       </div>
-                      
+
                       <Button
                         variant="outline"
                         size="icon"
