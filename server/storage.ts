@@ -370,17 +370,17 @@ export class DatabaseStorage implements IStorage {
 
   // Fallback cities for when database table doesn't exist
   private static readonly FALLBACK_CITIES: City[] = [
-    { id: 1, nameEn: 'Riyadh', nameAr: 'الرياض', slug: 'riyadh', region: 'Riyadh', isActive: true },
-    { id: 2, nameEn: 'Jeddah', nameAr: 'جدة', slug: 'jeddah', region: 'Makkah', isActive: true },
-    { id: 3, nameEn: 'Dammam', nameAr: 'الدمام', slug: 'dammam', region: 'Eastern', isActive: true },
-    { id: 4, nameEn: 'Al Khobar', nameAr: 'الخبر', slug: 'al-khobar', region: 'Eastern', isActive: true },
-    { id: 5, nameEn: 'Al Ahsa', nameAr: 'الأحساء', slug: 'al-ahsa', region: 'Eastern', isActive: true },
-    { id: 6, nameEn: 'Abha', nameAr: 'أبها', slug: 'abha', region: 'Asir', isActive: true },
-    { id: 7, nameEn: 'Buraydah', nameAr: 'بريدة', slug: 'buraydah', region: 'Qassim', isActive: true },
-    { id: 8, nameEn: 'Mecca', nameAr: 'مكة المكرمة', slug: 'mecca', region: 'Makkah', isActive: true },
-    { id: 9, nameEn: 'Medina', nameAr: 'المدينة المنورة', slug: 'medina', region: 'Medina', isActive: true },
-    { id: 10, nameEn: 'Tabuk', nameAr: 'تبوك', slug: 'tabuk', region: 'Tabuk', isActive: true },
-    { id: 11, nameEn: 'Khamis Mushait', nameAr: 'خميس مشيط', slug: 'khamis-mushait', region: 'Asir', isActive: true },
+    { id: 1, nameEn: 'Riyadh', nameAr: 'الرياض', latitude: '24.7136', longitude: '46.6753', isActive: true, countryId: 1 },
+    { id: 2, nameEn: 'Jeddah', nameAr: 'جدة', latitude: '21.4858', longitude: '39.1925', isActive: true, countryId: 1 },
+    { id: 3, nameEn: 'Dammam', nameAr: 'الدمام', latitude: '26.4207', longitude: '50.0888', isActive: true, countryId: 1 },
+    { id: 4, nameEn: 'Al Khobar', nameAr: 'الخبر', latitude: '26.2172', longitude: '50.1971', isActive: true, countryId: 1 },
+    { id: 5, nameEn: 'Al Ahsa', nameAr: 'الأحساء', latitude: '25.3648', longitude: '49.5855', isActive: true, countryId: 1 },
+    { id: 6, nameEn: 'Abha', nameAr: 'أبها', latitude: '18.2164', longitude: '42.5053', isActive: true, countryId: 1 },
+    { id: 7, nameEn: 'Buraydah', nameAr: 'بريدة', latitude: '26.3260', longitude: '43.9750', isActive: true, countryId: 1 },
+    { id: 8, nameEn: 'Mecca', nameAr: 'مكة المكرمة', latitude: '21.3891', longitude: '39.8579', isActive: true, countryId: 1 },
+    { id: 9, nameEn: 'Medina', nameAr: 'المدينة المنورة', latitude: '24.5247', longitude: '39.5692', isActive: true, countryId: 1 },
+    { id: 10, nameEn: 'Tabuk', nameAr: 'تبوك', latitude: '28.3838', longitude: '36.5550', isActive: true, countryId: 1 },
+    { id: 11, nameEn: 'Khamis Mushait', nameAr: 'خميس مشيط', latitude: '18.3093', longitude: '42.7453', isActive: true, countryId: 1 },
   ];
 
   // Cities methods

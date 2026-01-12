@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useSearch } from 'wouter';
 import { useAuth } from '@/lib/auth';
@@ -41,6 +41,7 @@ export default function AuthPage() {
   const [otpValue, setOtpValue] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
   const [authMethod, setAuthMethod] = useState<'email' | 'phone'>('phone');
+  const otpInputRef = useRef<HTMLInputElement | null>(null);
 
   const returnUrl = new URLSearchParams(searchString).get('returnUrl') || '/dashboard';
 
@@ -49,6 +50,16 @@ export default function AuthPage() {
       navigate(returnUrl);
     }
   }, [user, authLoading, navigate, returnUrl]);
+
+  // Auto-focus OTP input when it appears - critical for iOS keyboard autofill
+  useEffect(() => {
+    if (otpSent && otpInputRef.current) {
+      // Small delay to ensure the input is rendered
+      setTimeout(() => {
+        otpInputRef.current?.focus();
+      }, 100);
+    }
+  }, [otpSent]);
 
   const emailForm = useForm<EmailFormData>({
     resolver: zodResolver(emailSchema),
@@ -199,18 +210,21 @@ export default function AuthPage() {
                       </p>
                       <div className="flex flex-col items-center gap-3" dir="ltr">
                         <InputOTP
+                          ref={otpInputRef}
                           maxLength={4}
                           value={otpValue}
                           onChange={(val) => {
                             setOtpValue(val);
-                            if (val.length === 4) {
-                              setTimeout(() => {
-                                document.querySelector<HTMLButtonElement>('[data-testid="button-verify-otp"]')?.click();
-                              }, 100);
-                            }
+                          }}
+                          onComplete={(code) => {
+                            setOtpValue(code);
+                            setTimeout(() => {
+                              document.querySelector<HTMLButtonElement>('[data-testid="button-verify-otp"]')?.click();
+                            }, 50);
                           }}
                           autoComplete="one-time-code"
                           inputMode="numeric"
+                          name="one-time-code"
                           data-testid="input-otp"
                         >
                           <InputOTPGroup>

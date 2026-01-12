@@ -181,12 +181,13 @@ export function getTypeAttributesSchema(category: PropertyCategory) {
 }
 
 export const cities = pgTable("cities", {
-  id: bigint("id", { mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
-  nameEn: text("name_en").notNull(),
-  nameAr: text("name_ar").notNull(),
-  slug: text("slug").notNull(),
-  region: text("region"),
-  isActive: boolean("is_active").default(true),
+  id: bigint("ID", { mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+  nameEn: text("Name"),
+  nameAr: text("NameLocale"),
+  latitude: text("Latitude"),
+  longitude: text("Longitude"),
+  isActive: boolean("Active"),
+  countryId: bigint("Country ID", { mode: "number" }),
 });
 
 export type City = typeof cities.$inferSelect;
