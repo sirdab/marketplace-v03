@@ -13,8 +13,7 @@ i18n
       en: { translation: en },
       ar: { translation: ar },
     },
-    lng: 'ar', // Set default language to Arabic
-    fallbackLng: 'ar',
+    fallbackLng: 'ar', // Default to Arabic when no preference is saved
     supportedLngs: ['en', 'ar'],
     debug: false,
     interpolation: {
@@ -23,6 +22,7 @@ i18n
     detection: {
       order: ['localStorage', 'navigator'],
       caches: ['localStorage'],
+      lookupLocalStorage: 'i18nextLng',
     },
   });
 
