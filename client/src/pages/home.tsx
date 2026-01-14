@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import { useProperties } from '@/hooks/useHardcodedData';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { HeroSection } from '@/components/HeroSection';
@@ -23,9 +23,7 @@ export default function Home() {
   const [selectedCity, setSelectedCity] = useState<string | undefined>(undefined);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data: properties = [], isLoading } = useQuery<Property[]>({
-    queryKey: ['/api/properties'],
-  });
+  const { data: properties, isLoading } = useProperties();
 
   const filteredProperties = useMemo(() => {
     let result = properties;

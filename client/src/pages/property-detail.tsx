@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useParams, useSearch, Link } from 'wouter';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import { useProperty } from '@/hooks/useHardcodedData';
 import { format } from 'date-fns';
 import {
   MapPin,
@@ -51,10 +52,7 @@ export default function PropertyDetail() {
     storefront: 'storefront',
   };
 
-  const { data: property, isLoading } = useQuery<Property>({
-    queryKey: ['/api/properties', id],
-    enabled: !!id,
-  });
+  const { data: property, isLoading } = useProperty(id);
 
   const visitMutation = useMutation({
     mutationFn: async (data: any) => {

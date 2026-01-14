@@ -1,5 +1,6 @@
 import { QueryClient, QueryFunction } from '@tanstack/react-query';
-import { supabase } from './supabase';
+
+const AUTH_STORAGE_KEY = 'sirdab-auth-token';
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
@@ -8,22 +9,15 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
-async function getAuthHeaders(): Promise<Record<string, string>> {
+function getAuthHeaders(): Record<string, string> {
   try {
-    // First get the current session
-    const {
-      data: { session: currentSession },
-      error: sessionError,
-    } = await supabase.auth.getSession();
-
-    if (sessionError || !currentSession) {
-      // Session is invalid or expired - user needs to log in again
-      return {};
+    const storedSession = localStorage.getItem(AUTH_STORAGE_KEY);
+    if (storedSession) {
+      const parsed = JSON.parse(storedSession);
+      if (parsed.access_token) {
+        return { Authorization: `Bearer ${parsed.access_token}` };
+      }
     }
-
-    // Use the current access token directly
-    // Supabase client handles token refresh automatically via onAuthStateChange
-    return { Authorization: `Bearer ${currentSession.access_token}` };
   } catch (error) {
     console.error('[Auth] Error getting auth headers:', error);
   }
@@ -36,7 +30,7 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined
 ): Promise<Response> {
-  const authHeaders = await getAuthHeaders();
+  const authHeaders = getAuthHeaders();
   const res = await fetch(url, {
     method,
     headers: {
@@ -55,7 +49,7 @@ type UnauthorizedBehavior = 'returnNull' | 'throw';
 export const getQueryFn: <T>(options: { on401: UnauthorizedBehavior }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const authHeaders = await getAuthHeaders();
+    const authHeaders = getAuthHeaders();
     const res = await fetch(queryKey.join('/') as string, {
       credentials: 'include',
       headers: authHeaders,
@@ -70,7 +64,7 @@ export const getQueryFn: <T>(options: { on401: UnauthorizedBehavior }) => QueryF
   };
 
 export async function fetchWithAuth(url: string): Promise<Response> {
-  const authHeaders = await getAuthHeaders();
+  const authHeaders = getAuthHeaders();
   const res = await fetch(url, {
     credentials: 'include',
     headers: authHeaders,

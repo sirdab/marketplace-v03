@@ -173,7 +173,7 @@ export function Header({ onSearch, searchQuery = '', purpose, onPurposeChange }:
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
                   <div className="px-2 py-1.5 text-sm text-muted-foreground truncate">
-                    {user.email}
+                    {user.phone || user.id}
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>

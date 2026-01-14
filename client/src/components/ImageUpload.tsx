@@ -1,11 +1,8 @@
 import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { X, Upload, Image as ImageIcon, Loader2, Trash2 } from 'lucide-react';
+import { Upload, Image as ImageIcon, Loader2, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/lib/supabase';
-import { v4 as uuidv4 } from 'uuid';
 
 interface ImageUploadProps {
   userId: string;
@@ -28,27 +25,14 @@ export function ImageUpload({
   const [uploadProgress, setUploadProgress] = useState(0);
   const [dragActive, setDragActive] = useState(false);
 
+  // Mock upload - creates local blob URL for preview
   const uploadImage = async (file: File): Promise<string | null> => {
     try {
-      const imageId = uuidv4();
-      const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg';
-      const filePath = `${userId}/${slug}/images/${imageId}.${fileExt}`;
-
-      const { error } = await supabase.storage.from('ads').upload(filePath, file, {
-        cacheControl: '3600',
-        upsert: false,
-      });
-
-      if (error) {
-        console.error('Upload error:', error);
-        throw error;
-      }
-
-      const { data } = supabase.storage.from('ads').getPublicUrl(filePath);
-
-      return data.publicUrl;
+      // Create a local blob URL for the image (mock upload)
+      const blobUrl = URL.createObjectURL(file);
+      return blobUrl;
     } catch (error) {
-      console.error('Error uploading image:', error);
+      console.error('Error creating preview:', error);
       return null;
     }
   };
@@ -111,7 +95,7 @@ export function ImageUpload({
       setIsUploading(false);
       setUploadProgress(0);
     },
-    [images, maxImages, onImagesChange, toast, t, userId, slug]
+    [images, maxImages, onImagesChange, toast, t]
   );
 
   const handleDrag = useCallback((e: React.DragEvent) => {
@@ -148,13 +132,10 @@ export function ImageUpload({
   const removeImage = async (indexToRemove: number) => {
     const imageUrl = images[indexToRemove];
 
-    try {
-      const urlParts = imageUrl.split('/ads/');
-      if (urlParts.length > 1) {
-        const filePath = urlParts[1];
-        await supabase.storage.from('ads').remove([filePath]);
-      }
-    } catch (error) {}
+    // Revoke blob URL if it's a local blob
+    if (imageUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(imageUrl);
+    }
 
     const newImages = images.filter((_, index) => index !== indexToRemove);
     onImagesChange(newImages);

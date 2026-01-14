@@ -1,101 +1,102 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { User, Session, AuthError } from '@supabase/supabase-js';
-import { supabase } from './supabase';
+
+// Simple mock user type
+interface MockUser {
+  id: string;
+  phone: string;
+}
+
+// Simple mock session type
+interface MockSession {
+  access_token: string;
+  user: MockUser;
+}
 
 interface AuthContextType {
-  user: User | null;
-  session: Session | null;
+  user: MockUser | null;
+  session: MockSession | null;
   loading: boolean;
-  sendMagicLink: (email: string, redirectTo?: string) => Promise<{ error: AuthError | null }>;
-  sendPhoneOtp: (phone: string) => Promise<{ error: AuthError | null }>;
-  verifyPhoneOtp: (phone: string, token: string) => Promise<{ error: AuthError | null }>;
+  sendPhoneOtp: (phone: string) => Promise<{ error: Error | null }>;
+  verifyPhoneOtp: (phone: string, token: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
 }
 
+const AUTH_STORAGE_KEY = 'sirdab-auth-token';
+const VALID_OTP = '1111';
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Generate a simple mock token
+function generateMockToken(): string {
+  return 'mock_token_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<MockUser | null>(null);
+  const [session, setSession] = useState<MockSession | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Check for existing session on mount
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+    const storedSession = localStorage.getItem(AUTH_STORAGE_KEY);
+    if (storedSession) {
+      try {
+        const parsed = JSON.parse(storedSession) as MockSession;
+        setSession(parsed);
+        setUser(parsed.user);
+      } catch {
+        localStorage.removeItem(AUTH_STORAGE_KEY);
+      }
+    }
+    setLoading(false);
   }, []);
 
-  const sendMagicLink = async (email: string, redirectTo?: string) => {
-    let redirectUrl: string;
-    try {
-      const path = redirectTo || '/dashboard';
-      if (path.startsWith('http://') || path.startsWith('https://')) {
-        redirectUrl = path;
-      } else {
-        const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-        redirectUrl = `${window.location.origin}${normalizedPath}`;
-      }
-    } catch {
-      redirectUrl = `${window.location.origin}/dashboard`;
+  // Mock send OTP - always succeeds (we don't actually send anything)
+  const sendPhoneOtp = async (_phone: string): Promise<{ error: Error | null }> => {
+    // Simulate network delay
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return { error: null };
+  };
+
+  // Mock verify OTP - accepts "1111" as valid
+  const verifyPhoneOtp = async (phone: string, token: string): Promise<{ error: Error | null }> => {
+    // Simulate network delay
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    if (token !== VALID_OTP) {
+      return { error: new Error('Invalid OTP. Use 1111') };
     }
 
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: redirectUrl,
-      },
-    });
-    return { error };
-  };
-
-  const sendPhoneOtp = async (phone: string) => {
-    const { error } = await supabase.auth.signInWithOtp({
+    // Create mock user and session
+    const mockUser: MockUser = {
+      id: 'user_' + Math.random().toString(36).substring(2),
       phone,
-    });
-    return { error };
-  };
+    };
 
-  const verifyPhoneOtp = async (phone: string, token: string) => {
-    const { error } = await supabase.auth.verifyOtp({
-      phone,
-      token,
-      type: 'sms',
-    });
-    return { error };
+    const mockSession: MockSession = {
+      access_token: generateMockToken(),
+      user: mockUser,
+    };
+
+    // Store in localStorage
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(mockSession));
+
+    // Update state
+    setUser(mockUser);
+    setSession(mockSession);
+
+    return { error: null };
   };
 
   const signOut = async () => {
-    // Try Supabase signOut, but don't fail if session is already invalid
-    try {
-      await supabase.auth.signOut({ scope: 'local' });
-    } catch {
-      // Ignore errors - session might already be invalid on server
-    }
-
-    // Force clear Supabase's local storage (in case signOut failed to do it)
-    const storageKey = `sb-${new URL(import.meta.env.VITE_SUPABASE_URL || 'https://soxgqyjaeouwdyykoueq.supabase.co').hostname.split('.')[0]}-auth-token`;
-    localStorage.removeItem(storageKey);
-
-    // Clear React state
+    localStorage.removeItem(AUTH_STORAGE_KEY);
     setUser(null);
     setSession(null);
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, session, loading, sendMagicLink, sendPhoneOtp, verifyPhoneOtp, signOut }}
+      value={{ user, session, loading, sendPhoneOtp, verifyPhoneOtp, signOut }}
     >
       {children}
     </AuthContext.Provider>

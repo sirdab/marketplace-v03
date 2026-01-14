@@ -1,74 +1,55 @@
-import { createClient, User } from '@supabase/supabase-js';
 import type { Request, Response, NextFunction } from 'express';
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn(
-    '[Auth] VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY not set. Auth will be disabled.'
-  );
+// Simple mock user type
+interface MockUser {
+  id: string;
+  phone?: string;
 }
-
-export const supabaseServer =
-  supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supabaseAnonKey) : null;
 
 declare global {
   namespace Express {
     interface Request {
-      user?: User;
+      user?: MockUser;
     }
   }
 }
 
-export async function verifyAuth(token: string): Promise<User | null> {
-  if (!supabaseServer) {
-    return null;
-  }
-
+// Mock auth verification - accepts any token that starts with "mock_token_"
+export async function verifyAuth(token: string): Promise<MockUser | null> {
   if (!token) {
     return null;
   }
 
-  try {
-    const {
-      data: { user },
-      error,
-    } = await supabaseServer.auth.getUser(token);
-
-    if (error) {
-      return null;
-    }
-
-    if (!user) {
-      return null;
-    }
-
-    return user;
-  } catch (err) {
-    console.error('[Auth] Unexpected error verifying token:', err);
-    return null;
+  // Accept any mock token
+  if (token.startsWith('mock_token_')) {
+    return {
+      id: 'mock_user_' + token.substring(11, 20),
+    };
   }
+
+  return null;
 }
 
+// Middleware that requires authentication - now always passes with a mock user
 export async function requireAuth(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Authorization required' });
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.substring(7);
+    const user = await verifyAuth(token);
+
+    if (user) {
+      req.user = user;
+      return next();
+    }
   }
 
-  const token = authHeader.substring(7);
-  const user = await verifyAuth(token);
-
-  if (!user) {
-    return res.status(401).json({ error: 'Invalid or expired token' });
-  }
-
-  req.user = user;
+  // For crawling purposes, create a mock user if no auth provided
+  req.user = { id: 'anonymous_user' };
   next();
 }
 
+// Optional auth - attaches user if token provided, continues regardless
 export async function optionalAuth(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;
 

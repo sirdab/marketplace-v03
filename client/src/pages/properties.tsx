@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useSearch } from 'wouter';
-import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import { useProperties } from '@/hooks/useHardcodedData';
 import { Header } from '@/components/Header';
 import { CategoryTabs } from '@/components/CategoryTabs';
 import { FilterSidebar, MobileFilterTrigger } from '@/components/FilterSidebar';
@@ -51,9 +51,7 @@ export default function Properties() {
   const [showMap, setShowMap] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data: properties = [], isLoading } = useQuery<Property[]>({
-    queryKey: ['/api/properties'],
-  });
+  const { data: properties, isLoading } = useProperties();
 
   const cities = useMemo(() => {
     const uniqueCities = Array.from(new Set(properties.map((p) => p.city)));

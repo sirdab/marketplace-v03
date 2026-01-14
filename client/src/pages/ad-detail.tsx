@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link } from 'wouter';
-import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import { useAd } from '@/hooks/useHardcodedData';
 import {
   MapPin,
   Ruler,
@@ -30,14 +30,7 @@ export default function AdDetail() {
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const {
-    data: ad,
-    isLoading,
-    error,
-  } = useQuery<Ad>({
-    queryKey: ['/api/public/ads', id],
-    enabled: !!id,
-  });
+  const { data: ad, isLoading, error } = useAd(id);
 
   const nextImage = () => {
     if (!ad?.images || ad.images.length === 0) return;

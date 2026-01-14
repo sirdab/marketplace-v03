@@ -1,6 +1,6 @@
 import { useParams, Link } from 'wouter';
-import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import { useCities, useAdsByCity } from '@/hooks/useHardcodedData';
 import { ArrowLeft, MapPin, Ruler, CheckCircle } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
@@ -8,7 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { Ad, City } from '@shared/schema';
+import type { Ad } from '@shared/schema';
+import type { City } from '@/data/cities';
 
 function toSlug(name: string): string {
   return name
@@ -25,9 +26,7 @@ export default function RegionAds() {
   const { city } = useParams<{ city: string }>();
   const isRTL = i18n.language === 'ar';
 
-  const { data: cities } = useQuery<City[]>({
-    queryKey: ['/api/cities'],
-  });
+  const { data: cities } = useCities();
 
   const matchedCity = cities?.find((c) => toSlug(c.nameEn) === city);
   const cityName = matchedCity
@@ -36,14 +35,7 @@ export default function RegionAds() {
       : matchedCity.nameEn
     : city?.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) || '';
 
-  const {
-    data: ads,
-    isLoading,
-    error,
-  } = useQuery<Ad[]>({
-    queryKey: ['/api/public/ads/region/sa', city],
-    enabled: !!city,
-  });
+  const { data: ads, isLoading } = useAdsByCity(city);
 
   const formatPrice = (price: string | null) => {
     if (!price) return t('common.contactForPrice');
